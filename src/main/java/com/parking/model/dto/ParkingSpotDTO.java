@@ -2,6 +2,7 @@ package com.parking.model.dto;
 
 import lombok.Data;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 public class ParkingSpotDTO {
@@ -10,6 +11,6 @@ public class ParkingSpotDTO {
     private Double latitude;
     private Double longitude;
     private BigDecimal price;
-    private String image;
+    private List<String> images;
     private String status;
 } 

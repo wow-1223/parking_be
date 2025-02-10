@@ -1,14 +1,18 @@
-package com.parking.service.impl;
+package com.parking.service.user.impl;
 
 import com.parking.common.exception.BusinessException;
 import com.parking.common.exception.ResourceNotFoundException;
 import com.parking.model.dto.*;
+import com.parking.model.dto.common.OperationResponse;
+import com.parking.model.dto.common.PageResponse;
+import com.parking.model.dto.user.request.FavoriteRequest;
 import com.parking.model.entity.Favorite;
 import com.parking.model.entity.ParkingSpot;
 import com.parking.model.entity.User;
 import com.parking.repository.FavoriteRepository;
 import com.parking.repository.ParkingSpotRepository;
-import com.parking.service.FavoriteService;
+import com.parking.service.user.FavoriteService;
+
 import com.parking.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -94,7 +99,7 @@ public class FavoriteServiceImpl implements FavoriteService {
         dto.setLatitude(parkingSpot.getLatitude());
         dto.setLongitude(parkingSpot.getLongitude());
         dto.setPrice(parkingSpot.getPrice());
-        dto.setImage(parkingSpot.getImage());
+        dto.setImages(parkingSpot.getImages());
         dto.setStatus(parkingSpot.getStatus());
         return dto;
     }

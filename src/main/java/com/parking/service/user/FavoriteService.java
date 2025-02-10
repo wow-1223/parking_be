@@ -1,9 +1,9 @@
-package com.parking.service;
+package com.parking.service.user;
 
-import com.parking.model.dto.FavoriteRequest;
-import com.parking.model.dto.OperationResponse;
-import com.parking.model.dto.PageResponse;
+import com.parking.model.dto.user.request.FavoriteRequest;
 import com.parking.model.dto.ParkingSpotDTO;
+import com.parking.model.dto.common.OperationResponse;
+import com.parking.model.dto.common.PageResponse;
 
 public interface FavoriteService {
     /**

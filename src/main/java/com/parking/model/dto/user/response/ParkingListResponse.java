@@ -1,5 +1,6 @@
 package com.parking.model.dto.user.response;
 
+import com.parking.model.dto.ParkingSpotDTO;
 import lombok.Data;
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.parking.service;
+package com.parking.service.user;
 
 import com.parking.model.dto.ParkingListResponse;
 import com.parking.model.dto.ParkingDetailResponse;

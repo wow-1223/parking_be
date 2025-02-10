@@ -1,11 +1,12 @@
-package com.parking.service.impl;
+package com.parking.service.owner.impl;
 
-import com.parking.model.dto.PageResponse;
+import com.parking.model.dto.common.PageResponse;
 import com.parking.model.dto.owner.OwnerOrderListItemDTO;
 import com.parking.model.entity.Order;
 import com.parking.model.entity.User;
 import com.parking.repository.OrderRepository;
-import com.parking.service.OwnerOrderService;
+import com.parking.service.owner.OwnerOrderService;
+
 import com.parking.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

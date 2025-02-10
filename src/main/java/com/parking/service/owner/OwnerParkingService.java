@@ -1,7 +1,11 @@
-package com.parking.service;
+package com.parking.service.owner;
 
+import com.parking.model.dto.common.OperationResponse;
+import com.parking.model.dto.common.PageResponse;
 import com.parking.model.dto.owner.*;
-import com.parking.model.dto.PageResponse;
+import com.parking.model.dto.owner.request.CreateParkingRequest;
+import com.parking.model.dto.owner.request.UpdateParkingRequest;
+import com.parking.model.dto.owner.response.OwnerParkingResponse;
 
 public interface OwnerParkingService {
     /**

@@ -1,6 +1,6 @@
-package com.parking.service;
+package com.parking.service.owner;
 
-import com.parking.model.dto.PageResponse;
+import com.parking.model.dto.common.PageResponse;
 import com.parking.model.dto.owner.OwnerOrderListItemDTO;
 
 public interface OwnerOrderService {

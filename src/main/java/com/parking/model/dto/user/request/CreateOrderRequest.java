@@ -1,4 +1,4 @@
-package com.parking.model.dto;
+package com.parking.model.dto.user.request;
 
 import lombok.Data;
 

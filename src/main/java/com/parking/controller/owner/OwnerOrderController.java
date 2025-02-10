@@ -1,8 +1,8 @@
 package com.parking.controller.owner;
 
-import com.parking.model.dto.PageResponse;
+import com.parking.model.dto.common.PageResponse;
 import com.parking.model.dto.owner.OwnerOrderListItemDTO;
-import com.parking.service.OwnerOrderService;
+import com.parking.service.owner.OwnerOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class OwnerOrderController {
     private OwnerOrderService ownerOrderService;
 
     @ApiOperation("获取订单列表")
-    @GetMapping
+    @GetMapping("/getOrders")
     public PageResponse<OwnerOrderListItemDTO> getOrders(
             @RequestParam(required = false) String status,
             @RequestParam(required = false, defaultValue = "1") Integer page,

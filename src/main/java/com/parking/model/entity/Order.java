@@ -1,7 +1,7 @@
 package com.parking.model.entity;
 
 import lombok.Data;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -28,4 +28,6 @@ public class Order {
     private String carNumber;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
+
+
 } 

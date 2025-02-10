@@ -1,8 +1,12 @@
 package com.parking.controller.owner;
 
+import com.parking.model.dto.common.OperationResponse;
+import com.parking.model.dto.common.PageResponse;
 import com.parking.model.dto.owner.*;
-import com.parking.model.dto.PageResponse;
-import com.parking.service.OwnerParkingService;
+import com.parking.model.dto.owner.request.CreateParkingRequest;
+import com.parking.model.dto.owner.request.UpdateParkingRequest;
+import com.parking.model.dto.owner.response.OwnerParkingResponse;
+import com.parking.service.owner.OwnerParkingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +21,7 @@ public class OwnerParkingController {
     private OwnerParkingService ownerParkingService;
 
     @ApiOperation("发布车位")
-    @PostMapping
+    @PostMapping("/createParking")
     public OwnerParkingResponse createParking(@RequestBody CreateParkingRequest request) {
         return ownerParkingService.createParking(request);
     }
@@ -31,7 +35,7 @@ public class OwnerParkingController {
     }
 
     @ApiOperation("获取车位列表")
-    @GetMapping
+    @GetMapping("/getParkingList")
     public PageResponse<OwnerParkingListItemDTO> getParkingList(
             @RequestParam(required = false) String status,
             @RequestParam(required = false, defaultValue = "1") Integer page,

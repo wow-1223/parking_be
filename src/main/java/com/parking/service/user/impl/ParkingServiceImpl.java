@@ -1,10 +1,10 @@
-package com.parking.service.impl;
+package com.parking.service.user.impl;
 
 import com.parking.common.exception.ResourceNotFoundException;
 import com.parking.model.dto.*;
 import com.parking.model.entity.ParkingSpot;
 import com.parking.repository.ParkingSpotRepository;
-import com.parking.service.ParkingService;
+import com.parking.service.user.ParkingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +25,7 @@ public class ParkingServiceImpl implements ParkingService {
         // 默认搜索半径1公里
         radius = radius == null ? 1000 : radius;
         
-        Page<ParkingSpot> parkingPage = parkingSpotRepository.findNearbyParkings(
+        Page<ParkingSpot> parkingPage = parkingSpotRepository.findNearbyAvailable(
                 longitude, 
                 latitude, 
                 radius,
@@ -37,7 +37,7 @@ public class ParkingServiceImpl implements ParkingService {
 
     @Override
     public ParkingListResponse searchParkings(String keyword, Integer page, Integer pageSize) {
-        Page<ParkingSpot> parkingPage = parkingSpotRepository.searchParkings(
+        Page<ParkingSpot> parkingPage = parkingSpotRepository.search(
                 keyword,
                 PageRequest.of(page - 1, pageSize)
         );
@@ -92,7 +92,7 @@ public class ParkingServiceImpl implements ParkingService {
         dto.setLatitude(parkingSpot.getLatitude());
         dto.setLongitude(parkingSpot.getLongitude());
         dto.setPrice(parkingSpot.getPrice());
-        dto.setImage(parkingSpot.getImage());
+        dto.setImages(parkingSpot.getImages());
         dto.setStatus(parkingSpot.getStatus());
         return dto;
     }

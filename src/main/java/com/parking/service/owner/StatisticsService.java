@@ -1,7 +1,7 @@
-package com.parking.service;
+package com.parking.service.owner;
 
-import com.parking.model.dto.owner.EarningsStatisticsResponse;
-import com.parking.model.dto.owner.UsageStatisticsResponse;
+import com.parking.model.dto.owner.response.EarningsStatisticsResponse;
+import com.parking.model.dto.owner.response.UsageStatisticsResponse;
 
 public interface StatisticsService {
     /**

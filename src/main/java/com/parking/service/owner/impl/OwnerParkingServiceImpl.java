@@ -1,13 +1,17 @@
-package com.parking.service.impl;
+package com.parking.service.owner.impl;
 
 import com.parking.common.exception.BusinessException;
 import com.parking.common.exception.ResourceNotFoundException;
+import com.parking.model.dto.common.OperationResponse;
+import com.parking.model.dto.common.PageResponse;
 import com.parking.model.dto.owner.*;
-import com.parking.model.dto.PageResponse;
+import com.parking.model.dto.owner.request.CreateParkingRequest;
+import com.parking.model.dto.owner.request.UpdateParkingRequest;
+import com.parking.model.dto.owner.response.OwnerParkingResponse;
 import com.parking.model.entity.ParkingSpot;
 import com.parking.model.entity.User;
 import com.parking.repository.ParkingSpotRepository;
-import com.parking.service.OwnerParkingService;
+import com.parking.service.owner.OwnerParkingService;
 import com.parking.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,7 +19,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -101,8 +104,9 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
         // 查询车位列表
         Page<ParkingSpot> parkingPage;
         if ("all".equals(status) || status == null) {
-            parkingPage = parkingSpotRepository.findByOwnerId(
+            parkingPage = parkingSpotRepository.findByOwnerIdAndStatus(
                     currentUser.getId(),
+                    "",
                     PageRequest.of(page - 1, pageSize)
             );
         } else {
@@ -129,8 +133,8 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
         
         // 如果有当前订单，设置订单信息
         if (parkingSpot.getCurrentOrder() != null) {
-            OwnerParkingListItemDTO.CurrentOrder currentOrder = 
-                    new OwnerParkingListItemDTO.CurrentOrder();
+            OwnerParkingListItemDTO.CurrentOrderInfo currentOrder =
+                    new OwnerParkingListItemDTO.CurrentOrderInfo();
             currentOrder.setId(parkingSpot.getCurrentOrder().getId().toString());
             currentOrder.setEndTime(parkingSpot.getCurrentOrder().getEndTime().toString());
             dto.setCurrentOrder(currentOrder);

@@ -1,8 +1,8 @@
 package com.parking.service.user.impl;
 
-import com.parking.common.exception.BusinessException;
-import com.parking.common.exception.ResourceNotFoundException;
-import com.parking.common.exception.UnauthorizedException;
+import com.parking.exception.BusinessException;
+import com.parking.exception.ResourceNotFoundException;
+import com.parking.exception.UnauthorizedException;
 import com.parking.model.dto.*;
 import com.parking.model.dto.common.PageResponse;
 import com.parking.model.dto.user.request.CreateOrderRequest;

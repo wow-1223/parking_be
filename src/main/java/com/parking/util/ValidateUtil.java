@@ -1,6 +1,6 @@
 package com.parking.util;
 
-import com.parking.common.exception.BusinessException;
+import com.parking.exception.BusinessException;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;

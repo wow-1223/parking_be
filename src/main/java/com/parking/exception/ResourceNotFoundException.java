@@ -1,4 +1,4 @@
-package com.parking.common.exception;
+package com.parking.exception;
 
 /**
  * 资源未找到异常

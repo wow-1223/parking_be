@@ -7,12 +7,9 @@ import com.parking.model.dto.owner.request.CreateParkingRequest;
 import com.parking.model.dto.owner.request.UpdateParkingRequest;
 import com.parking.model.dto.owner.response.OwnerParkingResponse;
 import com.parking.service.owner.OwnerParkingService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@Api(tags = "出租方车位管理接口")
 @RestController
 @RequestMapping("/api/owner/parking")
 public class OwnerParkingController {
@@ -20,13 +17,11 @@ public class OwnerParkingController {
     @Autowired
     private OwnerParkingService ownerParkingService;
 
-    @ApiOperation("发布车位")
     @PostMapping("/createParking")
     public OwnerParkingResponse createParking(@RequestBody CreateParkingRequest request) {
         return ownerParkingService.createParking(request);
     }
 
-    @ApiOperation("修改车位信息")
     @PutMapping("/{id}")
     public OperationResponse updateParking(
             @PathVariable String id,
@@ -34,7 +29,6 @@ public class OwnerParkingController {
         return ownerParkingService.updateParking(id, request);
     }
 
-    @ApiOperation("获取车位列表")
     @GetMapping("/getParkingList")
     public PageResponse<OwnerParkingListItemDTO> getParkingList(
             @RequestParam(required = false) String status,

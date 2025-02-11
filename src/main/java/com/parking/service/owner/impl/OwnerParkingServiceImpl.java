@@ -1,7 +1,7 @@
 package com.parking.service.owner.impl;
 
-import com.parking.common.exception.BusinessException;
-import com.parking.common.exception.ResourceNotFoundException;
+import com.parking.exception.BusinessException;
+import com.parking.exception.ResourceNotFoundException;
 import com.parking.model.dto.common.OperationResponse;
 import com.parking.model.dto.common.PageResponse;
 import com.parking.model.dto.owner.*;

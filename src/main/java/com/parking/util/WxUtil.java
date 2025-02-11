@@ -1,6 +1,6 @@
 package com.parking.util;
 
-import com.parking.common.exception.BusinessException;
+import com.parking.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;

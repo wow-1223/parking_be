@@ -1,4 +1,4 @@
-package com.parking.common.exception;
+package com.parking.exception;
 
 import com.parking.model.dto.common.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import static com.parking.constant.WxPayConstant.PayError.PAYMENT_FAILED;
 
 /**
  * 全局异常处理器
@@ -40,5 +42,12 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleException(Exception e) {
         log.error("Internal server error", e);
         return new ErrorResponse("500", "服务器内部错误");
+    }
+
+    @ExceptionHandler(PaymentException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handlePaymentException(PaymentException e) {
+        log.error("Payment error", e);
+        return new ErrorResponse(PAYMENT_FAILED, e.getMessage());
     }
 }

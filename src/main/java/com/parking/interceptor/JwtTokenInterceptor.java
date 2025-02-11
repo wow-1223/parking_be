@@ -1,6 +1,6 @@
 package com.parking.interceptor;
 
-import com.parking.common.exception.UnauthorizedException;
+import com.parking.exception.UnauthorizedException;
 import com.parking.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

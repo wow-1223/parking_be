@@ -1,6 +1,6 @@
 package com.parking.service.user.impl;
 
-import com.parking.common.exception.ResourceNotFoundException;
+import com.parking.exception.ResourceNotFoundException;
 import com.parking.model.dto.ParkingSpotDTO;
 import com.parking.model.dto.user.response.ParkingDetailResponse;
 import com.parking.model.dto.user.response.ParkingListResponse;

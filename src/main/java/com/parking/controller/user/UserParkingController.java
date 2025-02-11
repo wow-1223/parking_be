@@ -3,12 +3,11 @@ package com.parking.controller.user;
 import com.parking.model.dto.user.response.ParkingListResponse;
 import com.parking.model.dto.user.response.ParkingDetailResponse;
 import com.parking.service.user.UserParkingService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@Api(tags = "用户停车位接口")
 @RestController
 @RequestMapping("/api/parking")
 public class UserParkingController {
@@ -16,7 +15,6 @@ public class UserParkingController {
     @Autowired
     private UserParkingService parkingService;
 
-    @ApiOperation("获取附近停车位")
     @GetMapping("/nearby")
     public ParkingListResponse getNearbyParkings(
             @RequestParam Double latitude,
@@ -27,7 +25,6 @@ public class UserParkingController {
         return parkingService.getNearbyParkings(latitude, longitude, radius, page, pageSize);
     }
 
-    @ApiOperation("搜索停车位")
     @GetMapping("/search")
     public ParkingListResponse searchParkings(
             @RequestParam String keyword,
@@ -36,7 +33,6 @@ public class UserParkingController {
         return parkingService.searchParkings(keyword, page, pageSize);
     }
 
-    @ApiOperation("获取停车位详情")
     @GetMapping("/{id}")
     public ParkingDetailResponse getParkingDetail(@PathVariable String id) {
         return parkingService.getParkingDetail(id);

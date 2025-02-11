@@ -20,7 +20,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/api/user/login",   // 登录接口
                         "/api/upload/**",    // 文件上传接口
                         "/swagger-ui/**",    // Swagger文档
-                        "/v3/api-docs/**"    // OpenAPI文档
+                        "/v3/api-docs"       // Open Api文档
                 );
     }
+
+    @Override
+    public void addResourceHandlers(org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/swagger-ui/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
+        registry.addResourceHandler("/v2/api-docs")
+                .addResourceLocations("classpath:/META-INF/resources/");
+    }
+
+
 }

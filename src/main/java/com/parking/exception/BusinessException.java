@@ -1,4 +1,4 @@
-package com.parking.common.exception;
+package com.parking.exception;
 
 /**
  * 业务异常

@@ -1,4 +1,4 @@
-package com.parking.common.exception;
+package com.parking.exception;
 
 /**
  * 未授权异常

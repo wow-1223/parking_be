@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -132,7 +133,7 @@ public class StatisticsServiceImpl implements StatisticsService {
         // 计算平均值
         int days = dailyStats.size();
         BigDecimal averageAmount = days > 0 ?
-                MoneyUtil.format(totalAmount.divide(BigDecimal.valueOf(days), 2)) :
+                MoneyUtil.format(totalAmount.divide(BigDecimal.valueOf(days), 2, RoundingMode.HALF_UP)) :
                 BigDecimal.ZERO;
         double averageOrders = days > 0 ? (double) totalOrders / days : 0;
 

@@ -1,6 +1,6 @@
 package com.parking.util;
 
-import com.parking.common.exception.UnauthorizedException;
+import com.parking.exception.UnauthorizedException;
 import com.parking.model.entity.User;
 import com.parking.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

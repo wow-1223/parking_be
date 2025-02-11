@@ -3,12 +3,11 @@ package com.parking.controller.owner;
 import com.parking.model.dto.owner.response.EarningsStatisticsResponse;
 import com.parking.model.dto.owner.response.UsageStatisticsResponse;
 import com.parking.service.owner.StatisticsService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@Api(tags = "出租方统计接口")
 @RestController
 @RequestMapping("/api/owner/statistics")
 public class OwnerStatisticsController {
@@ -16,7 +15,6 @@ public class OwnerStatisticsController {
     @Autowired
     private StatisticsService statisticsService;
 
-    @ApiOperation("获取收益统计")
     @GetMapping("/earnings")
     public EarningsStatisticsResponse getEarningsStatistics(
             @RequestParam String timeRange,
@@ -25,7 +23,6 @@ public class OwnerStatisticsController {
         return statisticsService.getEarningsStatistics(timeRange, startDate, endDate);
     }
 
-    @ApiOperation("获取使用率统计")
     @GetMapping("/usage")
     public UsageStatisticsResponse getUsageStatistics(
             @RequestParam(required = false) String parkingId,

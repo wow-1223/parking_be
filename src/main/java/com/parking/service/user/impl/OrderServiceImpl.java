@@ -45,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderResponse createOrder(CreateOrderRequest request) {
         // 1. 验证停车位是否可用
-        ParkingSpot parkingSpot = parkingSpotRepository.findById(Long.parseLong(request.getParkingId()))
+        ParkingSpot parkingSpot = parkingSpotRepository.findById(request.getParkingSpotId())
                 .orElseThrow(() -> new ResourceNotFoundException("停车位不存在"));
 
         if (!"available".equals(parkingSpot.getStatus())) {
@@ -56,8 +56,8 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order();
         order.setParkingSpot(parkingSpot);
         order.setUser(securityUtil.getCurrentUser());
-        order.setStartTime(LocalDateTime.parse(request.getStartTime()));
-        order.setEndTime(LocalDateTime.parse(request.getEndTime()));
+        order.setStartTime(DateUtil.parseDate(request.getStartTime()));
+        order.setEndTime(DateUtil.parseDate(request.getEndTime()));
         order.setCarNumber(request.getCarNumber());
         order.setStatus("pending");
         order.setAmount(calculateAmount(parkingSpot.getPrice(),
@@ -84,13 +84,13 @@ public class OrderServiceImpl implements OrderService {
         // 创建分页请求
         Pageable pageable = PageUtil.createTimeDescPageable(page, pageSize);
 
+        Long uid = securityUtil.getCurrentUser().getId();
+        if (status.equals("all")) {
+            status = null;
+        }
+
         // 查询订单
-        Page<Order> orderPage = orderRepository.findOrders(
-                securityUtil.getCurrentUser().getId(),
-                null,  // parkingSpotId为null，表示查询用户的所有订单
-                status,
-                pageable
-        );
+        Page<Order> orderPage = orderRepository.findOrders(uid, null, status, pageable);
 
         // 转换为DTO
         List<OrderListItemDTO> dtoList = orderPage.getContent().stream()

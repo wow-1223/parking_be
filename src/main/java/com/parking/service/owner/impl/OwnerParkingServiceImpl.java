@@ -5,14 +5,17 @@ import com.parking.exception.ResourceNotFoundException;
 import com.parking.model.dto.common.OperationResponse;
 import com.parking.model.dto.common.PageResponse;
 import com.parking.model.dto.owner.*;
-import com.parking.model.dto.owner.request.CreateParkingRequest;
+import com.parking.model.dto.owner.request.OwnerParkingRequest;
 import com.parking.model.dto.owner.request.UpdateParkingRequest;
 import com.parking.model.dto.owner.response.OwnerParkingResponse;
 import com.parking.model.entity.ParkingSpot;
 import com.parking.model.entity.User;
 import com.parking.repository.ParkingSpotRepository;
 import com.parking.service.owner.OwnerParkingService;
+import com.parking.service.owner.StatisticsService;
 import com.parking.util.SecurityUtil;
+import org.hibernate.criterion.AggregateProjection;
+import org.hibernate.criterion.Projection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,10 +33,12 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
     
     @Autowired
     private SecurityUtil securityUtil;
+    @Autowired
+    private StatisticsService statisticsService;
 
     @Override
     @Transactional
-    public OwnerParkingResponse createParking(CreateParkingRequest request) {
+    public OwnerParkingResponse createParking(OwnerParkingRequest request) {
         User currentUser = securityUtil.getCurrentUser();
         
         // 创建车位
@@ -61,11 +66,11 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
 
     @Override
     @Transactional
-    public OperationResponse updateParking(String id, UpdateParkingRequest request) {
+    public OperationResponse updateParking(UpdateParkingRequest request) {
         User currentUser = securityUtil.getCurrentUser();
         
         // 获取并验证车位
-        ParkingSpot parkingSpot = parkingSpotRepository.findById(Long.parseLong(id))
+        ParkingSpot parkingSpot = parkingSpotRepository.findById(request.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("车位不存在"));
                 
         if (!parkingSpot.getOwner().getId().equals(currentUser.getId())) {
@@ -91,6 +96,9 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
         if (request.getFacilities() != null) {
             parkingSpot.setFacilities(request.getFacilities());
         }
+        if (request.getStatus() != null) {
+            parkingSpot.setStatus(request.getStatus());
+        }
         
         parkingSpotRepository.save(parkingSpot);
         
@@ -103,20 +111,15 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
         
         // 查询车位列表
         Page<ParkingSpot> parkingPage;
-        if ("all".equals(status) || status == null) {
-            parkingPage = parkingSpotRepository.findByOwnerIdAndStatus(
-                    currentUser.getId(),
-                    "",
-                    PageRequest.of(page - 1, pageSize)
-            );
-        } else {
-            parkingPage = parkingSpotRepository.findByOwnerIdAndStatus(
-                    currentUser.getId(),
-                    status,
-                    PageRequest.of(page - 1, pageSize)
-            );
+        if ("all".equals(status)) {
+            status = null;
         }
-        
+        parkingPage = parkingSpotRepository.findByOwnerIdAndStatus(
+                currentUser.getId(),
+                status,
+                PageRequest.of(page - 1, pageSize)
+        );
+
         // 转换为DTO
         List<OwnerParkingListItemDTO> parkingList = parkingPage.getContent().stream()
                 .map(this::convertToListItemDTO)
@@ -128,18 +131,19 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
     private OwnerParkingListItemDTO convertToListItemDTO(ParkingSpot parkingSpot) {
         OwnerParkingListItemDTO dto = new OwnerParkingListItemDTO();
         dto.setId(parkingSpot.getId().toString());
+
         dto.setLocation(parkingSpot.getLocation());
+        dto.setPrice(parkingSpot.getPrice());
         dto.setStatus(parkingSpot.getStatus());
-        
+
         // 如果有当前订单，设置订单信息
         if (parkingSpot.getCurrentOrder() != null) {
-            OwnerParkingListItemDTO.CurrentOrderInfo currentOrder =
-                    new OwnerParkingListItemDTO.CurrentOrderInfo();
+            OwnerParkingListItemDTO.CurrentOrderInfo currentOrder = new OwnerParkingListItemDTO.CurrentOrderInfo();
             currentOrder.setId(parkingSpot.getCurrentOrder().getId().toString());
             currentOrder.setEndTime(parkingSpot.getCurrentOrder().getEndTime().toString());
             dto.setCurrentOrder(currentOrder);
         }
-        
+
         return dto;
     }
-} 
+}

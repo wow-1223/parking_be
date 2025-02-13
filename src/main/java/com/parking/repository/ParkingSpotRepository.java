@@ -50,6 +50,9 @@ public interface ParkingSpotRepository extends JpaRepository<ParkingSpot, Long> 
     /**
      * 查找车主的停车位
      */
+    @Query("SELECT p FROM ParkingSpot p WHERE " +
+            "(:ownerId IS NULL OR p.owner.id = :ownerId) AND " +
+            "(:status IS NULL OR p.status = :status)")
     Page<ParkingSpot> findByOwnerIdAndStatus(Long ownerId, String status, Pageable pageable);
 
     /**

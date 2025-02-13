@@ -1,6 +1,7 @@
 package com.parking.model.dto.owner;
 
 import lombok.Data;
+
 import java.math.BigDecimal;
 
 @Data

@@ -6,6 +6,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,7 +34,7 @@ public class ParkingSpot {
     /**
      * 位置描述
      */
-    @Column(nullable = false)
+    @Column(name = "location")
     private String location;
 
     /**

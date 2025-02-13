@@ -3,7 +3,7 @@ package com.parking.controller.owner;
 import com.parking.model.dto.common.OperationResponse;
 import com.parking.model.dto.common.PageResponse;
 import com.parking.model.dto.owner.*;
-import com.parking.model.dto.owner.request.CreateParkingRequest;
+import com.parking.model.dto.owner.request.OwnerParkingRequest;
 import com.parking.model.dto.owner.request.UpdateParkingRequest;
 import com.parking.model.dto.owner.response.OwnerParkingResponse;
 import com.parking.service.owner.OwnerParkingService;
@@ -18,15 +18,13 @@ public class OwnerParkingController {
     private OwnerParkingService ownerParkingService;
 
     @PostMapping("/createParking")
-    public OwnerParkingResponse createParking(@RequestBody CreateParkingRequest request) {
+    public OwnerParkingResponse createParking(@RequestBody OwnerParkingRequest request) {
         return ownerParkingService.createParking(request);
     }
 
-    @PutMapping("/{id}")
-    public OperationResponse updateParking(
-            @PathVariable String id,
-            @RequestBody UpdateParkingRequest request) {
-        return ownerParkingService.updateParking(id, request);
+    @PostMapping("/updateParking")
+    public OperationResponse updateParking(@RequestBody UpdateParkingRequest request) {
+        return ownerParkingService.updateParking(request);
     }
 
     @GetMapping("/getParkingList")

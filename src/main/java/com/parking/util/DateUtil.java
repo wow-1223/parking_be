@@ -36,6 +36,10 @@ public class DateUtil {
         return dateTime != null ? dateTime.format(DATETIME_FORMATTER) : null;
     }
 
+    public static LocalDateTime parseDate(String date) {
+        return LocalDateTime.parse(date, DATETIME_FORMATTER);
+    }
+
     /**
      * 获取今天开始时间
      */

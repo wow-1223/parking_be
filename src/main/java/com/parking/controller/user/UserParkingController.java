@@ -19,7 +19,7 @@ public class UserParkingController {
     public ParkingListResponse getNearbyParkings(
             @RequestParam Double latitude,
             @RequestParam Double longitude,
-            @RequestParam(required = false) Integer radius,
+            @RequestParam(required = false, defaultValue = "1000") Integer radius,
             @RequestParam(required = false, defaultValue = "1") Integer page,
             @RequestParam(required = false, defaultValue = "20") Integer pageSize) {
         return parkingService.getNearbyParkings(latitude, longitude, radius, page, pageSize);

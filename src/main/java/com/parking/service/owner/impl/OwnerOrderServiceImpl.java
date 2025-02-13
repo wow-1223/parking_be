@@ -30,19 +30,12 @@ public class OwnerOrderServiceImpl implements OwnerOrderService {
         User currentUser = securityUtil.getCurrentUser();
         
         Page<Order> orderPage;
-        if ("all".equals(status) || status == null) {
-            orderPage = orderRepository.findByParkingSpotOwnerId(
-                    currentUser.getId(),
-                    PageRequest.of(page - 1, pageSize)
-            );
-        } else {
-            orderPage = orderRepository.findByParkingSpotOwnerIdAndStatus(
-                    currentUser.getId(),
-                    status,
-                    PageRequest.of(page - 1, pageSize)
-            );
+        if ("all".equals(status)) {
+            status = null;
         }
-        
+        orderPage = orderRepository.findOrders(
+                currentUser.getId(), null, status, PageRequest.of(page - 1, pageSize));
+
         List<OwnerOrderListItemDTO> orders = orderPage.getContent().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());

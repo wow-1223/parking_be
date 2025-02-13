@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Data
-public class CreateParkingRequest {
+public class OwnerParkingRequest {
     private String location;
     private Double latitude;
     private Double longitude;

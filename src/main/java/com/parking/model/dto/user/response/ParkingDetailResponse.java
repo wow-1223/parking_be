@@ -1,6 +1,7 @@
 package com.parking.model.dto.user.response;
 
 import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.List;
 

@@ -1,15 +1,11 @@
 package com.parking.model.dto.owner.request;
 
 import lombok.Data;
-import java.math.BigDecimal;
-import java.util.List;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class UpdateParkingRequest {
-    private String location;
-    private String description;
-    private BigDecimal price;
-    private List<String> images;
-    private List<String> rules;
-    private List<String> facilities;
+public class UpdateParkingRequest extends OwnerParkingRequest {
+    private Long id;
+    private String status;
 } 

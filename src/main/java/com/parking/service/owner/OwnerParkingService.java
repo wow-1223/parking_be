@@ -3,7 +3,7 @@ package com.parking.service.owner;
 import com.parking.model.dto.common.OperationResponse;
 import com.parking.model.dto.common.PageResponse;
 import com.parking.model.dto.owner.*;
-import com.parking.model.dto.owner.request.CreateParkingRequest;
+import com.parking.model.dto.owner.request.OwnerParkingRequest;
 import com.parking.model.dto.owner.request.UpdateParkingRequest;
 import com.parking.model.dto.owner.response.OwnerParkingResponse;
 
@@ -13,15 +13,14 @@ public interface OwnerParkingService {
      * @param request 车位信息
      * @return 创建结果
      */
-    OwnerParkingResponse createParking(CreateParkingRequest request);
+    OwnerParkingResponse createParking(OwnerParkingRequest request);
     
     /**
      * 修改车位信息
-     * @param id 车位ID
      * @param request 更新信息
      * @return 操作结果
      */
-    OperationResponse updateParking(String id, UpdateParkingRequest request);
+    OperationResponse updateParking(UpdateParkingRequest request);
     
     /**
      * 获取车位列表

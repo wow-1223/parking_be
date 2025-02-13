@@ -15,6 +15,11 @@ public class UserAuthController {
     @Autowired
     private UserAuthService userAuthService;
 
+    @GetMapping("/test")
+    public String test() {
+        return "test succeed";
+    }
+
     @PostMapping("/login")
     public UserLoginResponse login(@RequestBody UserLoginRequest request) {
         return userAuthService.wxLogin(request.getCode());

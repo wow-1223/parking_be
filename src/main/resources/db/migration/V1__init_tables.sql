@@ -1,96 +1,119 @@
--- 用户表
+
+-- users table
 CREATE TABLE users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    open_id VARCHAR(64) UNIQUE NOT NULL COMMENT '微信openid',
-    nick_name VARCHAR(64) COMMENT '昵称',
-    avatar_url VARCHAR(255) COMMENT '头像',
-    phone VARCHAR(20) COMMENT '手机号',
-    role VARCHAR(20) NOT NULL DEFAULT 'USER' COMMENT '角色: USER/OWNER/ADMIN',
-    status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE' COMMENT '状态: ACTIVE/DISABLED',
-    create_time DATETIME NOT NULL COMMENT '创建时间',
-    update_time DATETIME COMMENT '更新时间'
-) COMMENT '用户表';
+    open_id VARCHAR(64) UNIQUE NOT NULL COMMENT 'wechat open id',
+    phone VARCHAR(20) UNIQUE NOT NULL COMMENT 'phone',
+    nick_name VARCHAR(64) COMMENT 'nick name',
+    avatar_url VARCHAR(255) COMMENT 'avatar url',
+    role TINYINT NOT NULL DEFAULT 1 COMMENT 'role: 1: user | 2: owner | 3: admin',
+    status TINYINT NOT NULL DEFAULT 1 COMMENT 'status: 1: active | 0: disabled',
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+    deleted_at BIGINT default 0 not null COMMENT 'deleted at'
+) COMMENT 'users table';
 
--- 停车位表
+-- parking spots table
 CREATE TABLE parking_spots (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    owner_id BIGINT NOT NULL COMMENT '车位所有者ID',
-    location VARCHAR(255) NOT NULL COMMENT '位置描述',
-    latitude DOUBLE NOT NULL COMMENT '纬度',
-    longitude DOUBLE NOT NULL COMMENT '经度',
-    description TEXT COMMENT '详细描述',
-    price DECIMAL(10,2) NOT NULL COMMENT '每小时价格',
-    images JSON COMMENT '图片列表',
-    rules JSON COMMENT '使用规则',
-    facilities JSON COMMENT '设施列表',
-    status VARCHAR(20) NOT NULL DEFAULT 'pending' COMMENT '状态: pending/approved/rejected/available/occupied',
-    current_order_id BIGINT COMMENT '当前订单ID',
-    create_time DATETIME NOT NULL COMMENT '创建时间',
-    update_time DATETIME COMMENT '更新时间',
-    FOREIGN KEY (owner_id) REFERENCES users(id)
-) COMMENT '停车位表';
+    owner_id BIGINT NOT NULL COMMENT 'owner id',
+    location VARCHAR(255) NOT NULL COMMENT 'location',
+    longitude DECIMAL(10, 6) NOT NULL COMMENT 'longitude',
+    latitude DECIMAL(10, 6) NOT NULL COMMENT 'latitude',
+--     coordinate POINT NOT NULL COMMENT 'coordinate',
+    description TEXT COMMENT 'description',
+    price DECIMAL(10,2) NOT NULL COMMENT 'price for per hour',
+    images JSON COMMENT 'image list',
+    rules JSON COMMENT 'rule list',
+    facilities JSON COMMENT 'facility list',
+--     status TINYINT NOT NULL DEFAULT 0 COMMENT 'status: 0: pending | 1: approved | 2: rejected | 3: available | 4:occupied',
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+    deleted_at BIGINT default 0 not null COMMENT 'deleted at',
+    INDEX idx_owner_id (owner_id),
+--     SPATIAL INDEX idx_coordinate (point(longitude, latitude))
+) COMMENT 'parking spots table';
 
--- 订单表
+-- parking periods table
+CREATE TABLE parking_periods (
+   id BIGINT AUTO_INCREMENT PRIMARY KEY,
+   parking_spots_id BIGINT NOT NULL COMMENT 'parking spots id',
+   car_number VARCHAR(20) NOT NULL COMMENT 'car number',
+   start_time TIMESTAMP NOT NULL COMMENT 'start time',
+   end_time TIMESTAMP NOT NULL COMMENT 'end time',
+   status TINYINT NOT NULL DEFAULT 0 COMMENT 'status: 0: pending | 1: approved | 2: rejected | 3: available | 4:occupied',
+   create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+   update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+   deleted_at BIGINT default 0 not null COMMENT 'deleted at',
+   INDEX idx_parking_spot_id (parking_spots_id)
+--     FOREIGN KEY (owner_id) REFERENCES users(id)
+) COMMENT 'parking periods table';
+
+-- orders table
 CREATE TABLE orders (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    parking_spot_id BIGINT NOT NULL COMMENT '停车位ID',
-    user_id BIGINT NOT NULL COMMENT '用户ID',
-    car_number VARCHAR(20) NOT NULL COMMENT '车牌号',
-    start_time DATETIME NOT NULL COMMENT '开始时间',
-    end_time DATETIME NOT NULL COMMENT '结束时间',
+    user_id BIGINT NOT NULL COMMENT 'user id',
+    parking_spots_id BIGINT NOT NULL COMMENT 'parking spots id',
+    parking_period_id BIGINT NOT NULL COMMENT 'parking period id',
     amount DECIMAL(10,2) NOT NULL COMMENT '订单金额',
-    status VARCHAR(20) NOT NULL DEFAULT 'pending' COMMENT '状态: pending/paid/ongoing/completed/cancelled',
-    payment_id VARCHAR(64) COMMENT '支付ID',
-    create_time DATETIME NOT NULL COMMENT '创建时间',
-    update_time DATETIME COMMENT '更新时间',
-    FOREIGN KEY (parking_spot_id) REFERENCES parking_spots(id),
-    FOREIGN KEY (user_id) REFERENCES users(id)
-) COMMENT '订单表';
+    status TINYINT NOT NULL DEFAULT 0 COMMENT 'status: 0:pending payment | 1:paid | 2:in use | 3:completed | 4:canceled | 5:expired',
+    payment_id VARCHAR(64) COMMENT 'payment id',
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+    deleted_at BIGINT default 0 not null COMMENT 'deleted at',
+    INDEX idx_user_id (user_id),
+    INDEX idx_parking_spot_id (parking_spots_id),
+    INDEX idx_parking_period_id (parking_period_id)
+--     FOREIGN KEY (parking_spot_id) REFERENCES parking_spots(id),
+--     FOREIGN KEY (user_id) REFERENCES users(id)
+) COMMENT 'orders table';
 
--- 收藏表
+-- favorites table
 CREATE TABLE favorites (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    user_id BIGINT NOT NULL COMMENT '用户ID',
-    parking_spot_id BIGINT NOT NULL COMMENT '停车位ID',
-    create_time DATETIME NOT NULL COMMENT '创建时间',
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (parking_spot_id) REFERENCES parking_spots(id),
-    UNIQUE KEY uk_user_parking (user_id, parking_spot_id)
-) COMMENT '收藏表';
+    user_id BIGINT NOT NULL COMMENT 'user id',
+    parking_spot_id BIGINT NOT NULL COMMENT 'parking spots id',
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+--     update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 'update time',
+    deleted_at BIGINT default 0 not null COMMENT 'deleted at',
+    INDEX idx_user_id (user_id),
+    UNIQUE INDEX idx_user_parking (user_id, parking_spot_id)
+) COMMENT 'favorites table';
 
--- 评价表
+-- reviews table
 CREATE TABLE reviews (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    order_id BIGINT NOT NULL COMMENT '订单ID',
-    user_id BIGINT NOT NULL COMMENT '用户ID',
-    parking_spot_id BIGINT NOT NULL COMMENT '停车位ID',
-    rating TINYINT NOT NULL COMMENT '评分: 1-5',
-    content TEXT COMMENT '评价内容',
-    images JSON COMMENT '图片列表',
-    create_time DATETIME NOT NULL COMMENT '创建时间',
-    FOREIGN KEY (order_id) REFERENCES orders(id),
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (parking_spot_id) REFERENCES parking_spots(id),
-    UNIQUE KEY uk_order_review (order_id)
-) COMMENT '评价表';
+    order_id BIGINT NOT NULL COMMENT 'order id',
+    user_id BIGINT NOT NULL COMMENT 'user id',
+    parking_spot_id BIGINT NOT NULL COMMENT 'parking spot id',
+    rating TINYINT NOT NULL COMMENT 'rating: 1-5',
+    content TEXT COMMENT 'content',
+    images JSON COMMENT 'image url list',
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+    deleted_at BIGINT default 0 not null COMMENT 'deleted at',
+    INDEX idx_order_id (order_id),
+    INDEX idx_user_id (user_id),
+    INDEX idx_parking_spot_id (parking_spot_id);
+--     FOREIGN KEY (order_id) REFERENCES orders(id),
+--     FOREIGN KEY (user_id) REFERENCES users(id),
+--     FOREIGN KEY (parking_spot_id) REFERENCES parking_spots(id),
+--     UNIQUE KEY uk_order_review (order_id)
+) COMMENT 'reviews table';
 
 -- 支付记录表
 CREATE TABLE payments (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    order_id BIGINT NOT NULL COMMENT '订单ID',
-    transaction_id VARCHAR(64) UNIQUE COMMENT '微信支付交易号',
-    amount DECIMAL(10,2) NOT NULL COMMENT '支付金额',
-    status VARCHAR(20) NOT NULL COMMENT '状态: pending/success/failed',
-    create_time DATETIME NOT NULL COMMENT '创建时间',
-    update_time DATETIME COMMENT '更新时间',
-    FOREIGN KEY (order_id) REFERENCES orders(id)
+    order_id BIGINT NOT NULL COMMENT 'order id',
+    transaction_id VARCHAR(64) UNIQUE COMMENT 'payment transaction id',
+    amount DECIMAL(10,2) NOT NULL COMMENT 'amount',
+    status VARCHAR(20) NOT NULL COMMENT 'status: 0:unpaid | 1:paying | 2:paid | 3:pay failed | 4:closed | 5:refunding | 6:refunded | 7:refund failed',
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+    deleted_at BIGINT default 0 not null COMMENT 'deleted at',
+    INDEX idx_order_id (order_id)
+--     FOREIGN KEY (order_id) REFERENCES orders(id)
 ) COMMENT '支付记录表';
 
 -- 创建空间索引
-ALTER TABLE parking_spots ADD SPATIAL INDEX idx_location (point(longitude, latitude));
-
--- 创建普通索引
-CREATE INDEX idx_user_openid ON users(open_id);
-CREATE INDEX idx_parking_status ON parking_spots(status);
-CREATE INDEX idx_order_status ON orders(status);
-CREATE INDEX idx_order_time ON orders(start_time, end_time); 
+-- ALTER TABLE parking_spots ADD SPATIAL INDEX idx_location (point(longitude, latitude));

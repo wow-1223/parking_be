@@ -1,6 +1,6 @@
-package com.parking.repository;
+package com.parking.repository.jpa;
 
-import com.parking.model.entity.Order;
+import com.parking.model.entity.jpa.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

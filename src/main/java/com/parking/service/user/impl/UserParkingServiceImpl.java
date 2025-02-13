@@ -1,15 +1,16 @@
 package com.parking.service.user.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.parking.exception.ResourceNotFoundException;
 import com.parking.model.dto.ParkingSpotDTO;
+import com.parking.model.dto.parking.request.NearbyParkingSpotRequest;
 import com.parking.model.dto.user.response.ParkingDetailResponse;
 import com.parking.model.dto.user.response.ParkingListResponse;
-import com.parking.model.entity.ParkingSpot;
-import com.parking.repository.ParkingSpotRepository;
+import com.parking.model.entity.mybatis.ParkingSpot;
+import com.parking.repository.mybatis.ParkingSpotRepository;
 import com.parking.service.user.UserParkingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -23,16 +24,20 @@ import java.util.stream.Collectors;
 @Service
 public class UserParkingServiceImpl implements UserParkingService {
 
+//    @Autowired
+//    private ParkingSpotRepository parkingSpotRepository;
+
     @Autowired
     private ParkingSpotRepository parkingSpotRepository;
 
     @Override
-    public ParkingListResponse getNearbyParkings(Double latitude, Double longitude,
-                                                 Integer radius, Integer page, Integer pageSize) {
+    public ParkingListResponse getNearbyParkings(NearbyParkingSpotRequest request) {
         // 查询附近可用的停车位
-        Page<ParkingSpot> parkingPage = parkingSpotRepository.findNearbyAvailable(
-                latitude, longitude, radius, PageRequest.of(page - 1, pageSize));
+        IPage<ParkingSpot> iPage = parkingSpotRepository.findNearbyAvailable(request);
+        iPage.getRecords().forEach(parkingSpot -> {
+            log.info("parkingSpot: {}", parkingSpot);
 
+        })
         List<ParkingSpotDTO> spots = parkingPage.getContent().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());

@@ -1,8 +1,8 @@
 package com.parking.util;
 
 import com.parking.exception.UnauthorizedException;
-import com.parking.model.entity.User;
-import com.parking.repository.UserRepository;
+import com.parking.model.entity.jpa.User;
+import com.parking.repository.jpa.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

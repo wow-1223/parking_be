@@ -1,8 +1,8 @@
 package com.parking.service.user.impl;
 
 import com.parking.model.dto.user.response.UserLoginResponse;
-import com.parking.model.entity.User;
-import com.parking.repository.UserRepository;
+import com.parking.model.entity.jpa.User;
+import com.parking.repository.jpa.UserRepository;
 import com.parking.service.user.UserAuthService;
 import com.parking.util.JwtUtil;
 import com.parking.util.WxUtil;

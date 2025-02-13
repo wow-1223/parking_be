@@ -2,9 +2,11 @@ package com.parking.service.owner.impl;
 
 import com.parking.model.dto.common.PageResponse;
 import com.parking.model.dto.owner.OwnerOrderListItemDTO;
-import com.parking.model.entity.Order;
-import com.parking.model.entity.User;
-import com.parking.repository.OrderRepository;
+import com.parking.model.entity.jpa.Order;
+import com.parking.model.entity.jpa.User;
+import com.parking.model.vo.UserOrderVo;
+import com.parking.repository.jpa.OrderRepository;
+import com.parking.repository.mybatis.UserRepository;
 import com.parking.service.owner.OwnerOrderService;
 
 import com.parking.util.SecurityUtil;
@@ -21,6 +23,9 @@ public class OwnerOrderServiceImpl implements OwnerOrderService {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private UserRepository userRepository;
     
     @Autowired
     private SecurityUtil securityUtil;
@@ -42,7 +47,14 @@ public class OwnerOrderServiceImpl implements OwnerOrderService {
         
         return new PageResponse<>(orderPage.getTotalElements(), orders);
     }
-    
+
+    @Override
+    public PageResponse<UserOrderVo> getUserOrders(String status, Integer page, Integer pageSize) {
+        User currentUser = securityUtil.getCurrentUser();
+
+        return null;
+    }
+
     private OwnerOrderListItemDTO convertToDTO(Order order) {
         OwnerOrderListItemDTO dto = new OwnerOrderListItemDTO();
         dto.setId(order.getId().toString());

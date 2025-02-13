@@ -8,8 +8,8 @@ import java.util.List;
 public class ParkingSpotDTO {
     private String id;
     private String location;
-    private Double latitude;
-    private Double longitude;
+    private BigDecimal latitude;
+    private BigDecimal longitude;
     private BigDecimal price;
     private List<String> images;
     private String status;

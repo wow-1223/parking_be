@@ -1,14 +1,12 @@
-package com.parking.repository;
+package com.parking.repository.jpa;
 
-import com.parking.model.entity.ParkingSpot;
+import com.parking.model.entity.jpa.ParkingSpot;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface ParkingSpotRepository extends JpaRepository<ParkingSpot, Long> {
@@ -51,7 +49,7 @@ public interface ParkingSpotRepository extends JpaRepository<ParkingSpot, Long> 
      * 查找车主的停车位
      */
     @Query("SELECT p FROM ParkingSpot p WHERE " +
-            "(:ownerId IS NULL OR p.owner.id = :ownerId) AND " +
+            "(:ownerId IS NULL OR p.ownerId = :ownerId) AND " +
             "(:status IS NULL OR p.status = :status)")
     Page<ParkingSpot> findByOwnerIdAndStatus(Long ownerId, String status, Pageable pageable);
 

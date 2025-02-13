@@ -1,6 +1,6 @@
-package com.parking.repository;
+package com.parking.repository.jpa;
 
-import com.parking.model.entity.User;
+import com.parking.model.entity.jpa.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,12 +20,20 @@ public interface UserRepository extends JpaRepository<User, Long> {
     /**
      * 根据openId查找用户
      */
+    @Query("SELECT u FROM User u WHERE u.openId = :openId")
     Optional<User> findByOpenId(String openId);
 
     /**
      * 根据手机号查找用户
      */
     Optional<User> findByPhone(String phone);
+
+    /**
+     * 查询所有活跃用户
+     * @return 活跃用户列表
+     */
+    @Query("SELECT u FROM User u WHERE u.status = 1")
+    List<User> findAllActiveUsers();
 
     /**
      * 检查手机号是否已存在

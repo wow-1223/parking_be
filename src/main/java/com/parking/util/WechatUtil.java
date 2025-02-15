@@ -14,12 +14,12 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-public class WxUtil {
+public class WechatUtil {
 
-    @Value("${wx.appid}")
+    @Value("${wechat.appid}")
     private String appId;
 
-    @Value("${wx.secret}")
+    @Value("${wechat.secret}")
     private String secret;
 
     private final RestTemplate restTemplate = new RestTemplate();

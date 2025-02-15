@@ -5,7 +5,7 @@ import com.parking.model.entity.jpa.User;
 import com.parking.repository.jpa.UserRepository;
 import com.parking.service.user.UserAuthService;
 import com.parking.util.JwtUtil;
-import com.parking.util.WxUtil;
+import com.parking.util.WechatUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class UserAuthServiceImpl implements UserAuthService {
     private UserRepository userRepository;
     
     @Autowired
-    private WxUtil wxUtil;
+    private WechatUtil wechatUtil;
     
     @Autowired
     private JwtUtil jwtUtil;
@@ -26,7 +26,7 @@ public class UserAuthServiceImpl implements UserAuthService {
     @Override
     public UserLoginResponse wxLogin(String code) {
         // 1. 调用微信接口获取openid
-        String openId = wxUtil.getOpenId(code);
+        String openId = wechatUtil.getOpenId(code);
         
         // 2. 查找或创建用户
         User user = userRepository.findByOpenId(openId)

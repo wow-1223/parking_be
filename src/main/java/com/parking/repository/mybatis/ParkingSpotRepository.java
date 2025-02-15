@@ -26,31 +26,11 @@ public class ParkingSpotRepository {
     }
 
     /**
-     * 根据停车位ID查找车位
-     */
-    public List<ParkingSpot> findByParkingSpotId(Long id) {
-        return parkingSpotMapper.selectList(new QueryWrapper<ParkingSpot>().eq("id", id));
-    }
-
-    /**
      * 根据停车位位置分页查找车位
      */
-    public List<ParkingSpot> findByParkingLotId(String location, Integer page, Integer size) {
-        return parkingSpotMapper.selectList(new QueryWrapper<ParkingSpot>().like("location", location).last("limit " + page + "," + size));
-    }
-
-    /**
-     * 根据停车位位置统计数量
-     */
-    public Long countByParkingSpotId(String location) {
-        return parkingSpotMapper.selectCount(new QueryWrapper<ParkingSpot>().like("location", location));
-    }
-
-    /**
-     * 根据停车位位置查找车位
-     */
-    public List<ParkingSpot> findByLocation(String location) {
-        return parkingSpotMapper.selectList(new QueryWrapper<ParkingSpot>().eq("location", location));
+    public IPage<ParkingSpot> findByParkingLocation(String location, Integer page, Integer size) {
+        return parkingSpotMapper.selectPage(new Page<>(page, size),
+                new QueryWrapper<ParkingSpot>().like("location", location));
     }
 
     /**
@@ -58,15 +38,6 @@ public class ParkingSpotRepository {
      */
     public IPage<ParkingSpot> findNearbyAvailable(NearbyParkingSpotRequest request) {
         return parkingSpotMapper.selectAvailableParkingSpots(new Page<>(request.getPage(), request.getSize()),
-                request.getLatitude(), request.getLongitude(), request.getRadius(),
-                new Timestamp(request.getStartTime()), new Timestamp(request.getEndTime()));
-    }
-
-    /**
-     * 统计附近可用的停车位数量
-     */
-    public Long countNearbyAvailable(NearbyParkingSpotRequest request) {
-        return parkingSpotMapper.countAvailableParkingSpots(
                 request.getLatitude(), request.getLongitude(), request.getRadius(),
                 new Timestamp(request.getStartTime()), new Timestamp(request.getEndTime()));
     }

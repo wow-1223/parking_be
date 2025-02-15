@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "wx.pay")
-public class WxPayConfig {
+@ConfigurationProperties(prefix = "wechat.pay")
+public class WechatPayConfig {
     /**
      * 微信商户号
      */

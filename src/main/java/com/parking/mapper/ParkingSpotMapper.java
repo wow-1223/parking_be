@@ -53,20 +53,66 @@ public interface ParkingSpotMapper extends BaseMapper<ParkingSpot> {
                                                    @Param("startTime") Timestamp startTime,
                                                    @Param("endTime") Timestamp endTime);
 
-    @Select("SELECT COUNT(1) " +
+
+    /**
+     * -- 子查询 1：从 parking_periods 表中筛选出包含 12 - 14 点的 parking_spots_id
+     * WITH available_periods AS (
+     *     SELECT
+     *         parking_spots_id
+     *     FROM
+     *         parking_periods
+     *     WHERE
+     *         start_time <= '12:00:00'
+     *         AND end_time >= '14:00:00'
+     *         AND deleted_at = 0  -- 排除已删除的记录
+     * ),
+     * -- 子查询 2：从 parking_occupied 表中筛选出包含 12 - 14 点的 parking_spots_id
+     * occupied_periods AS (
+     *     SELECT
+     *         DISTINCT parking_spots_id
+     *     FROM
+     *         parking_occupied
+     *     WHERE
+     *         (start_time < '14:00:00' AND end_time > '12:00:00')
+     *         AND deleted_at = 0  -- 排除已删除的记录
+     * )
+     * -- 主查询：从 available_periods 中排除 occupied_periods 中的 parking_spots_id
+     * SELECT
+     *     ap.parking_spots_id
+     * FROM
+     *     available_periods ap
+     * WHERE
+     *     ap.parking_spots_id NOT IN (SELECT parking_spots_id FROM occupied_periods);
+     */
+    @Select("SELECT ps.* " +
             "FROM parking_spots ps " +
-            "LEFT JOIN parking_periods pp ON ps.id = pp.parking_spots_id " +
-            "WHERE ST_Distance_Sphere( " +
+            "WHERE ps.id NOT IN ( " +
+            "    SELECT pp.parking_spots_id " +
+            "    FROM parking_periods pp " +
+            "    WHERE pp.status = 3 " +
+            "    AND #{startTime} >= pp.start_time AND #{endTime} <= pp.end_time " +
+            "    AND pp.deleted_at = 0 " +
+            "    AND pp.id NOT IN ( " +
+            "        SELECT po.parking_periods_id " +
+            "        FROM parking_occupied po " +
+            "        WHERE po.deleted_at = 0 " +
+            "        AND (po.start_time < #{endTime} AND po.end_time > #{startTime}) " +
+            "    ) " +
+            ") " +
+            "AND ST_Distance_Sphere( " +
             "    POINT(#{longitude}, #{latitude}), " +
             "    POINT(ps.longitude, ps.latitude) " +
             ") <= #{radius} " +
-            "AND pp.status = 3 " +
-            "AND #{startTime} >= pp.start_time AND #{endTime} <= pp.end_time " +
-            "GROUP BY ps.id")
-    Long countAvailableParkingSpots(@Param("latitude") BigDecimal latitude,
-                                    @Param("longitude") BigDecimal longitude,
-                                    @Param("radius") Integer radius,
-                                    @Param("startTime") Timestamp startTime,
-                                    @Param("endTime") Timestamp endTime);
+            "GROUP BY ps.id " +
+            "ORDER BY ST_Distance_Sphere( " +
+            "    POINT(#{longitude}, #{latitude}), " +
+            "    POINT(ps.longitude, ps.latitude) " +
+            ")")
+    IPage<ParkingSpot> selectAvailableParkingSpots2(Page<ParkingSpot> page,
+                                                   @Param("latitude") BigDecimal latitude,
+                                                   @Param("longitude") BigDecimal longitude,
+                                                   @Param("radius") Integer radius,
+                                                   @Param("startTime") Timestamp startTime,
+                                                   @Param("endTime") Timestamp endTime);
 
 }

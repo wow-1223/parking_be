@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import static com.parking.constant.WxPayConstant.PayError.PAYMENT_FAILED;
+import static com.parking.constant.PayConstant.PayError.PAYMENT_FAILED;
 
 /**
  * 全局异常处理器

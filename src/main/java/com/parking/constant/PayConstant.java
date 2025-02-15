@@ -1,8 +1,15 @@
 package com.parking.constant;
 
-public class WxPayConstant {
+public class PayConstant {
 
     public static class PayError {
+
+        // 无效的支付类型
+        public static final String INVALID_PAY_TYPE = "INVALID_PAY_TYPE";
+
+        // 无效的签名
+        public static final String INVALID_SIGN = "INVALID_SIGN";
+
         // 签名错误
         public static final String INVALID_SIGNATURE = "INVALID_SIGNATURE";
         // 缺少必填参数
@@ -16,6 +23,7 @@ public class WxPayConstant {
         // 订单金额不一致
         public static final String AMOUNT_INCONSISTENT = "AMOUNT_INCONSISTENT";
 
+        public static final String AMOUNT_EXPIRED = "AMOUNT_EXPIRED";
 
         // ... 其他错误码
         public static final String PAYMENT_FAILED = "PAYMENT_FAILED";

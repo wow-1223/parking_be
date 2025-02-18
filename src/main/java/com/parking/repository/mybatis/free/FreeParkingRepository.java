@@ -10,6 +10,7 @@ import com.parking.mapper.mybatis.ParkingSpotMapper;
 import com.parking.model.entity.mybatis.ParkingSpot;
 import com.parking.model.param.parking.request.NearbyParkingSpotRequest;
 import com.parking.model.vo.parking.rule.ParkingSpotRuleVO;
+import com.parking.util.tool.DateUtil;
 import com.parking.util.tool.JsonUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.locationtech.jts.geom.Coordinate;
@@ -45,19 +46,22 @@ public class FreeParkingRepository {
         Coordinate coordinate = new Coordinate(request.getLongitude(), request.getLatitude());
         Point point = geometryFactory.createPoint(coordinate);
 
-        List<ParkingSpot> spots = parkingSpotMapper.getAvailableParkingSpotIdList(point, request.getRadius(), request.getPrice());
+        List<ParkingSpot> spots = parkingSpotMapper.getAvailableParkingSpotIdList(request.getLongitude(), request.getLatitude(), request.getRadius(), request.getPrice());
         if (CollectionUtils.isEmpty(spots)) {
             return new Page<>(request.getPage(), request.getSize());
         }
 
-        List<ParkingSpot> availableSpots = filterSpotsByInterval(spots, request.getStartTime(), request.getEndTime());
+        LocalDateTime start = DateUtil.parseDate(request.getStartTime());
+        LocalDateTime end = DateUtil.parseDate(request.getEndTime());
+
+        List<ParkingSpot> availableSpots = filterSpotsByInterval(spots, start, end);
         if (CollectionUtils.isEmpty(availableSpots)) {
             return new Page<>(request.getPage(), request.getSize());
         }
 
         List<Long> spotIds = new ArrayList<>(availableSpots.stream().map(ParkingSpot::getId).toList());
         List<Long> occupiedSpotIds = parkingOccupiedMapper.getParkingSpotIdByTimeInterval(
-                spotIds, request.getStartTime(), request.getEndTime());
+                spotIds, start, end);
 
         spotIds.removeAll(occupiedSpotIds);
 

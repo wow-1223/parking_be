@@ -15,8 +15,8 @@ public class NearbyParkingSpotRequest {
     private Double longitude;
     private Integer radius;
     private BigDecimal price;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private String startTime;
+    private String endTime;
     private Integer page;
     private Integer size;
 }

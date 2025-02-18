@@ -49,9 +49,9 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
         // 默认待审核状态
         parkingSpot.setStatus(SpotStatusEnum.PENDING.getStatus());
 
-        int id = parkingSpotRepository.insert(parkingSpot);
+        parkingSpotRepository.insert(parkingSpot);
 
-        return OperationResponse.operationSuccess((long) id, "create success");
+        return OperationResponse.operationSuccess(parkingSpot.getId(), "create success");
     }
 
     @Override

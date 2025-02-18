@@ -14,7 +14,7 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-public class WechatUtil {
+public class WechatIdUtil {
 
     @Value("${wechat.appid}")
     private String appId;
@@ -50,10 +50,10 @@ public class WechatUtil {
                 throw new BusinessException("WX001", body.get("errmsg"));
             }
 
-            throw new BusinessException("WX002", "获取openId失败");
+            throw new BusinessException("WX002", "get openId failed");
         } catch (Exception e) {
-            log.error("调用微信接口失败", e);
-            throw new BusinessException("WX003", "微信服务调用失败");
+            log.error("call wechat api failed", e);
+            throw new BusinessException("WX003", "call wechat api failed");
         }
     }
 

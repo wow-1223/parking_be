@@ -162,3 +162,14 @@
 /target/classes/com/parking/service/payment/impl/WechatPayServiceImpl.class
 /target/classes/com/parking/util/WechatPayUtil.class
 /target/classes/com/parking/util/WechatUtil.class
+/target/classes/com/parking/util/tool/AesUtil.class
+/target/classes/com/parking/handler/PhoneTypeHandler.class
+/target/classes/com/parking/config/RedisConfig.class
+/target/classes/com/parking/config/SecurityConfig.class
+/target/classes/com/parking/config/SmsClientConfig.class
+/target/classes/com/parking/config/SmsConfig.class
+/target/classes/com/parking/service/sms/SmsService.class
+/target/classes/com/parking/service/sms/impl/SmsServiceImpl.class
+/target/classes/db/V1.1__test_data_init.sql
+/target/classes/db/V1__init_tables.sql
+/target/classes/com/parking/util/WechatIdUtil.class

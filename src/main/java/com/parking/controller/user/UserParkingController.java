@@ -18,7 +18,7 @@ public class UserParkingController {
     @Autowired
     private UserParkingService parkingService;
 
-    @GetMapping("/nearby")
+    @PostMapping("/nearby")
     public PageResponse<ParkingSpotDTO> getNearbyParkings(@RequestBody NearbyParkingSpotRequest request) {
         return parkingService.getNearbyParkings(request);
     }

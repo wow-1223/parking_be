@@ -17,20 +17,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(jwtTokenInterceptor)
                 .addPathPatterns("/api/**")  // 需要验证token的路径
                 .excludePathPatterns(        // 不需要验证token的路径
-                        "/api/user/login",   // 登录接口
-                        "/api/upload/**",    // 文件上传接口
-                        "/swagger-ui/**",    // Swagger文档
-                        "/v3/api-docs"       // Open Api文档
+                        "/api/user/login/**",   // 登录接口
+                        "/api/user/register",   // 注册接口
+                        "/api/user/sendVerifyCode",   // 发送验证码
+                        "/api/upload/**"    // 文件上传接口
                 );
     }
-
-//    @Override
-//    public void addResourceHandlers(org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry registry) {
-//        registry.addResourceHandler("/swagger-ui/**")
-//                .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
-//        registry.addResourceHandler("/v2/api-docs")
-//                .addResourceLocations("classpath:/META-INF/resources/");
-//    }
-
-
 }

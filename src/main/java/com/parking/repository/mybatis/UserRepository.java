@@ -35,7 +35,7 @@ public class UserRepository {
             throw new RuntimeException("User not found");
         }
         user.setDeletedAt(System.currentTimeMillis());
-        userMapper.updateUser(user);
+        userMapper.updateById(user);
     }
 
     /**
@@ -49,7 +49,13 @@ public class UserRepository {
      * 根据openId查找用户
      */
     public User findByOpenId(String openId) {
-        return userMapper.selectOne(new QueryWrapper<User>().eq("open_id", openId));
+        return userMapper.selectOne(new QueryWrapper<User>().eq("open_id", openId).eq("deleted_at", 0));
     }
 
+    /**
+     * 根据手机号查找用户
+     */
+    public User findByPhone(String phone) {
+        return userMapper.selectOne(new QueryWrapper<User>().eq("phone", phone).eq("deleted_at", 0));
+    }
 }

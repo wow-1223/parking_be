@@ -18,8 +18,8 @@ public class OccupiedSpotRepository {
     /**
      * 新增车位占用
      */
-    public int insert(OccupiedSpot occupiedSpot) {
-        return parkingOccupiedMapper.insert(occupiedSpot);
+    public void insert(OccupiedSpot occupiedSpot) {
+        parkingOccupiedMapper.insert(occupiedSpot);
     }
 
     /**
@@ -38,7 +38,7 @@ public class OccupiedSpotRepository {
                 new QueryWrapper<OccupiedSpot>()
                         .eq("parking_spot_id", spotId)
                         .eq("parking_day", parkingDay)
-                        .eq("deleted_at", 0));
+                        .eq("deleted_at", 0L));
     }
 
     public List<OccupiedSpot> findByTime(Long spotId, LocalDateTime startTime, LocalDateTime endTime) {
@@ -47,14 +47,14 @@ public class OccupiedSpotRepository {
                         .eq("parking_spot_id", spotId)
                         .ge("start_time", startTime)
                         .le("end_time", endTime)
-                        .eq("deleted_at", 0));
+                        .eq("deleted_at", 0L));
     }
 
     public List<OccupiedSpot> findAll(List<Long> ids, List<String> selectFields) {
         return parkingOccupiedMapper.selectList(
                 new QueryWrapper<OccupiedSpot>()
                         .in("id", ids)
-                        .eq("deleted_at", 0)
+                        .eq("deleted_at", 0L)
                         .select(selectFields));
     }
 }

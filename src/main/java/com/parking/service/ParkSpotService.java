@@ -20,19 +20,15 @@ import java.util.stream.Collectors;
 public interface ParkSpotService {
 
     default PageResponse<ParkingSpotDTO> convertToListResponse(IPage<ParkingSpot> iPage) {
-        PageResponse<ParkingSpotDTO> response = new PageResponse<>();
         if (iPage == null || iPage.getRecords() == null || iPage.getRecords().isEmpty()) {
-            response.setTotal(0L);
-            return response;
+            return PageResponse.pageSuccess(null, 0L);
         }
 
         List<ParkingSpotDTO> spots = iPage.getRecords().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
 
-        response.setTotal(iPage.getTotal());
-        response.setList(spots);
-        return response;
+        return PageResponse.pageSuccess(spots, iPage.getTotal());
     }
 
     /**
@@ -55,6 +51,7 @@ public interface ParkSpotService {
         List<ParkingSpotRuleVO> intervals =
                 JsonUtil.fromListJson(parkingSpot.getRules(), ParkingSpotRuleVO.class);
 
+        // 计算可用时间区间
         List<ParkingSpotDetailDTO.IntervalDTO> parkingIntervals = Lists.newArrayListWithCapacity(intervals.size());
         for (ParkingSpotRuleVO interval : intervals) {
             boolean inInterval = ParkingIntervalChecker.isInInterval(

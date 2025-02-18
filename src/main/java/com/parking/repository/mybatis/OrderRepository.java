@@ -24,8 +24,8 @@ public class OrderRepository {
     /**
      * 新增订单
      */
-    public int insert(Order order) {
-        return orderMapper.insert(order);
+    public void insert(Order order) {
+        orderMapper.insert(order);
     }
 
     /**
@@ -104,7 +104,7 @@ public class OrderRepository {
         if (order.getStatus() != null) {
             query.eq("status", order.getStatus());
         }
-        query.eq("deleted_at", 0);
+        query.eq("deleted_at", 0L);
         query.orderByDesc("update_time");
 
         if (CollectionUtils.isNotEmpty(selectFields)) {

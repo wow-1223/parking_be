@@ -21,8 +21,8 @@ public class ParkingSpotRepository {
     /**
      * 新增车位
      */
-    public int insert(ParkingSpot parkingSpot) {
-        return parkingSpotMapper.insert(parkingSpot);
+    public void insert(ParkingSpot parkingSpot) {
+        parkingSpotMapper.insert(parkingSpot);
     }
 
     /**
@@ -55,7 +55,7 @@ public class ParkingSpotRepository {
         return parkingSpotMapper.selectList(
                 new QueryWrapper<ParkingSpot>()
                         .in("id", ids)
-                        .eq("deleted_at", 0)
+                        .eq("deleted_at", 0L)
                         .orderByDesc("update_time")
                         .select(selectFields));
     }
@@ -76,7 +76,7 @@ public class ParkingSpotRepository {
         if (status != null) {
             query.eq("status", status);
         }
-        query.eq("deleted_at", 0);
+        query.eq("deleted_at", 0L);
         query.orderByDesc("update_time");
         return parkingSpotMapper.selectPage(new Page<>(page, size), query);
     }

@@ -4,13 +4,10 @@ import lombok.Data;
 
 @Data
 public class UserLoginResponse {
+
     private String token;
-    private String userId;
-    private UserInfo userInfo;
-    
-    @Data
-    public static class UserInfo {
-        private String nickName;
-        private String avatarUrl;
-    }
+    private Long userId;
+    private String phone;
+    private String nickName;
+    private String avatarUrl;
 }

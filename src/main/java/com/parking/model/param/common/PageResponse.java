@@ -14,4 +14,19 @@ import java.util.List;
 public class PageResponse<T> extends BaseResponse {
     private long total;
     private List<T> list;
+
+    public static <T> PageResponse<T> pageSuccess(List<T> list, long total) {
+        PageResponse<T> response = new PageResponse<>();
+        response.setCode("200");
+        response.setTotal(total);
+        response.setList(list);
+        return response;
+    }
+
+    public static <T> PageResponse<T> pageFail(String code, String message) {
+        PageResponse<T> response = new PageResponse<>();
+        response.setCode(code);
+        response.setMessage(message);
+        return response;
+    }
 }

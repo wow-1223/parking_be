@@ -3,9 +3,10 @@
 CREATE TABLE users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     open_id VARCHAR(64) UNIQUE NOT NULL COMMENT 'wechat open id',
-    phone VARCHAR(20) UNIQUE NOT NULL COMMENT 'phone',
+    phone CHAR(20) UNIQUE COMMENT 'phone (encrypted)',
+    password CHAR(60) COMMENT 'password (encrypted)',
     nick_name VARCHAR(64) COMMENT 'nick name',
-    avatar_url VARCHAR(255) COMMENT 'avatar url',
+    avatar_url VARCHAR(500) COMMENT 'avatar url',
     role TINYINT NOT NULL DEFAULT 1 COMMENT 'role: 1: user | 2: owner | 3: admin',
     status TINYINT NOT NULL DEFAULT 1 COMMENT 'status: 0: disabled | 1: active',
     source_from TINYINT NOT NULL DEFAULT 1 COMMENT 'source from: 1: wechat | 2: app',

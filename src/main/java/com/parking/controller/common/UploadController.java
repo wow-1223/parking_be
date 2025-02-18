@@ -19,13 +19,13 @@ public class UploadController {
 
     @PostMapping("/file")
     public UploadResponse<String> uploadFile(@RequestParam("file") MultipartFile file) {
-        log.info("上传文件: {}", file.getOriginalFilename());
+        log.info("upload file: {}", file.getOriginalFilename());
         return UploadResponse.success(uploadService.uploadFile(file));
     }
 
     @PostMapping("/files")
     public UploadResponse<List<String>> uploadFiles(@RequestParam("files") MultipartFile[] files) {
-        log.info("批量上传文件: {} 个", files.length);
+        log.info("batch upload file: {} 个", files.length);
         return UploadResponse.success(uploadService.uploadFiles(files));
     }
 

@@ -6,7 +6,7 @@ spring:
     active: dev
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://139.224.209.172:3306/wow_test_db?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://139.224.209.172:3306/wow_test_db?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: wow
     password: NewL1fe1223..
   data:
@@ -76,6 +76,13 @@ alipay:
   charset: UTF-8
   format: json
 
+aliyun:
+  sms:
+    access-key-id: LTAI5tL3BJLgNkvHZcKWa2VP
+    access-key-secret: tgCGGmNklcb3EFu4gtoACM1EbeOFen
+    sign-name: wow
+    template-code: SMS_154950909
+
 # File Upload
 upload:
   upload-path: /app/upload
@@ -101,13 +108,7 @@ logging:
     root: INFO
     com.parking: DEBUG
 
-# Swagger配置
-springdoc:
-  api-docs:
-    path: /api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-    tags-sorter: alpha
-    operations-sorter: method
-  default-produces-media-type: application/json
-  default-consumes-media-type: application/json
+# Encryption
+encrypt:
+  aes:
+    key: your16byteseckey # 必须是16位

@@ -10,6 +10,7 @@ public class UserOrderVo {
     private Long userId;
     private String openId;
     private String phone;
+    private String password;
     private String nickName;
     private String avatarUrl;
     private Byte role;

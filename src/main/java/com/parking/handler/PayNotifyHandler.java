@@ -1,10 +1,12 @@
 package com.parking.handler;
 
 import com.parking.constant.PayConstant;
+import com.parking.enums.order.OrderStatusEnum;
 import com.parking.event.PayNotifyEvent;
+import com.parking.model.entity.mybatis.Order;
 import com.parking.model.entity.mybatis.PayNotifyLog;
+import com.parking.repository.mybatis.OrderRepository;
 import com.parking.repository.mybatis.PayNotifyLogRepository;
-import com.parking.service.user.UserOrderService;
 import com.parking.util.tool.JsonUtil;
 import com.parking.util.RedisLockUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 public class PayNotifyHandler {
 
     @Autowired
-    private UserOrderService userOrderService;
+    private OrderRepository orderRepository;
 
     @Autowired
     private PayNotifyLogRepository payNotifyLogRepository;
@@ -78,26 +80,20 @@ public class PayNotifyHandler {
             notifyLog.setCreateTime(LocalDateTime.now());
 
             try {
+                Order order = new Order();
+                order.setId(Long.parseLong(event.getOrderId()));
+                order.setTransactionId(event.getTradeNo());
+
                 switch (event.getStatus()) {
                     case PayConstant.PayStatus.SUCCESS:
                         // todo 更新订单状态为支付成功
-//                        orderService.updateOrderPaySuccess(
-//                                event.getOrderId(),
-//                                event.getTradeNo(),
-//                                event.getPayType(),
-//                                event.getAmount(),
-//                                event.getNotifyTime()
-//                        );
+                        order.setStatus(OrderStatusEnum.RESERVED.getStatus());
+                        orderRepository.update(order);
                         break;
-
                     case PayConstant.PayStatus.REFUNDED:
                         // todo 更新订单状态为已退款
-//                        orderService.updateOrderRefunded(
-//                                event.getOrderId(),
-//                                event.getTradeNo(),
-//                                event.getAmount(),
-//                                event.getNotifyTime()
-//                        );
+                        order.setStatus(OrderStatusEnum.CANCELING.getStatus());
+                        orderRepository.update(order);
                         break;
                 }
 

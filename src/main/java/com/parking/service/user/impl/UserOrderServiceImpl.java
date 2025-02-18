@@ -119,20 +119,20 @@ public class UserOrderServiceImpl implements UserOrderService {
         occupiedSpot.setStartTime(st);
         occupiedSpot.setEndTime(ed);
 
-        int occupiedSpotId = occupiedSpotRepository.insert(occupiedSpot);
+        occupiedSpotRepository.insert(occupiedSpot);
 
         // 2. 创建订单
         Order order = new Order();
         order.setUserId(request.getUserId());
         order.setParkingSpotsId(parkingSpot.getId());
-        order.setParkingOccupiedId((long) occupiedSpotId);
+        order.setParkingOccupiedId(occupiedSpot.getId());
         order.setCarNumber(request.getCarNumber());
         order.setStatus(OrderStatusEnum.PENDING_PAYMENT.getStatus());
         order.setAmount(calculateAmount(parkingSpot.getPrice(), st, ed));
 
-        int orderId = orderRepository.insert(order);
+        orderRepository.insert(order);
 
-        return OperationResponse.operationSuccess((long) orderId, "create success");
+        return OperationResponse.operationSuccess(order.getId(), "create success");
     }
 
     @Override

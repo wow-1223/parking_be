@@ -1,83 +1,176 @@
 package com.parking.service.owner.impl;
 
-import com.parking.model.dto.common.PageResponse;
-import com.parking.model.dto.owner.OwnerOrderListItemDTO;
-import com.parking.model.entity.jpa.Order;
-import com.parking.model.entity.jpa.User;
-import com.parking.model.vo.UserOrderVo;
-import com.parking.repository.jpa.OrderRepository;
-import com.parking.repository.mybatis.UserRepository;
+import com.parking.model.dto.order.OrderDTO;
+import com.parking.model.dto.owner.DailyStatisticsDTO;
+import com.parking.model.param.common.PageResponse;
+import com.parking.model.param.owner.response.EarningsStatisticsResponse;
+import com.parking.model.param.owner.response.UsageStatisticsResponse;
+import com.parking.repository.mybatis.OrderRepository;
 import com.parking.service.owner.OwnerOrderService;
 
-import com.parking.util.SecurityUtil;
+import com.parking.service.user.impl.UserOrderServiceImpl;
+import com.parking.util.tool.DateUtil;
+import com.parking.util.tool.MoneyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static com.parking.util.tool.DateUtil.DATE_FORMATTER;
 
 @Service
 public class OwnerOrderServiceImpl implements OwnerOrderService {
 
     @Autowired
+    private UserOrderServiceImpl userOrderService;
+
+    @Autowired
     private OrderRepository orderRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-    
-    @Autowired
-    private SecurityUtil securityUtil;
+    @Override
+    public PageResponse<OrderDTO> getOrders(Long ownerId, Integer status, Integer page, Integer size) {
+        return userOrderService.getOrders(ownerId, status, page, size);
+    }
 
     @Override
-    public PageResponse<OwnerOrderListItemDTO> getOrders(String status, Integer page, Integer pageSize) {
-        User currentUser = securityUtil.getCurrentUser();
-        
-        Page<Order> orderPage;
-        if ("all".equals(status)) {
-            status = null;
+    public EarningsStatisticsResponse getEarningsStatistics(Long ownerId, LocalDateTime startDate, LocalDateTime endDate) {
+        List<Object[]> statistics = orderRepository.getEarningsStatistics(
+                ownerId,
+                startDate,
+                endDate
+        );
+
+        return buildEarningsResponse(statistics);
+    }
+
+    @Override
+    public UsageStatisticsResponse getUsageStatistics(Long ownerId, Long parkingSpotId, LocalDateTime startDate, LocalDateTime endDate) {
+        List<Object[]> statistics;
+        if (parkingSpotId != null) {
+            statistics = orderRepository.getParkingUsageStatistics(
+                    ownerId,
+                    parkingSpotId,
+                    startDate,
+                    endDate
+            );
+        } else {
+            statistics = orderRepository.getOverallUsageStatistics(
+                    ownerId,
+                    startDate,
+                    endDate
+            );
         }
-        orderPage = orderRepository.findOrders(
-                currentUser.getId(), null, status, PageRequest.of(page - 1, pageSize));
 
-        List<OwnerOrderListItemDTO> orders = orderPage.getContent().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-        
-        return new PageResponse<>(orderPage.getTotalElements(), orders);
+        return buildUsageResponse(statistics);
     }
 
-    @Override
-    public PageResponse<UserOrderVo> getUserOrders(String status, Integer page, Integer pageSize) {
-        User currentUser = securityUtil.getCurrentUser();
+    /**
+     * 解析开始日期
+     */
+    private LocalDateTime parseStartDate(String timeRange, String startDate) {
+        if (StringUtils.hasText(startDate)) {
+            return LocalDate.parse(startDate, DATE_FORMATTER).atStartOfDay();
+        }
 
-        return null;
+        // 根据时间范围返回默认开始时间
+        return switch (timeRange.toLowerCase()) {
+            case "day" -> DateUtil.getTodayStart();
+            case "week" -> DateUtil.getWeekStart();
+            case "month" -> DateUtil.getMonthStart();
+            default -> LocalDateTime.now().minusDays(30).withHour(0).withMinute(0).withSecond(0);
+        };
     }
 
-    private OwnerOrderListItemDTO convertToDTO(Order order) {
-        OwnerOrderListItemDTO dto = new OwnerOrderListItemDTO();
-        dto.setId(order.getId().toString());
-        dto.setStartTime(order.getStartTime().toString());
-        dto.setEndTime(order.getEndTime().toString());
-        dto.setAmount(order.getAmount());
-        dto.setStatus(order.getStatus());
-        dto.setCarNumber(order.getCarNumber());
-        
-        // 设置车位信息
-        OwnerOrderListItemDTO.ParkingSpotInfo parkingSpotInfo = 
-                new OwnerOrderListItemDTO.ParkingSpotInfo();
-        parkingSpotInfo.setId(order.getParkingSpot().getId().toString());
-        parkingSpotInfo.setLocation(order.getParkingSpot().getLocation());
-        dto.setParkingSpot(parkingSpotInfo);
-        
-        // 设置用户信息
-        OwnerOrderListItemDTO.UserInfo userInfo = new OwnerOrderListItemDTO.UserInfo();
-        userInfo.setId(order.getUser().getId().toString());
-        userInfo.setName(order.getUser().getNickName());
-        userInfo.setPhone(order.getUser().getPhone());
-        dto.setUser(userInfo);
-        
-        return dto;
+    /**
+     * 解析结束日期
+     */
+    private LocalDateTime parseEndDate(String endDate) {
+        if (StringUtils.hasText(endDate)) {
+            return LocalDate.parse(endDate, DATE_FORMATTER).plusDays(1).atStartOfDay();
+        }
+
+        // 默认为明天凌晨
+        return LocalDateTime.now().plusDays(1).withHour(0).withMinute(0).withSecond(0);
     }
-} 
+
+    /**
+     * 构建收益统计响应
+     */
+    private EarningsStatisticsResponse buildEarningsResponse(List<Object[]> statistics) {
+        EarningsStatisticsResponse response = new EarningsStatisticsResponse();
+        List<DailyStatisticsDTO> dailyStats = new ArrayList<>();
+
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        long totalOrders = 0;
+
+        for (Object[] stat : statistics) {
+            LocalDate date = ((java.sql.Date) stat[0]).toLocalDate();
+            BigDecimal amount = (BigDecimal) stat[1];
+            Long orderCount = (Long) stat[2];
+
+            DailyStatisticsDTO daily = new DailyStatisticsDTO();
+            daily.setDate(date.format(DATE_FORMATTER));
+            daily.setAmount(MoneyUtil.format(amount));
+            daily.setOrderCount(orderCount);
+            dailyStats.add(daily);
+
+            totalAmount = totalAmount.add(amount);
+            totalOrders += orderCount;
+        }
+
+        // 计算平均值
+        int days = dailyStats.size();
+        BigDecimal averageAmount = days > 0 ?
+                MoneyUtil.format(totalAmount.divide(BigDecimal.valueOf(days), 2, RoundingMode.HALF_UP)) :
+                BigDecimal.ZERO;
+        double averageOrders = days > 0 ? (double) totalOrders / days : 0;
+
+        response.setDailyStatistics(dailyStats);
+        response.setTotalAmount(MoneyUtil.format(totalAmount));
+        response.setTotalOrders(totalOrders);
+        response.setAverageAmount(averageAmount);
+        response.setAverageOrders(Math.round(averageOrders * 10) / 10.0);
+
+        return response;
+    }
+
+    /**
+     * 构建使用统计响应
+     */
+    private UsageStatisticsResponse buildUsageResponse(List<Object[]> statistics) {
+        UsageStatisticsResponse response = new UsageStatisticsResponse();
+        List<DailyStatisticsDTO> dailyStats = new ArrayList<>();
+
+        double totalUsageRate = 0;
+        int validDays = 0;
+
+        for (Object[] stat : statistics) {
+            LocalDate date = ((java.sql.Date) stat[0]).toLocalDate();
+            Double usageRate = (Double) stat[1];
+
+            if (usageRate != null) {
+                DailyStatisticsDTO daily = new DailyStatisticsDTO();
+                daily.setDate(date.format(DATE_FORMATTER));
+                daily.setUsageRate(Math.round(usageRate * 10) / 10.0);
+                dailyStats.add(daily);
+
+                totalUsageRate += usageRate;
+                validDays++;
+            }
+        }
+
+        // 计算平均使用率
+        double averageUsageRate = validDays > 0 ? totalUsageRate / validDays : 0;
+
+        response.setDailyStatistics(dailyStats);
+        response.setAverageUsageRate(Math.round(averageUsageRate * 10) / 10.0);
+
+        return response;
+    }
+}

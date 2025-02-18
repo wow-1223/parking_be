@@ -1,15 +1,14 @@
 package com.parking.service.user.impl;
 
-import com.parking.model.dto.user.response.UserLoginResponse;
-import com.parking.model.entity.jpa.User;
-import com.parking.repository.jpa.UserRepository;
+import com.parking.enums.user.SourceFromEnum;
+import com.parking.model.param.user.response.UserLoginResponse;
+import com.parking.model.entity.mybatis.User;
+import com.parking.repository.mybatis.UserRepository;
 import com.parking.service.user.UserAuthService;
-import com.parking.util.JwtUtil;
+import com.parking.util.tool.JwtUtil;
 import com.parking.util.WechatUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 public class UserAuthServiceImpl implements UserAuthService {
@@ -24,14 +23,16 @@ public class UserAuthServiceImpl implements UserAuthService {
     private JwtUtil jwtUtil;
 
     @Override
-    public UserLoginResponse wxLogin(String code) {
+    public UserLoginResponse wechatLogin(String code) {
         // 1. 调用微信接口获取openid
         String openId = wechatUtil.getOpenId(code);
         
         // 2. 查找或创建用户
-        User user = userRepository.findByOpenId(openId)
-                .orElseGet(() -> createUser(openId));
-        
+        User user = userRepository.findByOpenId(openId);
+        if (user == null) {
+            user = createUser(openId);
+        }
+
         // 3. 生成token
         String token = jwtUtil.generateToken(user.getId());
         
@@ -51,7 +52,8 @@ public class UserAuthServiceImpl implements UserAuthService {
     private User createUser(String openId) {
         User user = new User();
         user.setOpenId(openId);
-        user.setCreateTime(LocalDateTime.now());
-        return userRepository.save(user);
+        user.setSourceFrom(SourceFromEnum.WECHAT.getSourceFrom());
+        userRepository.insert(user);
+        return user;
     }
 } 

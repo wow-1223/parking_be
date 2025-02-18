@@ -24,13 +24,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 );
     }
 
-    @Override
-    public void addResourceHandlers(org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/swagger-ui/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
-        registry.addResourceHandler("/v2/api-docs")
-                .addResourceLocations("classpath:/META-INF/resources/");
-    }
+//    @Override
+//    public void addResourceHandlers(org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry registry) {
+//        registry.addResourceHandler("/swagger-ui/**")
+//                .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
+//        registry.addResourceHandler("/v2/api-docs")
+//                .addResourceLocations("classpath:/META-INF/resources/");
+//    }
 
 
 }

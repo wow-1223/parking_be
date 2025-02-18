@@ -14,10 +14,13 @@ public class Order {
     private Long id;
     private Long userId;
     private Long parkingSpotsId;
-    private Long parkingPeriodId;
+    private Long ownerId;
+    private Long parkingOccupiedId;
     private BigDecimal amount;
-    private Byte status;
-    private String paymentId;
+    private BigDecimal refundAmount;
+    private String carNumber;
+    private String transactionId;
+    private Integer status;
     private Timestamp createTime;
     private Timestamp updateTime;
     private Long deletedAt;

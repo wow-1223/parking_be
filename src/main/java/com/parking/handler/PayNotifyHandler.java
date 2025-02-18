@@ -4,8 +4,8 @@ import com.parking.constant.PayConstant;
 import com.parking.event.PayNotifyEvent;
 import com.parking.model.entity.mybatis.PayNotifyLog;
 import com.parking.repository.mybatis.PayNotifyLogRepository;
-import com.parking.service.user.OrderService;
-import com.parking.util.JsonUtil;
+import com.parking.service.user.UserOrderService;
+import com.parking.util.tool.JsonUtil;
 import com.parking.util.RedisLockUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class PayNotifyHandler {
 
     @Autowired
-    private OrderService orderService;
+    private UserOrderService userOrderService;
 
     @Autowired
     private PayNotifyLogRepository payNotifyLogRepository;

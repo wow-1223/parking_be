@@ -1,7 +1,7 @@
 package com.parking.service.payment;
 
-import com.parking.model.dto.payment.request.PayRequest;
-import com.parking.model.dto.payment.response.PayResponse;
+import com.parking.model.param.payment.request.PayRequest;
+import com.parking.model.param.payment.response.PayResponse;
 
 import java.util.Map;
 

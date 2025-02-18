@@ -1,6 +1,6 @@
 package com.parking.service.user;
 
-import com.parking.model.dto.user.response.UserLoginResponse;
+import com.parking.model.param.user.response.UserLoginResponse;
 
 public interface UserAuthService {
     /**
@@ -8,5 +8,5 @@ public interface UserAuthService {
      * @param code 微信登录code
      * @return 登录响应信息
      */
-    UserLoginResponse wxLogin(String code);
+    UserLoginResponse wechatLogin(String code);
 } 

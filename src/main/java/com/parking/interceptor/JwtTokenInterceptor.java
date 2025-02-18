@@ -1,7 +1,7 @@
 package com.parking.interceptor;
 
 import com.parking.exception.UnauthorizedException;
-import com.parking.util.JwtUtil;
+import com.parking.util.tool.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -39,10 +39,10 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
                     return true;
                 }
             }
-            throw new UnauthorizedException("无效的token");
+            throw new UnauthorizedException("invalid token");
         } catch (Exception e) {
-            log.error("Token验证失败", e);
-            throw new UnauthorizedException("Token验证失败", e);
+            log.error("Token verify failed", e);
+            throw new UnauthorizedException("Token verify failed", e);
         }
     }
 

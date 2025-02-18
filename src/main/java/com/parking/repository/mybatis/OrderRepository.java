@@ -1,19 +1,52 @@
 package com.parking.repository.mybatis;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.parking.mapper.OrderMapper;
+import com.parking.mapper.mybatis.OrderMapper;
 import com.parking.model.entity.mybatis.Order;
+import com.parking.util.tool.DateUtil;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class OrderRepository {
 
     @Autowired
     private OrderMapper orderMapper;
+
+    /**
+     * 新增订单
+     */
+    public int insert(Order order) {
+        return orderMapper.insert(order);
+    }
+
+    /**
+     * 更新订单
+     */
+    public void update(Order order) {
+        orderMapper.updateById(order);
+    }
+
+    /**
+     * 删除订单
+     */
+    public void delete(Long id) {
+        Order order = findById(id);
+        if (order == null) {
+            throw new RuntimeException("Order not found");
+        }
+        order.setDeletedAt(DateUtil.getCurrentTimestamp());
+        update(order);
+    }
+
 
     /**
      * 根据订单ID查找订单
@@ -23,73 +56,83 @@ public class OrderRepository {
     }
 
     /**
-     * 根据用户ID查找订单
-     */
-    public List<Order> findAll() {
-        return orderMapper.selectList(null);
-    }
-
-    /**
-     * 根据用户ID查找订单
-     */
-    public List<Order> findByUserId(Long userId) {
-        return orderMapper.selectList(new QueryWrapper<Order>().eq("user_id", userId));
-    }
-
-    /**
-     * 根据用户ID统计订单数量
-     */
-    public Long countByUserId(Long userId) {
-        return orderMapper.selectCount(new QueryWrapper<Order>().eq("user_id", userId));
-    }
-
-    /**
      * 根据用户ID分页查找订单
      */
-    public List<Order> findByUserId(Long userId, int pageNum, int pageSize) {
-        return orderMapper.selectPage(new Page<>(pageNum, pageSize), new QueryWrapper<Order>().eq("user_id", userId)).getRecords();
+    public IPage<Order> findByUserAndStatus(Long userId, Integer status, int page, int size) {
+        Order order = new Order();
+        order.setUserId(userId);
+        order.setStatus(status);
+        return findByOrder(order, null, page, size);
+    }
+
+    public IPage<Order> findByOwnerAndStatus(Long owner, Integer status, int page, int size) {
+        Order order = new Order();
+        order.setOwnerId(owner);
+        order.setStatus(status);
+        return findByOrder(order, null, page, size);
+    }
+
+    public IPage<Order> findByOrder(Order order, List<String> selectFields, int page, int size) {
+        QueryWrapper<Order> query = new QueryWrapper<>();
+        if (order.getId() != null) {
+            query.eq("id", order.getId());
+        }
+        if (order.getUserId() != null) {
+            query.eq("user_id", order.getUserId());
+        }
+        if (order.getOwnerId()!= null) {
+            query.eq("owner_id", order.getOwnerId());
+        }
+        if (order.getParkingSpotsId()!= null) {
+            query.eq("parking_spots_id", order.getParkingSpotsId());
+        }
+        if (order.getParkingOccupiedId()!= null) {
+            query.eq("parking_occupied_id", order.getParkingOccupiedId());
+        }
+        if (order.getCarNumber()!= null) {
+            query.eq("car_number", order.getCarNumber());
+        }
+        if (order.getAmount()!= null) {
+            query.eq("amount", order.getAmount());
+        }
+        if (order.getRefundAmount()!= null) {
+            query.eq("refund_amount", order.getRefundAmount());
+        }
+        if (order.getTransactionId()!= null) {
+            query.eq("transaction_id", order.getTransactionId());
+        }
+        if (order.getStatus() != null) {
+            query.eq("status", order.getStatus());
+        }
+        query.eq("deleted_at", 0);
+        query.orderByDesc("update_time");
+
+        if (CollectionUtils.isNotEmpty(selectFields)) {
+            query.select(selectFields);
+        }
+
+        return orderMapper.selectPage(new Page<>(page, size), query);
     }
 
     /**
-     * 根据停车场ID查找订单
+     * 获取收益统计数据
      */
-    public List<Order> findByParkingSpotId(Long parkingSpotId) {
-        return orderMapper.selectList(new QueryWrapper<Order>().eq("parking_spot_id", parkingSpotId));
+    public List<Object[]> getEarningsStatistics(Long ownerId, LocalDateTime startDate, LocalDateTime endDate) {
+        return orderMapper.selectEarningsStatistics(ownerId, startDate, endDate);
     }
 
     /**
-     * 根据停车时段ID查找订单
+     * 获取单个停车位使用统计
      */
-    public List<Order> findByParkingPeriodId(Long parkingPeriodId) {
-        return orderMapper.selectList(new QueryWrapper<Order>().eq("parking_period_id", parkingPeriodId));
+    public List<Object[]> getParkingUsageStatistics(Long ownerId, Long parkingSpotId, LocalDateTime startDate, LocalDateTime endDate) {
+        return orderMapper.selectParkingUsageStatistics(ownerId, parkingSpotId, startDate, endDate);
     }
 
     /**
-     * 根据订单状态查找订单
+     * 获取所有停车位整体使用统计
      */
-    public List<Order> findByStatus(String status) {
-        return orderMapper.selectList(new QueryWrapper<Order>().eq("status", status));
-    }
-
-    /**
-     * 根据支付状态查找订单
-     */
-    public List<Order> findByPaymentStatus(String paymentStatus) {
-        return orderMapper.selectList(new QueryWrapper<Order>().eq("payment_status", paymentStatus));
-    }
-
-    /**
-     * 根据支付方式查找订单
-     */
-    public List<Order> findByPaymentMethod(String paymentMethod) {
-        return orderMapper.selectList(new QueryWrapper<Order>().eq("payment_method", paymentMethod));
-    }
-
-    /**
-     * 根据支付时间查找订单
-     */
-    public List<Order> findByPaymentTime(String paymentTime) {
-        return orderMapper.selectList(new QueryWrapper<Order>().eq("payment_time", paymentTime));
+    public List<Object[]> getOverallUsageStatistics(Long ownerId, LocalDateTime startDate, LocalDateTime endDate) {
+        return orderMapper.selectOverallUsageStatistics(ownerId, startDate, endDate);
     }
 
 }

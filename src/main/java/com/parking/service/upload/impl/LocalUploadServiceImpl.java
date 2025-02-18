@@ -3,8 +3,8 @@ package com.parking.service.upload.impl;
 import com.parking.config.UploadConfig;
 import com.parking.exception.UploadException;
 import com.parking.service.upload.UploadService;
-import com.parking.util.FileUtil;
-import com.parking.util.ImageUtil;
+import com.parking.util.tool.FileUtil;
+import com.parking.util.tool.ImageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class LocalUploadServiceImpl implements UploadService {
             // 生成文件名
             String originalFilename = file.getOriginalFilename();
             String extension = FileUtil.getExtension(originalFilename);
-            String fileName = UUID.randomUUID().toString() + "." + extension;
+            String fileName = UUID.randomUUID() + "." + extension;
 
             // 创建目录
             String datePath = FileUtil.getDatePath();
@@ -55,8 +55,8 @@ public class LocalUploadServiceImpl implements UploadService {
             return "/upload" + datePath + "/" + fileName;
 
         } catch (Exception e) {
-            log.error("上传文件失败", e);
-            throw new UploadException("上传文件失败: " + e.getMessage());
+            log.error("upload file failed", e);
+            throw new UploadException("upload file failed:" + e.getMessage());
         }
     }
 
@@ -77,12 +77,12 @@ public class LocalUploadServiceImpl implements UploadService {
             if (file.exists()) {
                 boolean success = file.delete();
                 if (!success) {
-                    throw new UploadException("删除文件失败");
+                    throw new UploadException("delete file failed");
                 }
             }
         } catch (Exception e) {
-            log.error("删除文件失败", e);
-            throw new UploadException("删除文件失败: " + e.getMessage());
+            log.error("delete file failed", e);
+            throw new UploadException("delete file failed: " + e.getMessage());
         }
     }
 
@@ -93,7 +93,7 @@ public class LocalUploadServiceImpl implements UploadService {
         // 校验文件大小
         long size = file.getSize();
         if (size > uploadConfig.getMaxSize() * 1024 * 1024) {
-            throw new UploadException("文件大小不能超过" + uploadConfig.getMaxSize() + "MB");
+            throw new UploadException("file size can't be over" + uploadConfig.getMaxSize() + "MB");
         }
 
         // 校验文件类型
@@ -106,7 +106,7 @@ public class LocalUploadServiceImpl implements UploadService {
             }
         }
         if (!allowed) {
-            throw new UploadException("不支持的文件类型");
+            throw new UploadException("invalid file type");
         }
     }
 }

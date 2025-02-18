@@ -3,12 +3,12 @@ package com.parking.service.payment.impl;
 import com.parking.config.WechatPayConfig;
 import com.parking.constant.PayConstant;
 import com.parking.exception.PaymentException;
-import com.parking.model.dto.payment.request.PayRequest;
-import com.parking.model.dto.payment.request.WechatPayRequest;
-import com.parking.model.dto.payment.response.PayResponse;
-import com.parking.model.dto.payment.response.WechatPayResponse;
+import com.parking.model.param.payment.request.PayRequest;
+import com.parking.model.param.payment.request.WechatPayRequest;
+import com.parking.model.param.payment.response.PayResponse;
+import com.parking.model.param.payment.response.WechatPayResponse;
 import com.parking.service.payment.PayService;
-import com.parking.util.JsonUtil;
+import com.parking.util.tool.JsonUtil;
 import com.parking.util.WechatPayUtil;
 import com.wechat.pay.contrib.apache.httpclient.WechatPayHttpClientBuilder;
 import com.wechat.pay.contrib.apache.httpclient.auth.PrivateKeySigner;
@@ -45,28 +45,30 @@ public class WechatPayServiceImpl implements PayService {
     @PostConstruct
     public void init() {
         try {
-            // 加载商户私钥
-            PrivateKey merchantPrivateKey = PemUtil.loadPrivateKey(
-                    new FileInputStream(wechatPayConfig.getPrivateKeyPath()));
-
-            // 创建签名器
-            PrivateKeySigner signer = new PrivateKeySigner(
-                    wechatPayConfig.getMchSerialNo(), merchantPrivateKey);
-
-            // 创建认证器
-            WechatPay2Credentials credentials = new WechatPay2Credentials(
-                    wechatPayConfig.getMchId(), signer);
-
-            // 创建支付客户端
-            wechatpayClient = WechatPayHttpClientBuilder.create()
-                    .withMerchant(wechatPayConfig.getMchId(), wechatPayConfig.getMchSerialNo(), merchantPrivateKey)
-                    .withValidator(response -> true)
-                    .withCredentials(credentials)
-                    .build();
+            // todo for test
+            wechatpayClient = null;
+//            // 加载商户私钥
+//            PrivateKey merchantPrivateKey = PemUtil.loadPrivateKey(
+//                    new FileInputStream(wechatPayConfig.getPrivateKeyPath()));
+//
+//            // 创建签名器
+//            PrivateKeySigner signer = new PrivateKeySigner(
+//                    wechatPayConfig.getMchSerialNo(), merchantPrivateKey);
+//
+//            // 创建认证器
+//            WechatPay2Credentials credentials = new WechatPay2Credentials(
+//                    wechatPayConfig.getMchId(), signer);
+//
+//            // 创建支付客户端
+//            wechatpayClient = WechatPayHttpClientBuilder.create()
+//                    .withMerchant(wechatPayConfig.getMchId(), wechatPayConfig.getMchSerialNo(), merchantPrivateKey)
+//                    .withValidator(response -> true)
+//                    .withCredentials(credentials)
+//                    .build();
 
         } catch (Exception e) {
-            log.error("初始化微信支付客户端失败", e);
-            throw new PaymentException("初始化微信支付客户端失败", e);
+            log.error("init wechat pay client failed:", e);
+            throw new PaymentException("init wechat pay client failed:", e);
         }
     }
 

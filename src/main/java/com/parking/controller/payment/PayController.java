@@ -1,10 +1,9 @@
 package com.parking.controller.payment;
 
-import com.parking.constant.PayConstant;
 import com.parking.enums.PayTypeEnum;
 import com.parking.factory.PayServiceFactory;
-import com.parking.model.dto.payment.request.PayRequest;
-import com.parking.model.dto.payment.response.PayResponse;
+import com.parking.model.param.payment.request.PayRequest;
+import com.parking.model.param.payment.response.PayResponse;
 import com.parking.service.payment.PayService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

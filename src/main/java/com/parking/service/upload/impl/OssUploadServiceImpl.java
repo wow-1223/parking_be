@@ -5,8 +5,8 @@ import com.aliyun.oss.OSSClientBuilder;
 import com.parking.config.UploadConfig;
 import com.parking.exception.UploadException;
 import com.parking.service.upload.UploadService;
-import com.parking.util.FileUtil;
-import com.parking.util.ImageUtil;
+import com.parking.util.tool.FileUtil;
+import com.parking.util.tool.ImageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -52,8 +52,8 @@ public class OssUploadServiceImpl implements UploadService {
             return getAccessUrl(fileName);
 
         } catch (Exception e) {
-            log.error("上传文件到OSS失败", e);
-            throw new UploadException("上传文件失败: " + e.getMessage());
+            log.error("upload file to OSS failed", e);
+            throw new UploadException("upload file to OSS failed: " + e.getMessage());
         } finally {
             if (ossClient != null) {
                 ossClient.shutdown();
@@ -80,8 +80,8 @@ public class OssUploadServiceImpl implements UploadService {
             ossClient.deleteObject(uploadConfig.getCloudStorage().getBucket(), fileName);
 
         } catch (Exception e) {
-            log.error("从OSS删除文件失败", e);
-            throw new UploadException("删除文件失败: " + e.getMessage());
+            log.error("delete file from OSS failed", e);
+            throw new UploadException("delete file from OSS failed: " + e.getMessage());
         } finally {
             if (ossClient != null) {
                 ossClient.shutdown();
@@ -165,7 +165,7 @@ public class OssUploadServiceImpl implements UploadService {
         // 校验文件大小
         long size = file.getSize();
         if (size > uploadConfig.getMaxSize() * 1024 * 1024) {
-            throw new UploadException("文件大小不能超过" + uploadConfig.getMaxSize() + "MB");
+            throw new UploadException("file size can't be over" + uploadConfig.getMaxSize() + "MB");
         }
 
         // 校验文件类型
@@ -178,7 +178,7 @@ public class OssUploadServiceImpl implements UploadService {
             }
         }
         if (!allowed) {
-            throw new UploadException("不支持的文件类型");
+            throw new UploadException("invalid file type");
         }
     }
 }

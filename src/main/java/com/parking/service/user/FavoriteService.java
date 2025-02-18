@@ -1,9 +1,10 @@
 package com.parking.service.user;
 
-import com.parking.model.dto.user.request.FavoriteRequest;
-import com.parking.model.dto.ParkingSpotDTO;
-import com.parking.model.dto.common.OperationResponse;
-import com.parking.model.dto.common.PageResponse;
+import com.parking.model.dto.parking.ParkingSpotDTO;
+import com.parking.model.param.user.request.FavoriteRequest;
+import com.parking.model.dto.parking.ParkingSpotDetailDTO;
+import com.parking.model.param.common.OperationResponse;
+import com.parking.model.param.common.PageResponse;
 
 public interface FavoriteService {
     /**
@@ -12,12 +13,4 @@ public interface FavoriteService {
      * @return 操作结果
      */
     OperationResponse toggleFavorite(FavoriteRequest request);
-    
-    /**
-     * 获取用户收藏的停车位列表
-     * @param page 页码
-     * @param pageSize 每页大小
-     * @return 分页的停车位列表
-     */
-    PageResponse<ParkingSpotDTO> getFavorites(Integer page, Integer pageSize);
 } 

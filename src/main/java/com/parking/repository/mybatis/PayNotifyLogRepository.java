@@ -1,7 +1,7 @@
 package com.parking.repository.mybatis;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.parking.mapper.PayNotifyLogMapper;
+import com.parking.mapper.mybatis.PayNotifyLogMapper;
 import com.parking.model.entity.mybatis.PayNotifyLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

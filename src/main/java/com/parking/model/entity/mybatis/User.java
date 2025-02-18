@@ -15,8 +15,9 @@ public class User {
     private String phone;
     private String nickName;
     private String avatarUrl;
-    private Byte role;
-    private Byte status;
+    private Integer role;
+    private Integer status;
+    private Integer sourceFrom;
     private Timestamp createTime;
     private Timestamp updateTime;
     private Long deletedAt;

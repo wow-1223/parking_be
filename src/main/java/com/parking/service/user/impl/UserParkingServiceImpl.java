@@ -1,14 +1,21 @@
 package com.parking.service.user.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.parking.model.dto.ParkingSpotDTO;
-import com.parking.model.dto.parking.request.NearbyParkingSpotRequest;
-import com.parking.model.dto.user.response.ParkingDetailResponse;
-import com.parking.model.dto.user.response.ParkingListResponse;
+import com.parking.exception.BusinessException;
+import com.parking.model.dto.parking.ParkingSpotDTO;
+import com.parking.model.dto.parking.ParkingSpotDetailDTO;
+import com.parking.model.entity.mybatis.OccupiedSpot;
+import com.parking.model.entity.mybatis.User;
+import com.parking.model.param.common.DetailResponse;
+import com.parking.model.param.common.PageResponse;
+import com.parking.model.param.parking.request.NearbyParkingSpotRequest;
 import com.parking.model.entity.mybatis.ParkingSpot;
+import com.parking.repository.mybatis.OccupiedSpotRepository;
 import com.parking.repository.mybatis.ParkingSpotRepository;
+import com.parking.repository.mybatis.UserRepository;
+import com.parking.repository.mybatis.free.FreeParkingRepository;
 import com.parking.service.user.UserParkingService;
-import com.parking.util.JsonUtil;
+import com.parking.util.tool.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,30 +33,43 @@ public class UserParkingServiceImpl implements UserParkingService {
     @Autowired
     private ParkingSpotRepository parkingSpotRepository;
 
+    @Autowired
+    private OccupiedSpotRepository occupiedSpotRepository;
+
+    @Autowired
+    private FreeParkingRepository freeParkingRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
-    public ParkingListResponse getNearbyParkings(NearbyParkingSpotRequest request) {
+    public PageResponse<ParkingSpotDTO> getNearbyParkings(NearbyParkingSpotRequest request) {
         // 查询附近可用的停车位
-        IPage<ParkingSpot> iPage = parkingSpotRepository.findNearbyAvailable(request);
-        return convertToListResponse(iPage);
+        IPage<ParkingSpot> page = freeParkingRepository.findNearbyAvailableSpots(request);
+        return convertToListResponse(page);
     }
 
     @Override
-    public ParkingListResponse searchParkings(String keyword, Integer page, Integer pageSize) {
-        // 搜索停车位
-        IPage<ParkingSpot> iPage = parkingSpotRepository.findByParkingLocation(
-                keyword, page, pageSize);
-        return convertToListResponse(iPage);
-    }
-
-    @Override
-    public ParkingDetailResponse getParkingDetail(String id) {
+    public DetailResponse<ParkingSpotDetailDTO> getParkingDetail(String id, String startTime, String endTime) {
         // 获取停车位详情
         ParkingSpot parkingSpot = parkingSpotRepository.findById(Long.parseLong(id));
-        return convertToDetailResponse(parkingSpot);
+        if (parkingSpot == null) {
+            throw new BusinessException("Parking spot not found");
+        }
+        User owner = userRepository.findById(parkingSpot.getOwnerId());
+        if (owner == null) {
+            throw new BusinessException("Parking spot owner not found");
+        }
+        List<OccupiedSpot> occupiedSpots = occupiedSpotRepository.findByDay(
+                parkingSpot.getId(), DateUtil.convertToDate(startTime));
+
+        return convertToDetailResponse(parkingSpot, owner, occupiedSpots, startTime, endTime);
     }
 
-    private ParkingListResponse convertToListResponse(IPage<ParkingSpot> iPage) {
-        ParkingListResponse response = new ParkingListResponse();
+    @Override
+    public PageResponse<ParkingSpotDTO> getFavorites(Long userId, Integer page, Integer size) {
+        IPage<ParkingSpot> iPage = freeParkingRepository.findFavoriteParkingSpots(userId, page, size);
+        PageResponse<ParkingSpotDTO> response = new PageResponse<>();
         if (iPage == null || iPage.getRecords() == null || iPage.getRecords().isEmpty()) {
             response.setTotal(0L);
             return response;
@@ -62,59 +82,5 @@ public class UserParkingServiceImpl implements UserParkingService {
         response.setTotal(iPage.getTotal());
         response.setList(spots);
         return response;
-    }
-
-    /**
-     * 转换为详情响应
-     */
-    private ParkingDetailResponse convertToDetailResponse(ParkingSpot parkingSpot) {
-        ParkingDetailResponse response = new ParkingDetailResponse();
-        response.setId(parkingSpot.getId().toString());
-        response.setLocation(parkingSpot.getLocation());
-        response.setDescription(parkingSpot.getDescription());
-
-//        response.setImages(JsonUtil.fromJson(parkingSpot.getImages(), List.class));
-        response.setImages(JsonUtil.fromListJson(parkingSpot.getImages(), String.class));
-
-
-
-        response.setPrice(parkingSpot.getPrice());
-//        response.setStatus(parkingSpot.getStatus());
-//        response.setRules(parkingSpot.getRules());
-        response.setRules(JsonUtil.fromListJson(parkingSpot.getRules(), String.class));
-//        response.setFacilities(parkingSpot.getFacilities());
-        response.setFacilities(JsonUtil.fromListJson(parkingSpot.getFacilities(), String.class));
-
-        // 设置所有者信息
-//        ParkingDetailResponse.OwnerInfo ownerInfo = new ParkingDetailResponse.OwnerInfo();
-//        ownerInfo.setId(parkingSpot.getOwner().getId().toString());
-//        ownerInfo.setName(parkingSpot.getOwner().getNickName());
-//        ownerInfo.setPhone(parkingSpot.getOwner().getPhone());
-//        ownerInfo.setRating(calculateOwnerRating(parkingSpot.getOwner().getId()));
-//        response.setOwner(ownerInfo);
-
-        return response;
-    }
-
-    /**
-     * 转换为列表DTO
-     */
-    private ParkingSpotDTO convertToDTO(ParkingSpot parkingSpot) {
-        ParkingSpotDTO dto = new ParkingSpotDTO();
-        dto.setId(parkingSpot.getId().toString());
-        dto.setLocation(parkingSpot.getLocation());
-        dto.setLatitude(parkingSpot.getLatitude());
-        dto.setLongitude(parkingSpot.getLongitude());
-        dto.setPrice(parkingSpot.getPrice());
-//        dto.setStatus(parkingSpot.getStatus());
-        return dto;
-    }
-
-    /**
-     * 计算车位所有者评分
-     */
-    private Double calculateOwnerRating(Long ownerId) {
-        // TODO: 实现评分计算逻辑
-        return 4.5;
     }
 }

@@ -1,11 +1,10 @@
 package com.parking.controller.user;
 
-import com.parking.model.dto.OrderResponse;
-import com.parking.model.dto.user.request.CreateOrderRequest;
-import com.parking.model.dto.common.PageResponse;
-import com.parking.model.dto.user.response.CancelOrderResponse;
-import com.parking.model.dto.OrderListItemDTO;
-import com.parking.service.user.OrderService;
+import com.parking.model.dto.order.OrderDTO;
+import com.parking.model.param.common.OperationResponse;
+import com.parking.model.param.user.request.CreateOrderRequest;
+import com.parking.model.param.common.PageResponse;
+import com.parking.service.user.UserOrderService;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,23 +15,24 @@ import org.springframework.web.bind.annotation.*;
 public class UserOrderController {
 
     @Autowired
-    private OrderService orderService;
+    private UserOrderService userOrderService;
 
     @PostMapping("/createOrder")
-    public OrderResponse createOrder(@RequestBody CreateOrderRequest request) {
-        return orderService.createOrder(request);
+    public OperationResponse createOrder(@RequestBody CreateOrderRequest request) {
+        return userOrderService.createOrder(request);
     }
 
     @GetMapping("/getOrders")
-    public PageResponse<OrderListItemDTO> getOrders(
-            @RequestParam(required = false) String status,
+    public PageResponse<OrderDTO> getOrders(
+            @RequestParam Long userId,
+            @RequestParam(required = false) Integer status,
             @RequestParam(required = false, defaultValue = "1") Integer page,
-            @RequestParam(required = false, defaultValue = "20") Integer pageSize) {
-        return orderService.getOrders(status, page, pageSize);
+            @RequestParam(required = false, defaultValue = "20") Integer size) {
+        return userOrderService.getOrders(userId, status, page, size);
     }
 
-    @PostMapping("/{id}/cancel")
-    public CancelOrderResponse cancelOrder(@PathVariable String id) {
-        return orderService.cancelOrder(id);
+    @PostMapping("/cancelOrder/{id}")
+    public OperationResponse cancelOrder(@PathVariable Long id) {
+        return userOrderService.cancelOrder(id);
     }
 } 

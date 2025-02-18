@@ -78,10 +78,10 @@ alipay:
 
 aliyun:
   sms:
-    access-key-id: your_access_key_id
-    access-key-secret: your_access_key_secret
-    sign-name: wow
-    template-code: SMS_154950909
+#    access-key-id: your_access_key_id
+#    access-key-secret: your_access_key_secret
+#    sign-name: wow
+#    template-code: SMS_154950909
 
 # File Upload
 upload:

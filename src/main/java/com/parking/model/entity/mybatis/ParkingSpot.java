@@ -23,7 +23,7 @@ public class ParkingSpot {
     private String description;
     private BigDecimal price;
     private String images;
-    private Integer mode;
+//    private Integer mode;
     private String rules;
     private String facilities;
     private Integer status;

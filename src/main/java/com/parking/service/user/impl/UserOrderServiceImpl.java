@@ -1,7 +1,6 @@
 package com.parking.service.user.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.google.common.collect.Lists;
 import com.parking.enums.order.OrderStatusEnum;
 import com.parking.enums.parking.SpotStatusEnum;
 import com.parking.exception.BusinessException;
@@ -12,10 +11,10 @@ import com.parking.model.entity.mybatis.Order;
 import com.parking.model.entity.mybatis.ParkingSpot;
 import com.parking.model.param.common.OperationResponse;
 import com.parking.model.param.common.PageResponse;
+import com.parking.model.param.user.request.CancelOrderRequest;
 import com.parking.model.param.user.request.CreateOrderRequest;
-import com.parking.repository.mybatis.OccupiedSpotRepository;
 import com.parking.repository.mybatis.OrderRepository;
-import com.parking.repository.mybatis.ParkingSpotRepository;
+import com.parking.service.BaseOrderService;
 import com.parking.service.user.UserOrderService;
 import com.parking.util.tool.DateUtil;
 import org.apache.commons.collections4.CollectionUtils;
@@ -25,71 +24,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
-public class UserOrderServiceImpl implements UserOrderService {
-
-    @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
-    private ParkingSpotRepository parkingSpotRepository;
-
-    @Autowired
-    private OccupiedSpotRepository occupiedSpotRepository;
+public class UserOrderServiceImpl extends BaseOrderService implements UserOrderService {
 
     @Override
     public PageResponse<OrderDTO> getOrders(Long userId, Integer status, Integer page, Integer size) {
         // 查询订单
-        IPage<Order> p = orderRepository.findByOwnerAndStatus(userId, status, page, size);
-        if (CollectionUtils.isEmpty(p.getRecords())) {
-            return new PageResponse<>(0L, Collections.emptyList());
-        }
-
-        List<Order> records = p.getRecords();
-        List<Long> parkingSpotIds = records.stream().map(Order::getParkingSpotsId).toList();
-        List<Long> occupiedSpotIds = records.stream().map(Order::getParkingOccupiedId).toList();
-        // 查询停车位信息
-        List<ParkingSpot> parkingSpots = parkingSpotRepository.findAll(
-                parkingSpotIds, Lists.newArrayList("id", "owner_id", "longitude", "latitude", "location"));
-        if (CollectionUtils.isEmpty(parkingSpots)) {
-            throw new ResourceNotFoundException("ParkingSpot not found");
-        }
-
-        // 查询占用信息
-        List<OccupiedSpot> occupiedSpots = occupiedSpotRepository.findAll(
-                occupiedSpotIds, Lists.newArrayList("id", "parking_day", "start_time", "end_time"));
-        if (CollectionUtils.isEmpty(occupiedSpots)) {
-            throw new ResourceNotFoundException("OccupiedSpot not found");
-        }
-
-        Map<Long, ParkingSpot> parkingSpotMap = parkingSpots.stream()
-                .collect(Collectors.toMap(ParkingSpot::getId, parkingSpot -> parkingSpot));
-        Map<Long, OccupiedSpot> occupiedSpotMap = occupiedSpots.stream()
-                .collect(Collectors.toMap(OccupiedSpot::getId, occupiedSpot -> occupiedSpot));
-
-        List<OrderDTO> orders = Lists.newArrayListWithCapacity(records.size());
-        for (Order order : records) {
-            ParkingSpot parkingSpot = parkingSpotMap.get(order.getParkingSpotsId());
-            if (parkingSpot == null) {
-                throw new ResourceNotFoundException("ParkingSpot not found");
-            }
-            OccupiedSpot occupiedSpot = occupiedSpotMap.get(order.getParkingOccupiedId());
-            if (occupiedSpot == null) {
-                throw new ResourceNotFoundException("OccupiedSpot not found");
-            }
-
-            OrderDTO dto = convertToDTO(order, parkingSpot, occupiedSpot);
-            orders.add(dto);
-        }
-
-
-        // 构建分页响应
-        return new PageResponse<>(p.getTotal(), orders);
+        IPage<Order> p = orderRepository.findByUserAndStatus(userId, status, page, size);
+        return convertOrderPage(p);
     }
 
     @Override
@@ -115,7 +59,7 @@ public class UserOrderServiceImpl implements UserOrderService {
 
         OccupiedSpot occupiedSpot = new OccupiedSpot();
         occupiedSpot.setParkingSpotsId(parkingSpot.getId());
-        occupiedSpot.setParkingDay(DateUtil.convertToDate(request.getStartTime()));
+        occupiedSpot.setParkingDay(DateUtil.convertToLocalDate(request.getStartTime()));
         occupiedSpot.setStartTime(st);
         occupiedSpot.setEndTime(ed);
 
@@ -123,6 +67,7 @@ public class UserOrderServiceImpl implements UserOrderService {
 
         // 2. 创建订单
         Order order = new Order();
+        order.setOwnerId(parkingSpot.getOwnerId());
         order.setUserId(request.getUserId());
         order.setParkingSpotsId(parkingSpot.getId());
         order.setParkingOccupiedId(occupiedSpot.getId());
@@ -137,8 +82,8 @@ public class UserOrderServiceImpl implements UserOrderService {
 
     @Override
     @Transactional
-    public OperationResponse cancelOrder(Long orderId) {
-        Order order = orderRepository.findById(orderId);
+    public OperationResponse cancelOrder(CancelOrderRequest request) {
+        Order order = orderRepository.findByIdAndUserId(request.getOrderId(), request.getUserId());
         if (order == null) {
             throw new ResourceNotFoundException("Order not found");
         }
@@ -167,6 +112,6 @@ public class UserOrderServiceImpl implements UserOrderService {
         orderRepository.update(order);
         occupiedSpotRepository.update(occupiedSpot);
 
-        return OperationResponse.operationSuccess(orderId, "cancel success");
+        return OperationResponse.operationSuccess(request.getOrderId(), "cancel success");
     }
 }

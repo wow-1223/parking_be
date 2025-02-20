@@ -1,17 +1,17 @@
 package com.parking.service.owner.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.parking.model.dto.order.OrderDTO;
 import com.parking.model.dto.owner.DailyStatisticsDTO;
+import com.parking.model.entity.mybatis.Order;
 import com.parking.model.param.common.PageResponse;
 import com.parking.model.param.owner.response.EarningsStatisticsResponse;
 import com.parking.model.param.owner.response.UsageStatisticsResponse;
-import com.parking.repository.mybatis.OrderRepository;
+import com.parking.service.BaseOrderService;
 import com.parking.service.owner.OwnerOrderService;
 
-import com.parking.service.user.impl.UserOrderServiceImpl;
 import com.parking.util.tool.DateUtil;
 import com.parking.util.tool.MoneyUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -25,17 +25,13 @@ import java.util.List;
 import static com.parking.util.tool.DateUtil.DATE_FORMATTER;
 
 @Service
-public class OwnerOrderServiceImpl implements OwnerOrderService {
-
-    @Autowired
-    private UserOrderServiceImpl userOrderService;
-
-    @Autowired
-    private OrderRepository orderRepository;
+public class OwnerOrderServiceImpl extends BaseOrderService implements OwnerOrderService {
 
     @Override
     public PageResponse<OrderDTO> getOrders(Long ownerId, Integer status, Integer page, Integer size) {
-        return userOrderService.getOrders(ownerId, status, page, size);
+        // 查询订单
+        IPage<Order> p = orderRepository.findByOwnerAndStatus(ownerId, status, page, size);
+        return convertOrderPage(p);
     }
 
     @Override

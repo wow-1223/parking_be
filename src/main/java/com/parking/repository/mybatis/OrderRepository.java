@@ -56,6 +56,14 @@ public class OrderRepository {
     }
 
     /**
+     * 根据订单ID与user查找订单
+     */
+    public Order findByIdAndUserId(Long id, Long userId) {
+        return orderMapper.selectOne(new QueryWrapper<Order>().eq("id", id).eq("user_id", userId).eq("deleted_at", 0L));
+
+    }
+
+    /**
      * 根据用户ID分页查找订单
      */
     public IPage<Order> findByUserAndStatus(Long userId, Integer status, int page, int size) {

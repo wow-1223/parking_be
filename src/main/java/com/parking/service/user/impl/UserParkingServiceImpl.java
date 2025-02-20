@@ -10,11 +10,13 @@ import com.parking.model.param.common.DetailResponse;
 import com.parking.model.param.common.PageResponse;
 import com.parking.model.param.parking.request.NearbyParkingSpotRequest;
 import com.parking.model.entity.mybatis.ParkingSpot;
+import com.parking.model.param.parking.request.ParkingSpotDetailRequest;
 import com.parking.repository.mybatis.OccupiedSpotRepository;
 import com.parking.repository.mybatis.ParkingSpotRepository;
 import com.parking.repository.mybatis.UserRepository;
 import com.parking.repository.mybatis.free.FreeParkingRepository;
 import com.parking.service.user.UserParkingService;
+import com.parking.util.tool.AesUtil;
 import com.parking.util.tool.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +47,9 @@ public class UserParkingServiceImpl implements UserParkingService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private AesUtil aesUtil;
+
     @Override
     public PageResponse<ParkingSpotDTO> getNearbyParkings(NearbyParkingSpotRequest request) {
         // 查询附近可用的停车位
@@ -56,9 +61,9 @@ public class UserParkingServiceImpl implements UserParkingService {
     }
 
     @Override
-    public DetailResponse<ParkingSpotDetailDTO> getParkingDetail(String id, String startTime, String endTime) {
+    public DetailResponse<ParkingSpotDetailDTO> getParkingDetail(ParkingSpotDetailRequest request) {
         // 获取停车位详情
-        ParkingSpot parkingSpot = parkingSpotRepository.findById(Long.parseLong(id));
+        ParkingSpot parkingSpot = parkingSpotRepository.findById(request.getId());
         if (parkingSpot == null) {
             throw new BusinessException("Parking spot not found");
         }
@@ -67,9 +72,16 @@ public class UserParkingServiceImpl implements UserParkingService {
             throw new BusinessException("Parking spot owner not found");
         }
         List<OccupiedSpot> occupiedSpots = occupiedSpotRepository.findByDay(
-                parkingSpot.getId(), DateUtil.convertToDate(startTime));
+                parkingSpot.getId(), DateUtil.convertToLocalDate(request.getStartTime()));
 
-        return convertToDetailResponse(parkingSpot, owner, occupiedSpots, startTime, endTime);
+        DetailResponse<ParkingSpotDetailDTO> detail = convertToDetailResponse(false,
+                parkingSpot, owner, occupiedSpots, request.getStartTime(), request.getStartTime());
+        if (detail != null && detail.getData() != null && detail.getData().getOwner()!= null) {
+            // todo for test
+            detail.getData().getOwner().setPhone(aesUtil.decrypt("Uu3+EuYVaOf4/w7QhxGfiA=="));
+//            detail.getData().getOwner().setPhone(aesUtil.decrypt(owner.getPhone()));
+        }
+        return detail;
     }
 
     @Override

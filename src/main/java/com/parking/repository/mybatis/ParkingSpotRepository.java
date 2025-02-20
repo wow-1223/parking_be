@@ -48,7 +48,7 @@ public class ParkingSpotRepository {
      * 根据ID查找车位
      */
     public ParkingSpot findById(Long id) {
-        return parkingSpotMapper.selectById(id);
+        return parkingSpotMapper.selectOne(new QueryWrapper<ParkingSpot>().eq("id", id).eq("deleted_at", 0L));
     }
 
     public List<ParkingSpot> findAll(List<Long> ids, List<String> selectFields) {

@@ -6,6 +6,7 @@ import com.parking.model.entity.mybatis.OccupiedSpot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,18 +34,18 @@ public class OccupiedSpotRepository {
         return parkingOccupiedMapper.selectById(id);
     }
 
-    public List<OccupiedSpot> findByDay(Long spotId, String parkingDay) {
+    public List<OccupiedSpot> findByDay(Long spotId, LocalDate parkingDay) {
         return parkingOccupiedMapper.selectList(
                 new QueryWrapper<OccupiedSpot>()
-                        .eq("parking_spot_id", spotId)
+                        .eq("parking_spots_id", spotId)
                         .eq("parking_day", parkingDay)
-                        .eq("deleted_at", 0L));
+                        .eq("deleted_at", 0));
     }
 
     public List<OccupiedSpot> findByTime(Long spotId, LocalDateTime startTime, LocalDateTime endTime) {
         return parkingOccupiedMapper.selectList(
                 new QueryWrapper<OccupiedSpot>()
-                        .eq("parking_spot_id", spotId)
+                        .eq("parking_spots_id", spotId)
                         .ge("start_time", startTime)
                         .le("end_time", endTime)
                         .eq("deleted_at", 0L));

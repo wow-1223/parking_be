@@ -26,11 +26,6 @@ POST /api/user/login/wechat/{code}
 }
 ```
 
-**测试命令:**
-```bash
-curl -X POST 'http://localhost:8080/api/user/login/wechat/wx123456'
-```
-
 ### 2. 手机号登录
 ```http
 POST /api/user/login/phone
@@ -200,51 +195,34 @@ curl -X POST 'http://localhost:8080/api/orders/cancelOrder/1' \
 ## 二、用户停车位接口
 
 ### 2.1 获取附近停车位
-- 接口: POST /api/parking/nearby
+- 接口: POST /api/user/parking/nearby
 - 描述: 获取附近可用的停车位
 
 请求参数:
 ```json
 {
-    "longitude": 121.4737,
-    "latitude": 31.2304,
-    "radius": 1000,
-    "startTime": "2024-03-21 10:00:00",
-    "endTime": "2024-03-21 12:00:00",
-    "page": 1,
-    "size": 10
+  "longitude": 121.368116,
+  "latitude": 31.035439,
+  "radius": 4000,
+  "price": 100,
+  "startTime": "2024-03-21 10:00:00",
+  "endTime": "2024-03-21 16:00:00",
+  "page": 1,
+  "size": 10
 }
 ```
 
-测试命令:
-```bash
-curl -X POST 'http://localhost:8080/api/parking/nearby' \
--H 'Content-Type: application/json' \
--H 'Authorization: Bearer ${TOKEN}' \
--d '{
-    "longitude": 121.4737,
-    "latitude": 31.2304,
-    "radius": 1000,
-    "startTime": "2024-03-21 10:00:00",
-    "endTime": "2024-03-21 12:00:00",
-    "page": 1,
-    "size": 10
-}'
-```
-
 ### 2.2 获取停车位详情
-- 接口: GET /api/parking/{id}/{startTime}/{endTime}
+- 接口: POST /api/user/parking/{id}/{startTime}/{endTime}
 - 描述: 获取停车位详细信息
 
 请求参数:
-- id: 停车位ID (路径参数)
-- startTime: 开始时间 (路径参数)
-- endTime: 结束时间 (路径参数)
-
-测试命令:
-```bash
-curl 'http://localhost:8080/api/parking/1/2024-03-21%2010:00:00/2024-03-21%2012:00:00' \
--H 'Authorization: Bearer ${TOKEN}'
+```json
+{
+    "id": 920,
+    "startTime": "2024-03-21 10:00:00",
+    "endTime": "2024-03-21 13:00:00"
+}
 ```
 
 ## 三、完整测试脚本

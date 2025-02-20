@@ -5,6 +5,7 @@ import com.parking.model.dto.parking.ParkingSpotDetailDTO;
 import com.parking.model.param.common.DetailResponse;
 import com.parking.model.param.common.PageResponse;
 import com.parking.model.param.parking.request.NearbyParkingSpotRequest;
+import com.parking.model.param.parking.request.ParkingSpotDetailRequest;
 import com.parking.service.ParkSpotService;
 
 public interface UserParkingService extends ParkSpotService {
@@ -28,10 +29,8 @@ public interface UserParkingService extends ParkSpotService {
 
     /**
      * 获取停车位详情
-     * @param id 停车位id
-     * @param startTime 开始时间
-     * @param endTime 结束时间
+     * @param request request
      * @return 停车位详情
      */
-    DetailResponse<ParkingSpotDetailDTO> getParkingDetail(String id, String startTime, String endTime);
+    DetailResponse<ParkingSpotDetailDTO> getParkingDetail(ParkingSpotDetailRequest request);
 } 

@@ -70,7 +70,7 @@ public class FreeParkingRepository {
         List<Long> spotIds = new ArrayList<>(availableSpots.stream().map(ParkingSpot::getId).toList());
         String spotIdStr = StringUtils.join(spotIds, ",");
         List<Long> occupiedSpotIds = parkingOccupiedMapper.getParkingSpotIdByTimeInterval(
-                spotIdStr, start, end);
+                spotIdStr, DateUtil.convertToLocalDate(request.getStartTime()), start, end);
 
         spotIds.removeAll(occupiedSpotIds);
 

@@ -6,6 +6,9 @@ import com.parking.model.entity.mybatis.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Repository
 public class UserRepository {
 
@@ -42,7 +45,8 @@ public class UserRepository {
      * 根据ID查找用户
      */
     public User findById(Long id) {
-        return userMapper.selectById(id);
+        List<String> fields = Arrays.asList("id", "open_id", "nick_name", "phone", "avatar_url");
+        return userMapper.selectOne(new QueryWrapper<User>().select(fields).eq("id", id).eq("deleted_at", 0));
     }
 
     /**

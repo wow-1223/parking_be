@@ -1,5 +1,6 @@
 package com.parking.service;
 
+import com.parking.enums.order.OrderStatusEnum;
 import com.parking.exception.BusinessException;
 import com.parking.model.dto.order.OrderDTO;
 import com.parking.model.entity.mybatis.OccupiedSpot;
@@ -80,7 +81,7 @@ public interface OrderService {
         LocalDateTime now = LocalDateTime.now();
 
         // 1. 如果订单未支付，全额退款
-        if ("pending".equals(order.getStatus())) {
+        if (OrderStatusEnum.PENDING_PAYMENT.getStatus() == order.getStatus()) {
             return order.getAmount();
         }
 

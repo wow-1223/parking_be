@@ -22,9 +22,14 @@ public class DateUtil {
     /**
      * 格式化日期
      */
-    public static String convertToDate(String dateTime) {
+    public static String convertToDateStr(String dateTime) {
         LocalDateTime localDateTime = LocalDateTime.parse(dateTime, DATETIME_FORMATTER);
         return localDateTime.format(DATE_FORMATTER);
+    }
+
+    public static LocalDate convertToLocalDate(String dateTime) {
+        LocalDateTime localDateTime = LocalDateTime.parse(dateTime, DATETIME_FORMATTER);
+        return localDateTime.toLocalDate();
     }
 
     /**

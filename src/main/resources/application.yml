@@ -36,6 +36,8 @@ mybatis-plus:
   mapper-locations: classpath:mapper/**/*.xml
   type-aliases-package: com.parking.model.entity.mybatis
   type-handlers-package: com.baomidou.mybatisplus.extension.handlers
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 # JPA（注释部分原样保留）
 # spring:

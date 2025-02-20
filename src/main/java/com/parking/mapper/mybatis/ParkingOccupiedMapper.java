@@ -12,16 +12,17 @@ import java.util.List;
 @Mapper
 public interface ParkingOccupiedMapper extends BaseMapper<OccupiedSpot> {
 
+    String GET_OCCUPIED_SPOT_ID_LIST = "SELECT parking_spots_id " +
+            "FROM parking_occupied " +
+            "WHERE parking_spots_id in (${spotIds}) " +
+            "AND ((start_time >= #{startTime} AND start_time <= #{endTime}) OR (end_time >= #{startTime} AND end_time <= #{endTime})) " +
+            "AND deleted_at = 0 ";
+
     /**
      * 根据停车位ID与时间区间查找车位占用记录
      */
-    @Select("SELECT id " +
-            "FROM parking_occupied " +
-            "WHERE parking_spots_id in #{parkingSpotIdList} " +
-            "AND start_time <= #{endTime} " +
-            "AND end_time >= #{startTime} " +
-            "AND deleted_at = 0 ")
-    List<Long> getParkingSpotIdByTimeInterval(@Param("parkingSpotIdList") List<Long> parkingSpotIds,
+    @Select(GET_OCCUPIED_SPOT_ID_LIST)
+    List<Long> getParkingSpotIdByTimeInterval(@Param("spotIds") String spotIds,
                                               @Param("startTime") LocalDateTime startTime,
                                               @Param("endTime") LocalDateTime endTime);
 }

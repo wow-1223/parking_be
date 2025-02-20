@@ -68,55 +68,49 @@ SELECT
             CONCAT('https://example.com/parking/spot', num, '_1.jpg'),
             CONCAT('https://example.com/parking/spot', num, '_2.jpg')
     ) as images,
-    -- 生成停车规则JSON，使用随机时间
+    -- 生成停车规则JSON，每个停车位随机选择一种规则类型
     JSON_ARRAY(
-        -- 每日规则
-            (SELECT JSON_OBJECT(
-                            'spotModeStr', 'daily',
-                            'endTimeStr', @start_time1 := TIME_FORMAT(FROM_UNIXTIME(FLOOR(6 * 3600 + RAND() * 6 * 3600)), '%H:%i'),
-                            'startTimeStr', TIME_FORMAT(FROM_UNIXTIME(
-                                                              FLOOR(TIME_TO_SEC(@start_time1) + 7200 + RAND() * (86400 - TIME_TO_SEC(@start_time1) - 7200))
-                                                      ), '%H:%i'),
-                            'specificDatesStr', JSON_ARRAY(),
-                            'specificWeekDaysStr', JSON_ARRAY(),
-                            'specificMonthDateRanges', JSON_ARRAY()
-                    )),
-        -- 每周规则
-            (SELECT JSON_OBJECT(
-                            'spotModeStr', 'weekly',
-                            'endTimeStr', @start_time2 := TIME_FORMAT(FROM_UNIXTIME(FLOOR(8 * 3600 + RAND() * 4 * 3600)), '%H:%i'),
-                            'startTimeStr', TIME_FORMAT(FROM_UNIXTIME(
-                                                              FLOOR(TIME_TO_SEC(@start_time2) + 7200 + RAND() * (86400 - TIME_TO_SEC(@start_time2) - 7200))
-                                                      ), '%H:%i'),
-                            'specificDatesStr', JSON_ARRAY(),
-                            'specificWeekDaysStr', JSON_ARRAY('1', '2', '3', '4', '5'),
-                            'specificMonthDateRanges', JSON_ARRAY()
-                    )),
-        -- 特定日期规则
-            (SELECT JSON_OBJECT(
-                            'spotModeStr', 'specific date',
-                            'endTimeStr', @start_time3 := TIME_FORMAT(FROM_UNIXTIME(FLOOR(0 * 3600 + RAND() * 12 * 3600)), '%H:%i'),
-                            'startTimeStr', TIME_FORMAT(FROM_UNIXTIME(
-                                                              FLOOR(TIME_TO_SEC(@start_time3) + 7200 + RAND() * (86400 - TIME_TO_SEC(@start_time3) - 7200))
-                                                      ), '%H:%i'),
-                            'specificDatesStr', JSON_ARRAY('2024-01-01', '2024-02-10', '2024-05-01'),
-                            'specificWeekDaysStr', JSON_ARRAY(),
-                            'specificMonthDateRanges', JSON_ARRAY()
-                    )),
-        -- 每月规则
-            (SELECT JSON_OBJECT(
-                            'spotModeStr', 'monthly',
-                            'endTimeStr', @start_time4 := TIME_FORMAT(FROM_UNIXTIME(FLOOR(9 * 3600 + RAND() * 3 * 3600)), '%H:%i'),
-                            'startTimeStr', TIME_FORMAT(FROM_UNIXTIME(
-                                                              FLOOR(TIME_TO_SEC(@start_time4) + 7200 + RAND() * (86400 - TIME_TO_SEC(@start_time4) - 7200))
-                                                      ), '%H:%i'),
-                            'specificDatesStr', JSON_ARRAY(),
-                            'specificWeekDaysStr', JSON_ARRAY(),
-                            'specificMonthDateRanges', JSON_ARRAY(
-                                    JSON_OBJECT('startDay', 1, 'endDay', 5),
-                                    JSON_OBJECT('startDay', 15, 'endDay', 20)
-                                                       )
-                    ))
+            CASE FLOOR(RAND() * 4)
+                -- 每日规则 (6:00-22:00，随机偏移±1小时)
+                WHEN 0 THEN (SELECT JSON_OBJECT(
+                                            'spotModeStr', 'daily',
+                                            'startTimeStr', TIME_FORMAT(ADDTIME('06:00:00', SEC_TO_TIME(FLOOR(RAND() * 7200) - 3600)), '%H:%i'),
+                                            'endTimeStr', TIME_FORMAT(ADDTIME('20:00:00', SEC_TO_TIME(FLOOR(RAND() * 7200))), '%H:%i'),
+                                            'specificDatesStr', JSON_ARRAY(),
+                                            'specificWeekDaysStr', JSON_ARRAY(),
+                                            'specificMonthDateRanges', JSON_ARRAY()
+                                    ))
+                -- 每周规则 (8:00-21:00，随机偏移±1小时)
+                WHEN 1 THEN (SELECT JSON_OBJECT(
+                                            'spotModeStr', 'weekly',
+                                            'startTimeStr', TIME_FORMAT(ADDTIME('08:00:00', SEC_TO_TIME(FLOOR(RAND() * 7200) - 3600)), '%H:%i'),
+                                            'endTimeStr', TIME_FORMAT(ADDTIME('19:00:00', SEC_TO_TIME(FLOOR(RAND() * 7200))), '%H:%i'),
+                                            'specificDatesStr', JSON_ARRAY(),
+                                            'specificWeekDaysStr', JSON_ARRAY('1', '2', '3', '4', '5'),
+                                            'specificMonthDateRanges', JSON_ARRAY()
+                                    ))
+                -- 特定日期规则 (0:00-23:00)
+                WHEN 2 THEN (SELECT JSON_OBJECT(
+                                            'spotModeStr', 'specific date',
+                                            'startTimeStr', TIME_FORMAT(ADDTIME('00:00:00', SEC_TO_TIME(FLOOR(RAND() * 21600))), '%H:%i'),
+                                            'endTimeStr', TIME_FORMAT(ADDTIME('18:00:00', SEC_TO_TIME(FLOOR(RAND() * 18000))), '%H:%i'),
+                                            'specificDatesStr', JSON_ARRAY('2024-01-01', '2024-02-10', '2024-05-01'),
+                                            'specificWeekDaysStr', JSON_ARRAY(),
+                                            'specificMonthDateRanges', JSON_ARRAY()
+                                    ))
+                -- 每月规则 (9:00-20:00，随机偏移±1小时)
+                ELSE (SELECT JSON_OBJECT(
+                                     'spotModeStr', 'monthly',
+                                     'startTimeStr', TIME_FORMAT(ADDTIME('09:00:00', SEC_TO_TIME(FLOOR(RAND() * 7200) - 3600)), '%H:%i'),
+                                     'endTimeStr', TIME_FORMAT(ADDTIME('18:00:00', SEC_TO_TIME(FLOOR(RAND() * 7200))), '%H:%i'),
+                                     'specificDatesStr', JSON_ARRAY(),
+                                     'specificWeekDaysStr', JSON_ARRAY(),
+                                     'specificMonthDateRanges', JSON_ARRAY(
+                                             JSON_OBJECT('startDay', 1, 'endDay', 5),
+                                             JSON_OBJECT('startDay', 15, 'endDay', 20)
+                                                                )
+                             ))
+                END
     ) as rules,
     -- 生成设施JSON
     JSON_ARRAY(
@@ -125,7 +119,7 @@ SELECT
             CASE WHEN RAND() > 0.7 THEN 'CHARGING' ELSE NULL END,
             CASE WHEN RAND() > 0.8 THEN 'SHELTER' ELSE NULL END
     ) as facilities,
-    2 as status
+    1 as status
 FROM (
          SELECT @row := @row + 1 as num
          FROM (
@@ -149,15 +143,15 @@ INSERT INTO parking_occupied (parking_spots_id, parking_day, start_time, end_tim
 SELECT
     FLOOR(1 + RAND() * 1000) as parking_spots_id,
     @day := DATE_ADD('2024-03-21', INTERVAL FLOOR(RAND() * 30) DAY) as parking_day,
+    -- 生成8:00到16:00之间的开始时间
     @start := TIMESTAMP(
             @day,
-            TIME_FORMAT(FROM_UNIXTIME(FLOOR(8 * 3600 + RAND() * 8 * 3600)), '%H:%i:%s')
+            TIME_FORMAT(ADDTIME('08:00:00', SEC_TO_TIME(FLOOR(RAND() * 28800))), '%H:%i:%s')
               ) as start_time,
+    -- 结束时间比开始时间晚2-4小时，但不超过22:00
     TIMESTAMP(
             @day,
-            TIME_FORMAT(FROM_UNIXTIME(
-                                TIME_TO_SEC(TIME(@start)) + 7200 + RAND() * (86400 - TIME_TO_SEC(TIME(@start)) - 7200)
-                        ), '%H:%i:%s')
+            TIME_FORMAT(ADDTIME(TIME(@start), SEC_TO_TIME(7200 + FLOOR(RAND() * 7200))), '%H:%i:%s')
     ) as end_time
 FROM (
          SELECT @row := @row + 1 as num

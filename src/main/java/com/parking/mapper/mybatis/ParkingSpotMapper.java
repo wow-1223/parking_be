@@ -13,23 +13,14 @@ import java.util.List;
 @Mapper
 public interface ParkingSpotMapper extends BaseMapper<ParkingSpot> {
 
-//    String GET_AVAILABLE_SPOTS_SQL = "SELECT id, rules " +
-//            "FROM parking_spots " +
-//            "WHERE ST_Distance_Sphere(POINT(longitude, latitude), POINT(#{longitude}, #{latitude})) <= #{radius} " +
-//            "AND price <= #{price} " +
-//            "AND status = 1 " +
-//            "AND deleted_at = 0 ";
+    String GET_AVAILABLE_SPOTS_SQL = "SELECT id, rules " +
+            "FROM parking_spots " +
+            "WHERE ST_Distance_Sphere(POINT(longitude, latitude), POINT(#{longitude}, #{latitude})) <= #{radius} " +
+            "AND (#{price} IS NULL OR price <= #{price}) " +
+            "AND status = 2 " +
+            "AND deleted_at = 0 ";
 
-            /**
-             * "SELECT id, rules " +
-             *             "FROM parking_spots " +
-             *             "WHERE ST_Distance_Sphere(coordinate, #{coordinate}) <= #{radius} " +
-             *             "AND price <= #{price} " +
-             *             "AND status = 1 " +
-             *             "AND deleted_at = 0 ";
-             */
-
-            String GET_FAVORITE_SPOTS_SQL = "SELECT ps.* " +
+    String GET_FAVORITE_SPOTS_SQL = "SELECT ps.* " +
             "FROM parking_spots ps" +
             "JOIN favorites f ON ps.id = f.parking_spot_id " +
             "WHERE f.user_id = #{userId} " +
@@ -38,20 +29,14 @@ public interface ParkingSpotMapper extends BaseMapper<ParkingSpot> {
 
     /**
      * 查找附近可用的停车位
-     * @param coordinate  坐标
+     * @param longitude  纬度
+     * @param latitude  经度
      * @param radius    半径（单位：千米）
      * @param price     价格
      * @return 附近可用的停车位列表
      */
-    @Select("SELECT id, rules, longitude, latitude, price " +
-            "FROM parking_spots " +
-            "WHERE ST_Distance_Sphere(POINT(longitude, latitude), POINT(#{longitude}, #{latitude})) <= #{radius} " +
-            "AND price <= #{price} " +
-            "AND status = 1 " +
-            "AND deleted_at = 0 ")
-    List<ParkingSpot> getAvailableParkingSpotIdList(
-//            @Param("coordinate") Point coordinate,
-                                                    @Param("longitude") Double longitude,
+    @Select(GET_AVAILABLE_SPOTS_SQL)
+    List<ParkingSpot> getAvailableParkingSpotIdList(@Param("longitude") Double longitude,
                                                     @Param("latitude") Double latitude,
                                                     @Param("radius") Integer radius,
                                                     @Param("price") BigDecimal price);

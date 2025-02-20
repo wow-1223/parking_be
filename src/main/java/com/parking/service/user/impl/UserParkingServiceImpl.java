@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +30,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class UserParkingServiceImpl implements UserParkingService {
+
+    private static final Integer DEFAULT_START_TIME = 3000;
 
     @Autowired
     private ParkingSpotRepository parkingSpotRepository;
@@ -45,6 +48,9 @@ public class UserParkingServiceImpl implements UserParkingService {
     @Override
     public PageResponse<ParkingSpotDTO> getNearbyParkings(NearbyParkingSpotRequest request) {
         // 查询附近可用的停车位
+        if (Objects.isNull(request.getRadius())) {
+            request.setRadius(DEFAULT_START_TIME);
+        }
         IPage<ParkingSpot> page = freeParkingRepository.findNearbyAvailableSpots(request);
         return convertToListResponse(page);
     }

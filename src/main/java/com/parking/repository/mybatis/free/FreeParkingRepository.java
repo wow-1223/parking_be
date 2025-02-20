@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
+import com.google.gson.reflect.TypeToken;
 import com.parking.handler.ParkingIntervalChecker;
 import com.parking.mapper.mybatis.ParkingOccupiedMapper;
 import com.parking.mapper.mybatis.ParkingSpotMapper;
@@ -13,12 +14,14 @@ import com.parking.model.vo.parking.rule.ParkingSpotRuleVO;
 import com.parking.util.tool.DateUtil;
 import com.parking.util.tool.JsonUtil;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,11 +45,16 @@ public class FreeParkingRepository {
      */
     public IPage<ParkingSpot> findNearbyAvailableSpots(NearbyParkingSpotRequest request) {
 
-        GeometryFactory geometryFactory = new GeometryFactory();
-        Coordinate coordinate = new Coordinate(request.getLongitude(), request.getLatitude());
-        Point point = geometryFactory.createPoint(coordinate);
+//        GeometryFactory geometryFactory = new GeometryFactory();
+//        Coordinate coordinate = new Coordinate(request.getLongitude(), request.getLatitude());
+//        Point point = geometryFactory.createPoint(coordinate);
+//        point.setSRID(4326);
 
-        List<ParkingSpot> spots = parkingSpotMapper.getAvailableParkingSpotIdList(request.getLongitude(), request.getLatitude(), request.getRadius(), request.getPrice());
+        // 构造WKT格式的POINT
+//        String point = String.format("POINT(%f %f)", request.getLongitude(), request.getLatitude());
+
+        List<ParkingSpot> spots = parkingSpotMapper.getAvailableParkingSpotIdList(
+                request.getLongitude(), request.getLatitude(), request.getRadius(), request.getPrice());
         if (CollectionUtils.isEmpty(spots)) {
             return new Page<>(request.getPage(), request.getSize());
         }
@@ -60,8 +68,9 @@ public class FreeParkingRepository {
         }
 
         List<Long> spotIds = new ArrayList<>(availableSpots.stream().map(ParkingSpot::getId).toList());
+        String spotIdStr = StringUtils.join(spotIds, ",");
         List<Long> occupiedSpotIds = parkingOccupiedMapper.getParkingSpotIdByTimeInterval(
-                spotIds, start, end);
+                spotIdStr, start, end);
 
         spotIds.removeAll(occupiedSpotIds);
 
@@ -84,16 +93,16 @@ public class FreeParkingRepository {
         List<ParkingSpot> availableSpots = new ArrayList<>();
 
         for (ParkingSpot parkingSpot : parkingSpots) {
-            List<ParkingSpotRuleVO> intervals =
-                    JsonUtil.fromListJson(parkingSpot.getRules(), ParkingSpotRuleVO.class);
-            if (CollectionUtils.isEmpty(intervals)) {
+            Type type =  new TypeToken<List<ParkingSpotRuleVO>>(){}.getType();
+            List<ParkingSpotRuleVO> rules = JsonUtil.fromJson(parkingSpot.getRules(), type);
+            if (CollectionUtils.isEmpty(rules)) {
                 continue;
             }
 
             boolean availiable = false;
-            // 判断startTime和endTime是否在intervals中
-            for (ParkingSpotRuleVO intervalVO : intervals) {
-                boolean inInterval = ParkingIntervalChecker.isInInterval(startTime, endTime, intervalVO);
+            // 判断startTime和endTime是否在rule.startTime - rule.endTime中
+            for (ParkingSpotRuleVO rule : rules) {
+                boolean inInterval = ParkingIntervalChecker.isInInterval(startTime, endTime, rule);
                 if (inInterval) {
                     availiable = true;
                     break;

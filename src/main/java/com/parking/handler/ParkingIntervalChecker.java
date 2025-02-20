@@ -1,5 +1,6 @@
 package com.parking.handler;
 
+import com.parking.enums.parking.SpotModeEnum;
 import com.parking.model.vo.parking.rule.ParkingSpotRuleVO;
 import java.time.DayOfWeek;
 import java.time.LocalDate;

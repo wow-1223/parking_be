@@ -1,9 +1,7 @@
 package com.parking.model.entity.mybatis;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import org.apache.ibatis.type.JdbcType;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;

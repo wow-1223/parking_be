@@ -13,12 +13,10 @@ import com.parking.model.param.common.OperationResponse;
 import com.parking.model.param.common.PageResponse;
 import com.parking.model.param.user.request.CancelOrderRequest;
 import com.parking.model.param.user.request.CreateOrderRequest;
-import com.parking.repository.mybatis.OrderRepository;
 import com.parking.service.BaseOrderService;
 import com.parking.service.user.UserOrderService;
 import com.parking.util.tool.DateUtil;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

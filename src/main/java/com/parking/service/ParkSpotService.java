@@ -12,15 +12,11 @@ import com.parking.model.entity.mybatis.User;
 import com.parking.model.param.common.DetailResponse;
 import com.parking.model.param.common.PageResponse;
 import com.parking.model.vo.parking.rule.ParkingSpotRuleVO;
-import com.parking.util.tool.AesUtil;
 import com.parking.util.tool.DateUtil;
 import com.parking.util.tool.JsonUtil;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 

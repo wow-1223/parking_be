@@ -13,7 +13,8 @@ import java.util.List;
 @Mapper
 public interface ParkingOccupiedMapper extends BaseMapper<OccupiedSpot> {
 
-    String GET_OCCUPIED_SPOT_ID_LIST = "SELECT parking_spots_id " +
+    String GET_OCCUPIED_SPOT_ID_LIST =
+            "SELECT parking_spots_id " +
             "FROM parking_occupied " +
             "WHERE parking_spots_id in (${spotIds}) " +
             "AND parking_day = #{parkingDay} " +

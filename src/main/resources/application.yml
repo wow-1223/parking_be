@@ -80,8 +80,8 @@ alipay:
 
 aliyun:
   sms:
-    access-key-id: LTAI5tL3BJLgNkvHZcKWa2VP
-    access-key-secret: tgCGGmNklcb3EFu4gtoACM1EbeOFen
+    access-key-id: my-access-key-id
+    access-key-secret: my-access-key-secret
     sign-name: wow
     template-code: SMS_154950909
 

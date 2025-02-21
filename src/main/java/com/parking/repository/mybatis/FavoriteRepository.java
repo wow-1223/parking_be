@@ -3,10 +3,14 @@ package com.parking.repository.mybatis;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.common.collect.Lists;
 import com.parking.mapper.mybatis.FavoriteMapper;
 import com.parking.model.entity.mybatis.Favorite;
+import com.parking.util.tool.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class FavoriteRepository {
@@ -27,13 +31,28 @@ public class FavoriteRepository {
     }
 
     // 删除收藏
-    public void delete(Long id) {
-        favoriteMapper.deleteById(id);
+    public void delete(Favorite favorite) {
+        favorite.setDeletedAt(DateUtil.getCurrentTimestamp());
+        update(favorite);
     }
 
     // 查询收藏
-    public Favorite findById(Long id) {
-        return favoriteMapper.selectById(id);
+    public Favorite findById(Long id, List<String> fields) {
+        return favoriteMapper.selectOne(new QueryWrapper<Favorite>().eq("id", id).eq("deleted_at", 0L).select(fields));
+    }
+
+    public Favorite exist(Long id, Long userId, Long spotId) {
+        QueryWrapper<Favorite> query = new QueryWrapper<>();
+        if (id != null) {
+            query.eq("id", id);
+        } else if (userId != null && spotId != null) {
+            query.eq("user_id", userId).eq("parking_spot_id", spotId);
+        } else {
+            return null;
+        }
+        query.eq("deleted_at", 0L);
+        query.select("id", "user_id", "parking_spot_id");
+        return favoriteMapper.selectOne(query);
     }
 
     // 查询用户的所有收藏

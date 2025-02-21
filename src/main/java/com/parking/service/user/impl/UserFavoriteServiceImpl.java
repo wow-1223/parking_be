@@ -1,8 +1,9 @@
 package com.parking.service.user.impl;
 
+import com.google.common.collect.Lists;
+import com.parking.exception.BusinessException;
 import com.parking.exception.ResourceNotFoundException;
 import com.parking.model.entity.mybatis.Favorite;
-import com.parking.model.entity.mybatis.ParkingSpot;
 import com.parking.model.param.common.OperationResponse;
 import com.parking.model.param.user.request.FavoriteRequest;
 import com.parking.repository.mybatis.FavoriteRepository;
@@ -12,6 +13,8 @@ import com.parking.service.user.FavoriteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class UserFavoriteServiceImpl implements FavoriteService {
@@ -25,14 +28,18 @@ public class UserFavoriteServiceImpl implements FavoriteService {
     @Override
     @Transactional
     public OperationResponse toggleFavorite(FavoriteRequest request) {
-
-        Boolean exist = parkingSpotRepository.exist(request.getParkingSpotId());
-        if (!exist) {
-            throw new ResourceNotFoundException("ParkingSpot not found");
-        }
-
         if (request.getAction()) {
             // 收藏
+            Boolean exist = parkingSpotRepository.exist(request.getParkingSpotId());
+            if (!exist) {
+                throw new ResourceNotFoundException("ParkingSpot not found");
+            }
+
+            Favorite f = favoriteRepository.exist(null, request.getUserId(), request.getParkingSpotId());
+            if (f != null) {
+                throw new BusinessException("Favorite already exists");
+            }
+
             Favorite favorite = new Favorite();
             favorite.setUserId(request.getUserId());
             favorite.setParkingSpotId(request.getParkingSpotId());
@@ -41,8 +48,15 @@ public class UserFavoriteServiceImpl implements FavoriteService {
             return OperationResponse.operationSuccess(favorite.getId(), "add favorite success");
         } else {
             // 取消收藏
-            favoriteRepository.delete(request.getId());
-            return OperationResponse.operationSuccess(request.getId(), "delete favorite success");
+            if (request.getId() == null) {
+                throw new BusinessException("favorite id not found");
+            }
+            Favorite favorite = favoriteRepository.exist(request.getId(), null, null);
+            if (favorite == null) {
+                throw new ResourceNotFoundException("Favorite not found");
+            }
+            favoriteRepository.delete(favorite);
+            return OperationResponse.operationSuccess(favorite.getId(), "delete favorite success");
         }
     }
 } 

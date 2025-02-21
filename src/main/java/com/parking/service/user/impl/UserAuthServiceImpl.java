@@ -4,9 +4,10 @@ import com.parking.enums.user.SourceFromEnum;
 import com.parking.enums.user.UserRoleEnum;
 import com.parking.enums.user.UserStatusEnum;
 import com.parking.exception.BusinessException;
+import com.parking.model.param.common.LoginResponse;
 import com.parking.model.param.common.OperationResponse;
 import com.parking.model.param.user.request.UserLoginRequest;
-import com.parking.model.param.user.response.UserLoginResponse;
+import com.parking.model.dto.user.UserLoginDTO;
 import com.parking.model.entity.mybatis.User;
 import com.parking.repository.mybatis.UserRepository;
 import com.parking.service.sms.SmsService;
@@ -42,7 +43,7 @@ public class UserAuthServiceImpl implements UserAuthService {
     private AesUtil aesUtil;
 
     @Override
-    public UserLoginResponse wechatLogin(String code) {
+    public LoginResponse<UserLoginDTO> wechatLogin(String code) {
         // 1. 调用微信接口获取openid
         String openId = wechatIdUtil.getOpenId(code);
         
@@ -60,7 +61,7 @@ public class UserAuthServiceImpl implements UserAuthService {
     }
 
     @Override
-    public UserLoginResponse phoneLogin(UserLoginRequest request) {
+    public LoginResponse<UserLoginDTO> phoneLogin(UserLoginRequest request) {
 
         validateLoginRequest(request);
 
@@ -93,7 +94,7 @@ public class UserAuthServiceImpl implements UserAuthService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public OperationResponse register(UserLoginRequest request) {
+    public LoginResponse<Long> register(UserLoginRequest request) {
 
         validateLoginRequest(request);
 
@@ -121,7 +122,7 @@ public class UserAuthServiceImpl implements UserAuthService {
         user.setSourceFrom(SourceFromEnum.APP.getSourceFrom());
         userRepository.insert(user);
 
-        return OperationResponse.operationSuccess(user.getId(), "register success");
+        return LoginResponse.loginSuccess(user.getId(), "register success");
     }
 
     /**
@@ -158,17 +159,17 @@ public class UserAuthServiceImpl implements UserAuthService {
      * @param user user
      * @return response
      */
-    private UserLoginResponse generateLoginResponse(User user) {
+    private LoginResponse<UserLoginDTO> generateLoginResponse(User user) {
         // 生成token
         String token = jwtUtil.generateToken(user.getId());
 
         // 构建响应
-        UserLoginResponse response = new UserLoginResponse();
+        UserLoginDTO response = new UserLoginDTO();
         response.setToken(token);
         response.setUserId(user.getId());
         response.setPhone(aesUtil.decrypt(user.getPhone()));
         response.setNickName(user.getNickName());
         response.setAvatarUrl(user.getAvatarUrl());
-        return response;
+        return LoginResponse.loginSuccess(response, "login success");
     }
 } 

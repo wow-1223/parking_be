@@ -1,5 +1,6 @@
 package com.parking.model.dto.parking;
 
+import com.parking.model.dto.user.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,20 +15,14 @@ import java.util.List;
 @NoArgsConstructor
 public class ParkingSpotDetailDTO extends ParkingSpotDTO {
 
-    private OwnerDTO owner;
+    private String description;
+    private List<String> images;
+    private List<String> facilities;
+//    private List<ParkingSpotRuleVO> rules;
 
+    private UserDTO owner;
     private List<IntervalDTO> parkingIntervals;
     private List<IntervalDTO> occupiedIntervals;
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class OwnerDTO {
-        private String id;
-        private String name;
-        private String phone;
-        private Double rating;
-    }
 
     @Data
     @AllArgsConstructor

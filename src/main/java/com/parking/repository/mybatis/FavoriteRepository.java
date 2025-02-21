@@ -42,6 +42,10 @@ public class FavoriteRepository {
     }
 
     public Favorite exist(Long id, Long userId, Long spotId) {
+        return exist(id, userId, spotId, false);
+    }
+
+    public Favorite exist(Long id, Long userId, Long spotId, Boolean excludeDeleted) {
         QueryWrapper<Favorite> query = new QueryWrapper<>();
         if (id != null) {
             query.eq("id", id);
@@ -50,8 +54,10 @@ public class FavoriteRepository {
         } else {
             return null;
         }
-        query.eq("deleted_at", 0L);
-        query.select("id", "user_id", "parking_spot_id");
+        if (excludeDeleted) {
+            query.eq("deleted_at", 0L);
+        }
+        query.select("id", "user_id", "parking_spot_id", "deleted_at");
         return favoriteMapper.selectOne(query);
     }
 

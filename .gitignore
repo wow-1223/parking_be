@@ -173,6 +173,12 @@
 /target/classes/db/V1.1__test_data_init.sql
 /target/classes/db/V1__init_tables.sql
 /target/classes/com/parking/util/WechatIdUtil.class
+/target/classes/com/parking/service/BaseOrderService.class
+/target/classes/com/parking/model/param/user/request/CancelOrderRequest.class
+/target/classes/com/parking/repository/mybatis/free/FreeParkingRepository$1.class
+/target/classes/com/parking/model/param/parking/request/ParkingSpotDetailRequest.class
+/target/classes/com/parking/service/ParkSpotService$1.class
+/target/classes/db/migration/V2_init_tables.sql
 /target/classes/com/parking/model/param/payment/response/AliPayResponse.class
 /target/classes/com/parking/model/param/common/ErrorResponse.class
 /target/classes/com/parking/model/param/payment/request/AliPayRequest.class

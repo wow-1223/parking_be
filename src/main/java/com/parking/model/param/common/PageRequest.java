@@ -7,15 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BaseResponse {
-
-    /**
-     * 错误码
-     */
-    private String code;
-
-    /**
-     * 错误信息
-     */
-    private String message;
+public class PageRequest {
+    private int page;
+    private int size;
 }

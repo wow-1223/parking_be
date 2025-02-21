@@ -34,6 +34,11 @@ public class OccupiedSpotRepository {
         return parkingOccupiedMapper.selectById(id);
     }
 
+    public OccupiedSpot findById(Long id, List<String> fields) {
+        return parkingOccupiedMapper.selectOne(
+                new QueryWrapper<OccupiedSpot>().eq("id", id).eq("deleted_at", 0L).select(fields));
+    }
+
     public List<OccupiedSpot> findByDay(Long spotId, LocalDate parkingDay) {
         return parkingOccupiedMapper.selectList(
                 new QueryWrapper<OccupiedSpot>()
@@ -42,13 +47,9 @@ public class OccupiedSpotRepository {
                         .eq("deleted_at", 0));
     }
 
+
     public List<OccupiedSpot> findByTime(Long spotId, LocalDateTime startTime, LocalDateTime endTime) {
-        return parkingOccupiedMapper.selectList(
-                new QueryWrapper<OccupiedSpot>()
-                        .eq("parking_spot_id", spotId)
-                        .ge("start_time", startTime)
-                        .le("end_time", endTime)
-                        .eq("deleted_at", 0L));
+        return parkingOccupiedMapper.getParkingSpotsByTimeInterval(spotId, startTime, endTime);
     }
 
     public List<OccupiedSpot> findAll(List<Long> ids, List<String> selectFields) {

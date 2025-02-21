@@ -21,6 +21,13 @@ public interface ParkingOccupiedMapper extends BaseMapper<OccupiedSpot> {
             "AND ((start_time >= #{startTime} AND start_time <= #{endTime}) OR (end_time >= #{startTime} AND end_time <= #{endTime})) " +
             "AND deleted_at = 0 ";
 
+    String GET_OCCUPIED_SPOTS =
+            "SELECT id, parking_spot_id, parking_day, start_time, end_time " +
+            "FROM parking_occupied " +
+            "WHERE parking_spot_id = #{spotId} " +
+            "AND ((start_time >= #{startTime} AND start_time <= #{endTime}) OR (end_time >= #{startTime} AND end_time <= #{endTime})) " +
+            "AND deleted_at = 0 ";
+
     /**
      * 根据停车位ID与时间区间查找车位占用记录
      */
@@ -29,4 +36,12 @@ public interface ParkingOccupiedMapper extends BaseMapper<OccupiedSpot> {
                                               @Param("parkingDay") LocalDate parkingDay,
                                               @Param("startTime") LocalDateTime startTime,
                                               @Param("endTime") LocalDateTime endTime);
+
+    /**
+     * 根据停车位ID与时间区间查找车位占用记录
+     */
+    @Select(GET_OCCUPIED_SPOTS)
+    List<OccupiedSpot> getParkingSpotsByTimeInterval(@Param("spotId") Long spotId,
+                                                     @Param("startTime") LocalDateTime startTime,
+                                                     @Param("endTime") LocalDateTime endTime);
 }

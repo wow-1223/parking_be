@@ -2,8 +2,10 @@ package com.parking.service.owner.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.parking.model.dto.order.OrderDTO;
+import com.parking.model.dto.order.OrderDetailDTO;
 import com.parking.model.dto.owner.DailyStatisticsDTO;
 import com.parking.model.entity.mybatis.Order;
+import com.parking.model.param.common.DetailResponse;
 import com.parking.model.param.common.PageResponse;
 import com.parking.model.param.owner.response.EarningsStatisticsResponse;
 import com.parking.model.param.owner.response.UsageStatisticsResponse;
@@ -32,6 +34,11 @@ public class OwnerOrderServiceImpl extends BaseOrderService implements OwnerOrde
         // 查询订单
         IPage<Order> p = orderRepository.findByOwnerAndStatus(ownerId, status, page, size);
         return convertOrderPage(p);
+    }
+
+    @Override
+    public DetailResponse<OrderDetailDTO> getOrderDetail(Long id) {
+        return null;
     }
 
     @Override

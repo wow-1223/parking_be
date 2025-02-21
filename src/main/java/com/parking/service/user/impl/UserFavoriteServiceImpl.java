@@ -35,16 +35,18 @@ public class UserFavoriteServiceImpl implements FavoriteService {
                 throw new ResourceNotFoundException("ParkingSpot not found");
             }
 
-            Favorite f = favoriteRepository.exist(null, request.getUserId(), request.getParkingSpotId());
-            if (f != null) {
+            Favorite favorite = favoriteRepository.exist(null, request.getUserId(), request.getParkingSpotId(), false);
+            if (favorite == null) {
+                favorite = new Favorite();
+                favorite.setUserId(request.getUserId());
+                favorite.setParkingSpotId(request.getParkingSpotId());
+                favoriteRepository.insert(favorite);
+            } else if (favorite.getDeletedAt() != 0) {
+                favorite.setDeletedAt(0L);
+                favoriteRepository.update(favorite);
+            } else {
                 throw new BusinessException("Favorite already exists");
             }
-
-            Favorite favorite = new Favorite();
-            favorite.setUserId(request.getUserId());
-            favorite.setParkingSpotId(request.getParkingSpotId());
-            favoriteRepository.insert(favorite);
-
             return OperationResponse.operationSuccess(favorite.getId(), "add favorite success");
         } else {
             // 取消收藏

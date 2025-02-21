@@ -1,11 +1,14 @@
 package com.parking.service;
 
+import com.alipay.api.domain.Detail;
 import com.parking.enums.order.OrderStatusEnum;
 import com.parking.exception.BusinessException;
 import com.parking.model.dto.order.OrderDTO;
+import com.parking.model.dto.order.OrderDetailDTO;
 import com.parking.model.entity.mybatis.OccupiedSpot;
 import com.parking.model.entity.mybatis.Order;
 import com.parking.model.entity.mybatis.ParkingSpot;
+import com.parking.model.param.common.DetailResponse;
 import com.parking.model.param.common.PageResponse;
 
 import java.math.BigDecimal;
@@ -16,6 +19,8 @@ import java.time.LocalDateTime;
 public interface OrderService {
 
     PageResponse<OrderDTO> getOrders(Long id, Integer status, Integer page, Integer size);
+
+    DetailResponse<OrderDetailDTO> getOrderDetail(Long id);
 
     /**
      * 将订单实体转换为DTO
@@ -41,9 +46,11 @@ public interface OrderService {
         dto.setLatitude(parkingSpot.getLatitude().doubleValue());
 
         // 设置占用信息
-        dto.setOccupiedSpotId(occupiedSpot.getId());
-        dto.setStartTime(occupiedSpot.getStartTime());
-        dto.setEndTime(occupiedSpot.getEndTime());
+        if (occupiedSpot != null) {
+            dto.setOccupiedSpotId(occupiedSpot.getId());
+            dto.setStartTime(occupiedSpot.getStartTime());
+            dto.setEndTime(occupiedSpot.getEndTime());
+        }
 
         return dto;
     }

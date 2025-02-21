@@ -25,6 +25,11 @@ public class JsonUtil {
         }
     }
 
+    public static List<String> toListString(String json) {
+        Type type = new TypeToken<List<String>>(){}.getType();
+        return fromJson(json, type);
+    }
+
     public static <T> T fromJson(String json, Class<T> clazz) {
         try {
             return objectMapper.readValue(json, clazz);
@@ -32,23 +37,6 @@ public class JsonUtil {
             log.error("解析JSON字符串失败", e);
             throw new RuntimeException("解析JSON字符串失败", e);
         }
-    }
-
-    public static <T> T fromJson(String json, TypeToken<T> type) {
-        Gson gson = new Gson();
-        return gson.fromJson(json, type.getType());
-    }
-
-//    public static <T> T fromJson(String json, Class<T> t) {
-//        Type type = new TypeToken<T>(){}.getType();
-//        Gson gson = new Gson();
-//        return gson.fromJson(json, type);
-//    }
-
-    public static <T> List<T> fromListJson(String json, Class<T> t) {
-        Type type = new TypeToken<List<T>>(){}.getType();
-        Gson gson = new Gson();
-        return gson.fromJson(json, type);
     }
 
     public static <T> T fromJson(String json, Type type) {

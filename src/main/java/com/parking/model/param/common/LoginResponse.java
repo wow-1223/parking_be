@@ -9,20 +9,23 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DetailResponse<T> extends BaseResponse {
+public class LoginResponse<T> extends BaseResponse {
+
+    private boolean success;
 
     private T data;
 
-    public static <T> DetailResponse<T> detailSuccess(T data, String message) {
-        DetailResponse<T> response = new DetailResponse<>();
+    public static <T> LoginResponse<T> loginSuccess(T data, String message) {
+        LoginResponse<T> response = new LoginResponse<>();
         response.setCode("200");
         response.setData(data);
+        response.setSuccess(true);
         response.setMessage(message);
         return response;
     }
 
-    public static <T> DetailResponse<T> detailFail(String code, String message) {
-        DetailResponse<T> response = new DetailResponse<>();
+    public static <T> LoginResponse<T> loginFail(String code, String message) {
+        LoginResponse<T> response = new LoginResponse<>();
         response.setCode(code);
         response.setMessage(message);
         return response;

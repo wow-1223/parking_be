@@ -61,10 +61,10 @@ public class SmsServiceImpl implements SmsService {
             RuntimeOptions runtime = new RuntimeOptions();
 
             // 4. 发送短信
-            SendSmsResponse response = smsClient.sendSmsWithOptions(sendSmsRequest, runtime);
+            // todo: 测试时注释掉
+//            SendSmsResponse response = smsClient.sendSmsWithOptions(sendSmsRequest, runtime);
 //            log.info("send sms message failed: {}", gson.toJson(response));
 
-            // todo: 测试时注释掉
 //            if (!"OK".equals(response.getBody().getCode())) {
 //                throw new BusinessException("send sms message failed: " + response.getBody().getMessage());
 //            }
@@ -78,7 +78,7 @@ public class SmsServiceImpl implements SmsService {
             return code;
         } catch (Exception e) {
             log.error("send sms message error", e);
-            throw new BusinessException("send sms message failed, please try again later");
+            throw new BusinessException("", "send sms message failed, please try again later");
         }
     }
 

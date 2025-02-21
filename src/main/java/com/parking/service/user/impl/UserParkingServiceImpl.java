@@ -1,6 +1,7 @@
 package com.parking.service.user.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.google.common.collect.Lists;
 import com.parking.exception.BusinessException;
 import com.parking.model.dto.parking.ParkingSpotDTO;
 import com.parking.model.dto.parking.ParkingSpotDetailDTO;
@@ -66,10 +67,12 @@ public class UserParkingServiceImpl implements UserParkingService {
         if (spot == null) {
             throw new BusinessException("Parking spot not found");
         }
-        User owner = userRepository.findById(spot.getOwnerId());
+
+        User owner = userRepository.findById(spot.getOwnerId(), Lists.newArrayList("id", "nick_name", "phone"));
         if (owner == null) {
             throw new BusinessException("Parking spot owner not found");
         }
+
         List<OccupiedSpot> occupiedSpots = occupiedSpotRepository.findByDay(
                 spot.getId(), DateUtil.convertToLocalDate(request.getStartTime()));
 

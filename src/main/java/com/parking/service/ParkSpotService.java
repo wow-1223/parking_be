@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import com.parking.handler.ParkingIntervalChecker;
 import com.parking.model.dto.parking.ParkingSpotDTO;
 import com.parking.model.dto.parking.ParkingSpotDetailDTO;
+import com.parking.model.dto.user.UserDTO;
 import com.parking.model.entity.mybatis.OccupiedSpot;
 import com.parking.model.entity.mybatis.ParkingSpot;
 import com.parking.model.entity.mybatis.User;
@@ -70,10 +71,10 @@ public interface ParkSpotService {
         detail.setLongitude(parkingSpot.getLongitude().doubleValue());
         detail.setLatitude(parkingSpot.getLatitude().doubleValue());
         detail.setLocation(parkingSpot.getLocation());
-        detail.setDescription(parkingSpot.getDescription());
-        detail.setImages(JsonUtil.fromListJson(parkingSpot.getImages(), String.class));
         detail.setPrice(parkingSpot.getPrice());
-        detail.setFacilities(JsonUtil.fromListJson(parkingSpot.getFacilities(), String.class));
+        detail.setDescription(parkingSpot.getDescription());
+        detail.setImages(JsonUtil.toListString(parkingSpot.getImages()));
+        detail.setFacilities(JsonUtil.toListString(parkingSpot.getFacilities()));
         detail.setParkingIntervals(parkingIntervals);
 
         List<ParkingSpotDetailDTO.IntervalDTO> occupiedIntervals = Lists.newArrayListWithCapacity(occupiedSpots.size());
@@ -84,11 +85,12 @@ public interface ParkSpotService {
         detail.setOccupiedIntervals(occupiedIntervals);
 
         // 设置所有者信息
-        ParkingSpotDetailDTO.OwnerDTO o = new ParkingSpotDetailDTO.OwnerDTO();
-        o.setId(owner.getId().toString());
-        o.setName(owner.getNickName());
+        UserDTO owr = new UserDTO();
+        owr.setId(owner.getId());
+        owr.setName(owner.getNickName());
+        owr.setPhone(owr.getPhone());
 //        owner.setRating(calculateOwnerRating(owner.getId()));
-        detail.setOwner(o);
+        detail.setOwner(owr);
 
         return DetailResponse.detailSuccess(detail, "get detail success");
     }
@@ -103,16 +105,6 @@ public interface ParkSpotService {
         dto.setLatitude(parkingSpot.getLatitude().doubleValue());
         dto.setLongitude(parkingSpot.getLongitude().doubleValue());
         dto.setPrice(parkingSpot.getPrice());
-        if (parkingSpot.getImages() != null) {
-            dto.setImages(JsonUtil.fromListJson(parkingSpot.getImages(), String.class));
-        }
-        if (parkingSpot.getFacilities() != null) {
-            dto.setFacilities(JsonUtil.fromListJson(parkingSpot.getFacilities(), String.class));
-        }
-        if (parkingSpot.getRules() != null) {
-            dto.setRules(JsonUtil.fromListJson(parkingSpot.getRules(), ParkingSpotRuleVO.class));
-        }
-
         return dto;
     }
 

@@ -3,6 +3,7 @@ package com.parking.repository.mybatis;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.common.collect.Lists;
 import com.parking.mapper.mybatis.OrderMapper;
 import com.parking.model.entity.mybatis.Order;
 import com.parking.util.tool.DateUtil;
@@ -37,7 +38,7 @@ public class OrderRepository {
      * 删除订单
      */
     public void delete(Long id) {
-        Order order = findById(id);
+        Order order = findById(id, Lists.newArrayList("id"));
         if (order == null) {
             throw new RuntimeException("Order not found");
         }
@@ -50,7 +51,14 @@ public class OrderRepository {
      * 根据订单ID查找订单
      */
     public Order findById(Long id) {
-        return orderMapper.selectById(id);
+        return orderMapper.selectOne(new QueryWrapper<Order>(){}.eq("id", id).eq("deleted_at", 0L));
+    }
+
+    /**
+     * 根据订单ID查找订单
+     */
+    public Order findById(Long id, List<String> fields) {
+        return orderMapper.selectOne(new QueryWrapper<Order>(){}.eq("id", id).eq("deleted_at", 0L).select(fields));
     }
 
     /**

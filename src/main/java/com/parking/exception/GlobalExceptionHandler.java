@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import static com.parking.constant.PayConstant.PayError.PAYMENT_FAILED;
 
 /**
  * 全局异常处理器
@@ -34,7 +33,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBusinessException(BusinessException e) {
         log.error("Business error", e);
-        return new ErrorResponse(e.getCode(), e.getMessage());
+        return new ErrorResponse("402", e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
@@ -48,6 +47,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handlePaymentException(PaymentException e) {
         log.error("Payment error", e);
-        return new ErrorResponse(PAYMENT_FAILED, e.getMessage());
+        return new ErrorResponse("901", e.getMessage());
     }
 }

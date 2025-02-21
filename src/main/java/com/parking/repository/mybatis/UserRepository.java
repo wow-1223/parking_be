@@ -1,6 +1,7 @@
 package com.parking.repository.mybatis;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.collect.Lists;
 import com.parking.mapper.mybatis.UserMapper;
 import com.parking.model.entity.mybatis.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class UserRepository {
      * 删除用户
      */
     public void delete(Long id) {
-        User user = findById(id);
+        User user = findById(id, Lists.newArrayList("id"));
         if (user == null) {
             throw new RuntimeException("User not found");
         }
@@ -45,7 +46,10 @@ public class UserRepository {
      * 根据ID查找用户
      */
     public User findById(Long id) {
-        List<String> fields = Arrays.asList("id", "open_id", "nick_name", "phone", "avatar_url");
+        return userMapper.selectById(id);
+    }
+
+    public User findById(Long id, List<String> fields) {
         return userMapper.selectOne(new QueryWrapper<User>().select(fields).eq("id", id).eq("deleted_at", 0));
     }
 

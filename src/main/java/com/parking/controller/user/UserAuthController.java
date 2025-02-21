@@ -1,8 +1,9 @@
 package com.parking.controller.user;
 
+import com.parking.model.param.common.LoginResponse;
 import com.parking.model.param.common.OperationResponse;
 import com.parking.model.param.user.request.UserLoginRequest;
-import com.parking.model.param.user.response.UserLoginResponse;
+import com.parking.model.dto.user.UserLoginDTO;
 import com.parking.service.sms.SmsService;
 import com.parking.service.user.UserAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,23 +26,23 @@ public class UserAuthController {
     }
 
     @PostMapping("/login/wechat/{code}")
-    public UserLoginResponse login(@PathVariable("code") String code) {
+    public LoginResponse<UserLoginDTO> login(@PathVariable("code") String code) {
         return userAuthService.wechatLogin(code);
     }
 
     @PostMapping("/login/phone")
-    public UserLoginResponse login(@RequestBody UserLoginRequest request) {
+    public LoginResponse<UserLoginDTO> login(@RequestBody UserLoginRequest request) {
         return userAuthService.phoneLogin(request);
     }
 
     @PostMapping("/sendVerifyCode")
-    public OperationResponse sendVerifyCode(@RequestParam String phone) {
+    public LoginResponse<String> sendVerifyCode(@RequestParam String phone) {
         String code = smsService.sendVerifyCode(phone);
-        return OperationResponse.operationSuccess(0L, "send verify code success, code: " + code);
+        return LoginResponse.loginSuccess(code, "send verify code success");
     }
 
     @PostMapping("/register")
-    public OperationResponse register(@Validated @RequestBody UserLoginRequest request) {
+    public LoginResponse<Long> register(@Validated @RequestBody UserLoginRequest request) {
         return userAuthService.register(request);
     }
 

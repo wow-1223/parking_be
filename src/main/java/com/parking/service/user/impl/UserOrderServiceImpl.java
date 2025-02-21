@@ -7,9 +7,11 @@ import com.parking.enums.parking.SpotStatusEnum;
 import com.parking.exception.BusinessException;
 import com.parking.exception.ResourceNotFoundException;
 import com.parking.model.dto.order.OrderDTO;
+import com.parking.model.dto.order.OrderDetailDTO;
 import com.parking.model.entity.mybatis.OccupiedSpot;
 import com.parking.model.entity.mybatis.Order;
 import com.parking.model.entity.mybatis.ParkingSpot;
+import com.parking.model.param.common.DetailResponse;
 import com.parking.model.param.common.OperationResponse;
 import com.parking.model.param.common.PageResponse;
 import com.parking.model.param.user.request.CancelOrderRequest;
@@ -33,6 +35,15 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
         // 查询订单
         IPage<Order> p = orderRepository.findByUserAndStatus(userId, status, page, size);
         return convertOrderPage(p);
+    }
+
+    @Override
+    public DetailResponse<OrderDetailDTO> getOrderDetail(Long id) {
+        Order order = orderRepository.findById(id);
+        if (order == null) {
+            throw new ResourceNotFoundException("Order not found");
+        }
+        return convertOrderDetail(order);
     }
 
     @Override
@@ -97,7 +108,8 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
             throw new ResourceNotFoundException("ParkingSpot not found");
         }
 
-        OccupiedSpot occupiedSpot = occupiedSpotRepository.findById(order.getParkingOccupiedId());
+        OccupiedSpot occupiedSpot = occupiedSpotRepository.findById(
+                order.getParkingOccupiedId(), Lists.newArrayList("id"));
         if (occupiedSpot == null) {
             throw new ResourceNotFoundException("OccupiedSpot not found");
         }

@@ -18,11 +18,6 @@ public class UserOrderController {
     @Autowired
     private UserOrderService userOrderService;
 
-    @PostMapping("/createOrder")
-    public OperationResponse createOrder(@RequestBody CreateOrderRequest request) {
-        return userOrderService.createOrder(request);
-    }
-
     @GetMapping("/getOrders")
     public PageResponse<OrderDTO> getOrders(
             @RequestParam Long userId,
@@ -30,6 +25,11 @@ public class UserOrderController {
             @RequestParam(required = false, defaultValue = "1") Integer page,
             @RequestParam(required = false, defaultValue = "20") Integer size) {
         return userOrderService.getOrders(userId, status, page, size);
+    }
+
+    @PostMapping("/createOrder")
+    public OperationResponse createOrder(@RequestBody CreateOrderRequest request) {
+        return userOrderService.createOrder(request);
     }
 
     @PostMapping("/cancelOrder")

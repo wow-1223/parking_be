@@ -212,3 +212,10 @@
 /target/classes/db/migration/V2_init_tables.sql
 /target/classes/com/parking/model/param/payment/request/WechatPayRequest.class
 /target/classes/com/parking/model/param/payment/response/WechatPayResponse.class
+/target/classes/com/parking/model/param/common/LoginResponse.class
+/target/classes/com/parking/repository/mybatis/OrderRepository$1.class
+/target/classes/com/parking/repository/mybatis/OrderRepository$2.class
+/target/classes/com/parking/model/param/common/PageRequest.class
+/target/classes/com/parking/model/dto/user/UserDTO.class
+/target/classes/com/parking/service/user/impl/UserFavoriteServiceImpl.class
+/target/classes/com/parking/model/dto/user/UserLoginDTO.class

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class FavoriteServiceImpl implements FavoriteService {
+public class UserFavoriteServiceImpl implements FavoriteService {
 
     @Autowired
     private FavoriteRepository favoriteRepository;
@@ -26,8 +26,8 @@ public class FavoriteServiceImpl implements FavoriteService {
     @Transactional
     public OperationResponse toggleFavorite(FavoriteRequest request) {
 
-        ParkingSpot spot = parkingSpotRepository.findById(request.getParkingSpotId());
-        if (spot == null) {
+        Boolean exist = parkingSpotRepository.exist(request.getParkingSpotId());
+        if (!exist) {
             throw new ResourceNotFoundException("ParkingSpot not found");
         }
 
@@ -35,7 +35,7 @@ public class FavoriteServiceImpl implements FavoriteService {
             // 收藏
             Favorite favorite = new Favorite();
             favorite.setUserId(request.getUserId());
-            favorite.setParkingSpotId(spot.getId());
+            favorite.setParkingSpotId(request.getParkingSpotId());
             favoriteRepository.insert(favorite);
 
             return OperationResponse.operationSuccess(favorite.getId(), "add favorite success");

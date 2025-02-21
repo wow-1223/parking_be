@@ -1,6 +1,7 @@
 package com.parking.service.user.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.google.common.collect.Lists;
 import com.parking.enums.order.OrderStatusEnum;
 import com.parking.enums.parking.SpotStatusEnum;
 import com.parking.exception.BusinessException;
@@ -38,11 +39,11 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
     @Transactional
     public OperationResponse createOrder(CreateOrderRequest request) {
         // 1. 验证停车位是否可用
-        ParkingSpot parkingSpot = parkingSpotRepository.findById(request.getParkingSpotId());
-        if (parkingSpot == null) {
+        ParkingSpot spot = parkingSpotRepository.findById(request.getParkingSpotId(), Lists.newArrayList("id", "owner_id", "price", "status"));
+        if (spot == null) {
             throw new ResourceNotFoundException("ParkingSpot not found");
         }
-        if (SpotStatusEnum.AVAILABLE.getStatus() != parkingSpot.getStatus()) {
+        if (SpotStatusEnum.AVAILABLE.getStatus() != spot.getStatus()) {
             throw new BusinessException("ParkingSpot is not available");
         }
 
@@ -56,7 +57,7 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
         LocalDateTime ed = DateUtil.parseDate(request.getEndTime());
 
         OccupiedSpot occupiedSpot = new OccupiedSpot();
-        occupiedSpot.setParkingSpotsId(parkingSpot.getId());
+        occupiedSpot.setParkingSpotId(spot.getId());
         occupiedSpot.setParkingDay(DateUtil.convertToLocalDate(request.getStartTime()));
         occupiedSpot.setStartTime(st);
         occupiedSpot.setEndTime(ed);
@@ -65,13 +66,13 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
 
         // 2. 创建订单
         Order order = new Order();
-        order.setOwnerId(parkingSpot.getOwnerId());
+        order.setOwnerId(spot.getOwnerId());
         order.setUserId(request.getUserId());
-        order.setParkingSpotsId(parkingSpot.getId());
+        order.setParkingSpotId(spot.getId());
         order.setParkingOccupiedId(occupiedSpot.getId());
         order.setCarNumber(request.getCarNumber());
         order.setStatus(OrderStatusEnum.PENDING_PAYMENT.getStatus());
-        order.setAmount(calculateAmount(parkingSpot.getPrice(), st, ed));
+        order.setAmount(calculateAmount(spot.getPrice(), st, ed));
 
         orderRepository.insert(order);
 
@@ -91,8 +92,8 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
             throw new BusinessException("Current order status is not allowed to cancel");
         }
 
-        ParkingSpot parkingSpot = parkingSpotRepository.findById(order.getParkingSpotsId());
-        if (parkingSpot == null) {
+        Boolean spotExist = parkingSpotRepository.exist(order.getParkingSpotId());
+        if (!spotExist) {
             throw new ResourceNotFoundException("ParkingSpot not found");
         }
 

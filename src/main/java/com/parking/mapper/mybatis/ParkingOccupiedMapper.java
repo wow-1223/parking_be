@@ -14,9 +14,9 @@ import java.util.List;
 public interface ParkingOccupiedMapper extends BaseMapper<OccupiedSpot> {
 
     String GET_OCCUPIED_SPOT_ID_LIST =
-            "SELECT parking_spots_id " +
+            "SELECT parking_spot_id " +
             "FROM parking_occupied " +
-            "WHERE parking_spots_id in (${spotIds}) " +
+            "WHERE parking_spot_id in (${spotIds}) " +
             "AND parking_day = #{parkingDay} " +
             "AND ((start_time >= #{startTime} AND start_time <= #{endTime}) OR (end_time >= #{startTime} AND end_time <= #{endTime})) " +
             "AND deleted_at = 0 ";

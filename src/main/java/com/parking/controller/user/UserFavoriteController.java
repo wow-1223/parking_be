@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/favorites")
+@RequestMapping("/api/user/favorites")
 public class UserFavoriteController {
 
     @Autowired
@@ -30,7 +30,7 @@ public class UserFavoriteController {
     public PageResponse<ParkingSpotDTO> getFavorites(
             @RequestParam Long userId,
             @RequestParam(required = false, defaultValue = "1") Integer page,
-            @RequestParam(required = false, defaultValue = "20") Integer pageSize) {
-        return userParkingService.getFavorites(userId, page, pageSize);
+            @RequestParam(required = false, defaultValue = "20") Integer size) {
+        return userParkingService.getFavorites(userId, page, size);
     }
 } 

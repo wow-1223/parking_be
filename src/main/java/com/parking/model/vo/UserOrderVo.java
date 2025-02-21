@@ -20,7 +20,7 @@ public class UserOrderVo {
     private Long deletedAt;
 
     private Long orderId;
-    private Long parkingSpotsId;
+    private Long parkingSpotId;
     private Long parkingPeriodId;
     private BigDecimal amount;
     private Byte orderStatus;

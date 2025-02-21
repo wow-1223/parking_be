@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class OccupiedSpot {
     @TableId
     private Long id;
-    private Long parkingSpotsId;
+    private Long parkingSpotId;
     private LocalDate parkingDay;
     private LocalDateTime startTime;
     private LocalDateTime endTime;

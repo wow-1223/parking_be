@@ -87,7 +87,7 @@ aliyun:
 
 # File Upload
 upload:
-  upload-path: /app/upload
+  upload-path: ./uploads
   allow-types: jpg,jpeg,png,gif
   max-size: 10
   use-cloud: false

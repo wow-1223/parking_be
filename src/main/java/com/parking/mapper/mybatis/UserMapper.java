@@ -34,7 +34,7 @@ public interface UserMapper extends BaseMapper<User> {
 
 //    @Select("SELECT u.id AS userId, u.open_id AS openId, u.phone, u.nick_name AS nickName, u.avatar_url AS avatarUrl, " +
 //            "u.role, u.status, u.create_time AS createTime, u.update_time AS updateTime, u.deleted_at AS deletedAt, " +
-//            "o.id AS orderId, o.parking_spots_id AS parkingSpotsId, o.parking_period_id AS parkingPeriodId, " +
+//            "o.id AS orderId, o.parking_spot_id AS parkingSpotId, o.parking_period_id AS parkingPeriodId, " +
 //            "o.amount, o.status AS orderStatus, o.payment_id AS paymentId, o.create_time AS orderCreateTime, " +
 //            "o.update_time AS orderUpdateTime, o.deleted_at AS orderDeletedAt " +
 //            "FROM users u " +
@@ -43,7 +43,7 @@ public interface UserMapper extends BaseMapper<User> {
 
 //    @Select("SELECT u.id AS userId, u.open_id AS openId, u.phone, u.nick_name AS nickName, u.avatar_url AS avatarUrl, " +
 //            "u.role, u.status, u.create_time AS createTime, u.update_time AS updateTime, u.deleted_at AS deletedAt, " +
-//            "o.id AS orderId, o.parking_spots_id AS parkingSpotsId, o.parking_period_id AS parkingPeriodId, " +
+//            "o.id AS orderId, o.parking_spot_id AS parkingSpotId, o.parking_period_id AS parkingPeriodId, " +
 //            "o.amount, o.status AS orderStatus, o.payment_id AS paymentId, o.create_time AS orderCreateTime, " +
 //            "o.update_time AS orderUpdateTime, o.deleted_at AS orderDeletedAt " +
 //            "FROM users u " +

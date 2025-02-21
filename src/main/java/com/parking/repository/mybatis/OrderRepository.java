@@ -89,8 +89,8 @@ public class OrderRepository {
         if (order.getOwnerId()!= null) {
             query.eq("owner_id", order.getOwnerId());
         }
-        if (order.getParkingSpotsId()!= null) {
-            query.eq("parking_spots_id", order.getParkingSpotsId());
+        if (order.getParkingSpotId()!= null) {
+            query.eq("parking_spot_id", order.getParkingSpotId());
         }
         if (order.getParkingOccupiedId()!= null) {
             query.eq("parking_occupied_id", order.getParkingOccupiedId());

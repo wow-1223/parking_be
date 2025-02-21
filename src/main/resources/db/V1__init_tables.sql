@@ -40,7 +40,7 @@ CREATE TABLE parking_spots (
 -- -- parking periods table
 -- CREATE TABLE parking_periods (
 --    id BIGINT AUTO_INCREMENT PRIMARY KEY,
---    parking_spots_id BIGINT NOT NULL COMMENT 'parking spots id',
+--    parking_spot_id BIGINT NOT NULL COMMENT 'parking spots id',
 --    mode TINYINT NOT NULL DEFAULT 1 COMMENT 'mode: 0: hourly | 1: daily | 2: weekly | 3: monthly',
 --     -- 对于 weekly 规则，存储星期几，用逗号分隔，如 1,3,5 表示周一、周三、周五
 --     -- 对于 monthly 规则，存储日期范围，如 10-20 表示每月 10 号到 20 号
@@ -51,14 +51,14 @@ CREATE TABLE parking_spots (
 --    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
 --    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
 --    deleted_at BIGINT default 0 not null COMMENT 'deleted at',
---    INDEX idx_parking_spot_id (parking_spots_id)
+--    INDEX idx_parking_spot_id (parking_spot_id)
 -- --     FOREIGN KEY (owner_id) REFERENCES users(id)
 -- ) COMMENT 'parking periods table';
 
 -- parking occupied table
 CREATE TABLE parking_occupied (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    parking_spots_id BIGINT NOT NULL COMMENT 'parking spots id',
+    parking_spot_id BIGINT NOT NULL COMMENT 'parking spot id',
 --     car_number VARCHAR(20) NOT NULL COMMENT 'car number',
     parking_day DATE NOT NULL COMMENT 'day',
     start_time DATETIME NOT NULL COMMENT 'start time',
@@ -68,7 +68,7 @@ CREATE TABLE parking_occupied (
     create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
     update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
     deleted_at BIGINT default 0 not null COMMENT 'deleted at',
-    INDEX idx_parking_spot_id (parking_spots_id)
+    INDEX idx_parking_spot_id (parking_spot_id)
 --     SPATIAL INDEX idx_parking_point (parking_interval)
 --     FOREIGN KEY (owner_id) REFERENCES users(id)
 ) COMMENT 'parking occupied table';
@@ -78,7 +78,7 @@ CREATE TABLE parking_occupied (
 CREATE TABLE orders (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL COMMENT 'user id',
-    parking_spots_id BIGINT NOT NULL COMMENT 'parking spots id',
+    parking_spot_id BIGINT NOT NULL COMMENT 'parking spots id',
     owner_id BIGINT NOT NULL COMMENT 'owner id',
 --     parking_period_id BIGINT NOT NULL COMMENT 'parking period id',
     parking_occupied_id BIGINT NOT NULL COMMENT 'parking occupied id',
@@ -93,7 +93,7 @@ CREATE TABLE orders (
     deleted_at BIGINT default 0 not null COMMENT 'deleted at',
     INDEX idx_user_id (user_id),
     INDEX idx_owner_id (owner_id),
-    INDEX idx_parking_spot_id (parking_spots_id),
+    INDEX idx_parking_spot_id (parking_spot_id),
     INDEX idx_parking_occupied_id (parking_occupied_id)
 --     FOREIGN KEY (parking_spot_id) REFERENCES parking_spots(id),
 --     FOREIGN KEY (user_id) REFERENCES users(id)

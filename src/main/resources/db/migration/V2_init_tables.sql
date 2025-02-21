@@ -143,9 +143,9 @@ FROM (
      ) numbers;
 
 -- 初始化停车占用数据
-INSERT INTO parking_occupied (parking_spots_id, parking_day, start_time, end_time)
+INSERT INTO parking_occupied (parking_spot_id, parking_day, start_time, end_time)
 SELECT
-    FLOOR(1 + RAND() * 1000) as parking_spots_id,
+    FLOOR(1 + RAND() * 1000) as parking_spot_id,
     -- 生成基准日期（未来30天内）
     @base_date := DATE_ADD('2024-03-21', INTERVAL FLOOR(RAND() * 30) DAY) as parking_day,
     -- 生成8:00到16:00之间的开始时间
@@ -177,10 +177,10 @@ FROM (
      ) numbers;
 
 -- 初始化订单数据
-INSERT INTO orders (user_id, parking_spots_id, owner_id, parking_occupied_id, car_number, amount, transaction_id, status)
+INSERT INTO orders (user_id, parking_spot_id, owner_id, parking_occupied_id, car_number, amount, transaction_id, status)
 SELECT
     FLOOR(1 + RAND() * 800) as user_id,
-    FLOOR(1 + RAND() * 1000) as parking_spots_id,
+    FLOOR(1 + RAND() * 1000) as parking_spot_id,
     FLOOR(801 + RAND() * 150) as owner_id,
     num as parking_occupied_id,
     CONCAT('沪', CHAR(65 + FLOOR(RAND() * 26)), FLOOR(10000 + RAND() * 90000)) as car_number,

@@ -1,8 +1,10 @@
 package com.parking.repository.mybatis;
 
+import com.baomidou.mybatisplus.core.conditions.query.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.common.collect.Lists;
 import com.parking.mapper.mybatis.ParkingSpotMapper;
 import com.parking.model.entity.mybatis.ParkingSpot;
 import com.parking.util.tool.DateUtil;
@@ -36,12 +38,19 @@ public class ParkingSpotRepository {
      * 删除车位
      */
     public void delete(Long id) {
-        ParkingSpot spot = findById(id);
+        ParkingSpot spot = findById(id, Lists.newArrayList("id"));
         if (spot == null) {
             throw new RuntimeException("Parking spot not found");
         }
         spot.setDeletedAt(DateUtil.getCurrentTimestamp());
         update(spot);
+    }
+
+    /**
+     * 判断车位是否存在
+     */
+    public Boolean exist(Long id) {
+        return parkingSpotMapper.selectCount(new QueryWrapper<ParkingSpot>().eq("id", id).eq("deleted_at", 0L)) > 0;
     }
 
     /**
@@ -51,6 +60,20 @@ public class ParkingSpotRepository {
         return parkingSpotMapper.selectOne(new QueryWrapper<ParkingSpot>().eq("id", id).eq("deleted_at", 0L));
     }
 
+    /**
+     * 根据ID查找车位指定字段
+     */
+    public ParkingSpot findById(Long id, List<String> fields) {
+        return parkingSpotMapper.selectOne(
+                new QueryWrapper<ParkingSpot>()
+                       .eq("id", id)
+                       .eq("deleted_at", 0L)
+                       .select(fields));
+    }
+
+    /**
+     * 根据ID列表查找车位指定信息
+     */
     public List<ParkingSpot> findAll(List<Long> ids, List<String> selectFields) {
         return parkingSpotMapper.selectList(
                 new QueryWrapper<ParkingSpot>()

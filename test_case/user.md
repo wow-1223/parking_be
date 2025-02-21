@@ -143,7 +143,7 @@ curl -X POST 'http://localhost:8080/api/user/register' \
 ```json
 {
     "userId": 1,
-    "parkingSpotsId": 1,
+    "parkingSpotId": 1,
     "startTime": "2024-03-21 10:00:00",
     "endTime": "2024-03-21 12:00:00",
     "carNumber": "沪A12345",
@@ -158,7 +158,7 @@ curl -X POST 'http://localhost:8080/api/orders/createOrder' \
 -H 'Authorization: Bearer ${TOKEN}' \
 -d '{
     "userId": 1,
-    "parkingSpotsId": 1,
+    "parkingSpotId": 1,
     "startTime": "2024-03-21 10:00:00",
     "endTime": "2024-03-21 12:00:00",
     "carNumber": "沪A12345",
@@ -263,7 +263,7 @@ curl -X POST "${BASE_URL}/api/orders/createOrder" \
 -H "Authorization: Bearer ${TOKEN}" \
 -d '{
     "userId": 1,
-    "parkingSpotsId": 1,
+    "parkingSpotId": 1,
     "startTime": "2024-03-21 10:00:00",
     "endTime": "2024-03-21 12:00:00",
     "carNumber": "沪A12345",

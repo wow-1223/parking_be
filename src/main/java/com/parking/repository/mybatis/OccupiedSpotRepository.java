@@ -37,7 +37,7 @@ public class OccupiedSpotRepository {
     public List<OccupiedSpot> findByDay(Long spotId, LocalDate parkingDay) {
         return parkingOccupiedMapper.selectList(
                 new QueryWrapper<OccupiedSpot>()
-                        .eq("parking_spots_id", spotId)
+                        .eq("parking_spot_id", spotId)
                         .eq("parking_day", parkingDay)
                         .eq("deleted_at", 0));
     }
@@ -45,7 +45,7 @@ public class OccupiedSpotRepository {
     public List<OccupiedSpot> findByTime(Long spotId, LocalDateTime startTime, LocalDateTime endTime) {
         return parkingOccupiedMapper.selectList(
                 new QueryWrapper<OccupiedSpot>()
-                        .eq("parking_spots_id", spotId)
+                        .eq("parking_spot_id", spotId)
                         .ge("start_time", startTime)
                         .le("end_time", endTime)
                         .eq("deleted_at", 0L));

@@ -1,6 +1,7 @@
 package com.parking.service.owner.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.google.common.collect.Lists;
 import com.parking.enums.parking.SpotStatusEnum;
 import com.parking.exception.BusinessException;
 import com.parking.exception.ResourceNotFoundException;
@@ -58,7 +59,7 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
     @Transactional
     public OperationResponse updateParking(UpdateParkingRequest request) {
         // 获取并验证车位
-        ParkingSpot spot = parkingSpotRepository.findById(request.getId());
+        ParkingSpot spot = parkingSpotRepository.findById(request.getId(), Lists.newArrayList("id", "owner_id"));
         if (spot == null) {
             throw new ResourceNotFoundException("Parking spot not found");
         }

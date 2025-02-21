@@ -23,4 +23,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/api/upload/**"    // 文件上传接口
                 );
     }
+
+//    @Override
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        registry.addResourceHandler("/uploads/**")
+//                .addResourceLocations("file:/uploads/");
+//    }
 }

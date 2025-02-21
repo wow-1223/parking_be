@@ -35,7 +35,7 @@ public abstract class BaseOrderService implements OrderService {
             return new PageResponse<>(0L, Collections.emptyList());
         }
         List<Order> records = page.getRecords();
-        List<Long> parkingSpotIds = records.stream().map(Order::getParkingSpotsId).toList();
+        List<Long> parkingSpotIds = records.stream().map(Order::getParkingSpotId).toList();
         List<Long> occupiedSpotIds = records.stream().map(Order::getParkingOccupiedId).toList();
         // 查询停车位信息
         List<ParkingSpot> parkingSpots = parkingSpotRepository.findAll(
@@ -58,7 +58,7 @@ public abstract class BaseOrderService implements OrderService {
 
         List<OrderDTO> orders = Lists.newArrayListWithCapacity(records.size());
         for (Order order : records) {
-            ParkingSpot parkingSpot = parkingSpotMap.get(order.getParkingSpotsId());
+            ParkingSpot parkingSpot = parkingSpotMap.get(order.getParkingSpotId());
             if (parkingSpot == null) {
                 throw new ResourceNotFoundException("ParkingSpot not found");
             }

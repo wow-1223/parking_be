@@ -2,6 +2,7 @@ package com.parking.mapper.mybatis;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.parking.model.entity.mybatis.ParkingSpot;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -20,12 +21,11 @@ public interface ParkingSpotMapper extends BaseMapper<ParkingSpot> {
             "AND status = 2 " +
             "AND deleted_at = 0 ";
 
-    String GET_FAVORITE_SPOTS_SQL = "SELECT ps.* " +
-            "FROM parking_spots ps" +
-            "JOIN favorites f ON ps.id = f.parking_spot_id " +
+    String GET_FAVORITE_SPOTS_SQL = "SELECT ps.id, ps.owner_id, ps.location, ps.location, ps.longitude, ps.latitude, ps.price " +
+            "FROM parking_spots ps " +
+            "LEFT JOIN favorites f ON ps.id = f.parking_spot_id " +
             "WHERE f.user_id = #{userId} " +
-            "AND ps.deleted_at = 0 AND f.deleted_at = 0" +
-            "LIMIT #{page.offset}, #{page.size}";
+            "AND ps.deleted_at = 0 AND f.deleted_at = 0 ";
 
     /**
      * 查找附近可用的停车位
@@ -48,5 +48,5 @@ public interface ParkingSpotMapper extends BaseMapper<ParkingSpot> {
      * @return 分页的停车位列表
      */
     @Select(GET_FAVORITE_SPOTS_SQL)
-    IPage<ParkingSpot> getFavoriteParkingSpots(IPage<ParkingSpot> page, @Param("userId") Long userId);
+    IPage<ParkingSpot> getFavoriteParkingSpots(Page<ParkingSpot> page, @Param("userId") Long userId);
 }

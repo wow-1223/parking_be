@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * 用户停车位服务实现
@@ -63,19 +62,19 @@ public class UserParkingServiceImpl implements UserParkingService {
     @Override
     public DetailResponse<ParkingSpotDetailDTO> getParkingDetail(ParkingSpotDetailRequest request) {
         // 获取停车位详情
-        ParkingSpot parkingSpot = parkingSpotRepository.findById(request.getId());
-        if (parkingSpot == null) {
+        ParkingSpot spot = parkingSpotRepository.findById(request.getId());
+        if (spot == null) {
             throw new BusinessException("Parking spot not found");
         }
-        User owner = userRepository.findById(parkingSpot.getOwnerId());
+        User owner = userRepository.findById(spot.getOwnerId());
         if (owner == null) {
             throw new BusinessException("Parking spot owner not found");
         }
         List<OccupiedSpot> occupiedSpots = occupiedSpotRepository.findByDay(
-                parkingSpot.getId(), DateUtil.convertToLocalDate(request.getStartTime()));
+                spot.getId(), DateUtil.convertToLocalDate(request.getStartTime()));
 
         DetailResponse<ParkingSpotDetailDTO> detail = convertToDetailResponse(false,
-                parkingSpot, owner, occupiedSpots, request.getStartTime(), request.getStartTime());
+                spot, owner, occupiedSpots, request.getStartTime(), request.getStartTime());
         if (detail != null && detail.getData() != null && detail.getData().getOwner()!= null) {
             // todo for test
             detail.getData().getOwner().setPhone(aesUtil.decrypt("Uu3+EuYVaOf4/w7QhxGfiA=="));
@@ -87,18 +86,6 @@ public class UserParkingServiceImpl implements UserParkingService {
     @Override
     public PageResponse<ParkingSpotDTO> getFavorites(Long userId, Integer page, Integer size) {
         IPage<ParkingSpot> iPage = freeParkingRepository.findFavoriteParkingSpots(userId, page, size);
-        PageResponse<ParkingSpotDTO> response = new PageResponse<>();
-        if (iPage == null || iPage.getRecords() == null || iPage.getRecords().isEmpty()) {
-            response.setTotal(0L);
-            return response;
-        }
-
-        List<ParkingSpotDTO> spots = iPage.getRecords().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-
-        response.setTotal(iPage.getTotal());
-        response.setList(spots);
-        return response;
+        return convertToListResponse(iPage);
     }
 }

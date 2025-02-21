@@ -62,7 +62,7 @@ public class SmsServiceImpl implements SmsService {
 
             // 4. 发送短信
             SendSmsResponse response = smsClient.sendSmsWithOptions(sendSmsRequest, runtime);
-            log.info("send sms message failed: {}", gson.toJson(response));
+//            log.info("send sms message failed: {}", gson.toJson(response));
 
             // todo: 测试时注释掉
 //            if (!"OK".equals(response.getBody().getCode())) {

@@ -16,7 +16,7 @@ public class Order {
     @TableId
     private Long id;
     private Long userId;
-    private Long parkingSpotsId;
+    private Long parkingSpotId;
     private Long ownerId;
     private Long parkingOccupiedId;
     private BigDecimal amount;

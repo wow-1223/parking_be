@@ -4,7 +4,7 @@ import com.parking.enums.PayTypeEnum;
 import com.parking.factory.PayServiceFactory;
 import com.parking.model.param.payment.request.PayRequest;
 import com.parking.model.param.payment.response.PayResponse;
-import com.parking.service.payment.PayService;
+import com.parking.handler.payment.PayService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -18,8 +18,8 @@ public class PayController {
     @Autowired
     private PayServiceFactory payServiceFactory;
 
-    @PostMapping("/create")
-    public PayResponse createOrder(@Validated @RequestBody PayRequest request) {
+    @PostMapping("/createPayOrder")
+    public PayResponse createPayOrder(@RequestBody PayRequest request) {
         log.info("create pay order, request：{}", request);
         PayService payService = payServiceFactory.getPayService(PayTypeEnum.fromValue(request.getPayType()));
         return payService.createOrder(request);

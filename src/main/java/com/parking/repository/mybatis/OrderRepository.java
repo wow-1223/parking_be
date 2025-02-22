@@ -6,7 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import com.parking.mapper.mybatis.OrderMapper;
 import com.parking.model.entity.mybatis.Order;
-import com.parking.util.tool.DateUtil;
+import com.parking.model.param.owner.response.StatisticsResponse;
+import com.parking.util.DateUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -52,6 +53,10 @@ public class OrderRepository {
      */
     public Order findById(Long id) {
         return orderMapper.selectOne(new QueryWrapper<Order>(){}.eq("id", id).eq("deleted_at", 0L));
+    }
+
+    public Boolean exist(Long id) {
+        return orderMapper.selectCount(new QueryWrapper<Order>().eq("id", id).eq("deleted_at", 0L)) > 0;
     }
 
     /**
@@ -131,21 +136,21 @@ public class OrderRepository {
     /**
      * 获取收益统计数据
      */
-    public List<Object[]> getEarningsStatistics(Long ownerId, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<StatisticsResponse> getEarningsStatistics(Long ownerId, LocalDateTime startDate, LocalDateTime endDate) {
         return orderMapper.selectEarningsStatistics(ownerId, startDate, endDate);
     }
 
     /**
      * 获取单个停车位使用统计
      */
-    public List<Object[]> getParkingUsageStatistics(Long ownerId, Long parkingSpotId, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<StatisticsResponse> getParkingUsageStatistics(Long ownerId, Long parkingSpotId, LocalDateTime startDate, LocalDateTime endDate) {
         return orderMapper.selectParkingUsageStatistics(ownerId, parkingSpotId, startDate, endDate);
     }
 
     /**
      * 获取所有停车位整体使用统计
      */
-    public List<Object[]> getOverallUsageStatistics(Long ownerId, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<StatisticsResponse> getOverallUsageStatistics(Long ownerId, LocalDateTime startDate, LocalDateTime endDate) {
         return orderMapper.selectOverallUsageStatistics(ownerId, startDate, endDate);
     }
 

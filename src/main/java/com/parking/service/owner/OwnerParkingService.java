@@ -1,8 +1,11 @@
 package com.parking.service.owner;
 
 import com.parking.model.dto.parking.ParkingSpotDTO;
+import com.parking.model.dto.parking.ParkingSpotDetailDTO;
+import com.parking.model.param.common.DetailResponse;
 import com.parking.model.param.common.OperationResponse;
 import com.parking.model.param.common.PageResponse;
+import com.parking.model.param.owner.request.DeleteParkingRequest;
 import com.parking.model.param.owner.request.OwnerParkingRequest;
 import com.parking.model.param.owner.request.UpdateParkingRequest;
 import com.parking.service.ParkSpotService;
@@ -18,6 +21,8 @@ public interface OwnerParkingService extends ParkSpotService {
      * @return 车位列表
      */
     PageResponse<ParkingSpotDTO> getParkingList(Long userId, Integer status, Integer page, Integer size);
+
+    DetailResponse<ParkingSpotDetailDTO> getParkingDetail(Long userId, Long parkingId);
 
     /**
      * 发布车位
@@ -35,8 +40,8 @@ public interface OwnerParkingService extends ParkSpotService {
 
     /**
      * 删除车位
-     * @param id 车位ID
+     * @param request request
      * @return 操作结果
      */
-    OperationResponse deleteParking(Long id);
+    OperationResponse deleteParking(DeleteParkingRequest request);
 } 

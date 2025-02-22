@@ -72,46 +72,46 @@ SELECT
     JSON_ARRAY(
         -- 每日规则
             (SELECT JSON_OBJECT(
-                            'spotModeStr', 'daily',
-                            'endTimeStr', @start_time1 := TIME_FORMAT(FROM_UNIXTIME(FLOOR(6 * 3600 + RAND() * 6 * 3600)), '%H:%i'),
-                            'startTimeStr', TIME_FORMAT(FROM_UNIXTIME(
+                            'mode', 'daily',
+                            'endTime', @start_time1 := TIME_FORMAT(FROM_UNIXTIME(FLOOR(6 * 3600 + RAND() * 6 * 3600)), '%H:%i'),
+                            'startTime', TIME_FORMAT(FROM_UNIXTIME(
                                                               FLOOR(TIME_TO_SEC(@start_time1) + 7200 + RAND() * (86400 - TIME_TO_SEC(@start_time1) - 7200))
                                                       ), '%H:%i'),
-                            'specificDatesStr', JSON_ARRAY(),
-                            'specificWeekDaysStr', JSON_ARRAY(),
+                            'specificDates', JSON_ARRAY(),
+                            'specificWeekDays', JSON_ARRAY(),
                             'specificMonthDateRanges', JSON_ARRAY()
                     )),
         -- 每周规则
             (SELECT JSON_OBJECT(
-                            'spotModeStr', 'weekly',
-                            'endTimeStr', @start_time2 := TIME_FORMAT(FROM_UNIXTIME(FLOOR(8 * 3600 + RAND() * 4 * 3600)), '%H:%i'),
-                            'startTimeStr', TIME_FORMAT(FROM_UNIXTIME(
+                            'mode', 'weekly',
+                            'endTime', @start_time2 := TIME_FORMAT(FROM_UNIXTIME(FLOOR(8 * 3600 + RAND() * 4 * 3600)), '%H:%i'),
+                            'startTime', TIME_FORMAT(FROM_UNIXTIME(
                                                               FLOOR(TIME_TO_SEC(@start_time2) + 7200 + RAND() * (86400 - TIME_TO_SEC(@start_time2) - 7200))
                                                       ), '%H:%i'),
-                            'specificDatesStr', JSON_ARRAY(),
-                            'specificWeekDaysStr', JSON_ARRAY('1', '2', '3', '4', '5'),
+                            'specificDates', JSON_ARRAY(),
+                            'specificWeekDays', JSON_ARRAY('1', '2', '3', '4', '5'),
                             'specificMonthDateRanges', JSON_ARRAY()
                     )),
         -- 特定日期规则
             (SELECT JSON_OBJECT(
-                            'spotModeStr', 'specific date',
-                            'endTimeStr', @start_time3 := TIME_FORMAT(FROM_UNIXTIME(FLOOR(0 * 3600 + RAND() * 12 * 3600)), '%H:%i'),
-                            'startTimeStr', TIME_FORMAT(FROM_UNIXTIME(
+                            'mode', 'specific date',
+                            'endTime', @start_time3 := TIME_FORMAT(FROM_UNIXTIME(FLOOR(0 * 3600 + RAND() * 12 * 3600)), '%H:%i'),
+                            'startTime', TIME_FORMAT(FROM_UNIXTIME(
                                                               FLOOR(TIME_TO_SEC(@start_time3) + 7200 + RAND() * (86400 - TIME_TO_SEC(@start_time3) - 7200))
                                                       ), '%H:%i'),
-                            'specificDatesStr', JSON_ARRAY('2024-01-01', '2024-02-10', '2024-05-01'),
-                            'specificWeekDaysStr', JSON_ARRAY(),
+                            'specificDates', JSON_ARRAY('2024-01-01', '2024-02-10', '2024-05-01'),
+                            'specificWeekDays', JSON_ARRAY(),
                             'specificMonthDateRanges', JSON_ARRAY()
                     )),
         -- 每月规则
             (SELECT JSON_OBJECT(
-                            'spotModeStr', 'monthly',
-                            'endTimeStr', @start_time4 := TIME_FORMAT(FROM_UNIXTIME(FLOOR(9 * 3600 + RAND() * 3 * 3600)), '%H:%i'),
-                            'startTimeStr', TIME_FORMAT(FROM_UNIXTIME(
+                            'mode', 'monthly',
+                            'endTime', @start_time4 := TIME_FORMAT(FROM_UNIXTIME(FLOOR(9 * 3600 + RAND() * 3 * 3600)), '%H:%i'),
+                            'startTime', TIME_FORMAT(FROM_UNIXTIME(
                                                               FLOOR(TIME_TO_SEC(@start_time4) + 7200 + RAND() * (86400 - TIME_TO_SEC(@start_time4) - 7200))
                                                       ), '%H:%i'),
-                            'specificDatesStr', JSON_ARRAY(),
-                            'specificWeekDaysStr', JSON_ARRAY(),
+                            'specificDates', JSON_ARRAY(),
+                            'specificWeekDays', JSON_ARRAY(),
                             'specificMonthDateRanges', JSON_ARRAY(
                                     JSON_OBJECT('startDay', 1, 'endDay', 5),
                                     JSON_OBJECT('startDay', 15, 'endDay', 20)

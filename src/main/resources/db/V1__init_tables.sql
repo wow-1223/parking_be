@@ -22,19 +22,19 @@ CREATE TABLE parking_spots (
     location VARCHAR(255) NOT NULL COMMENT 'location',
     longitude DECIMAL(10, 6) NOT NULL COMMENT 'longitude',
     latitude DECIMAL(10, 6) NOT NULL COMMENT 'latitude',
-    coordinate POINT SRID 4326 NOT NULL COMMENT 'coordinate',
+#     coordinate POINT SRID 4326 NOT NULL COMMENT 'coordinate',
     description TEXT COMMENT 'description',
     price DECIMAL(10,2) NOT NULL COMMENT 'price for per hour',
-    images JSON COMMENT 'image list',
+    images VARCHAR(500) COMMENT 'image list',
 --     mode TINYINT NOT NULL DEFAULT 1 COMMENT 'mode: 1: daily | 2: weekly | 3: monthly',
-    rules JSON COMMENT 'rule list for available periods',
-    facilities JSON COMMENT 'facility list',
+    rules VARCHAR(1000) COMMENT 'rule list for available periods',
+    facilities VARCHAR(500) COMMENT 'facility list',
     status TINYINT NOT NULL DEFAULT 0 COMMENT 'status: 0: pending | 1: approved | 2: available | 3: rejected',
     create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
     update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
     deleted_at BIGINT default 0 not null COMMENT 'deleted at',
-    INDEX idx_owner_id (owner_id),
-    SPATIAL INDEX idx_coordinate (coordinate)
+    INDEX idx_owner_id (owner_id)
+#     SPATIAL INDEX idx_coordinate (coordinate)
 ) COMMENT 'parking spots table';
 
 -- -- parking periods table

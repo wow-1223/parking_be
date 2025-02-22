@@ -1,5 +1,29 @@
 # API 接口文档及测试用例
 
+```bash
+api domain: http://localhost:8080
+eg. http://localhost:8080/api/user/register
+
+
+mysql:
+  host: 139.224.209.172
+  url: jdbc:mysql://139.224.209.172:3306
+  username: zc
+  password: 123456
+  port: 3306
+  database: xiaoxin_parking
+  dbname: wow_test_db
+  
+
+redis:
+  host: dbconn.sealosgzg.site
+  port: 35471
+  url: jdbc:redis://dbconn.sealosgzg.site:35471/0
+  username: zc
+  password: 123456
+  database: 0
+```
+
 ## 1. 用户认证接口 (/api/user)
 
 ### 1.1 发送验证码

@@ -1,7 +1,8 @@
 package com.parking.util;
 
 import com.parking.enums.parking.SpotModeEnum;
-import com.parking.model.vo.parking.rule.ParkingSpotRuleVO;
+import com.parking.model.vo.parking.DateRangeVO;
+import com.parking.model.vo.parking.ParkingSpotRuleVO;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -89,11 +90,11 @@ public class TimeExpressionParser {
         }
     }
 
-    private static ParkingSpotRuleVO.DateRangeVO parseDateRange(String dateRangeStr) {
+    private static DateRangeVO parseDateRange(String dateRangeStr) {
         String[] parts = dateRangeStr.split("-");
         int startDay = Integer.parseInt(parts[0]);
         int endDay = Integer.parseInt(parts[1]);
-        return new ParkingSpotRuleVO.DateRangeVO(startDay, endDay);
+        return new DateRangeVO(startDay, endDay);
     }
 
 }

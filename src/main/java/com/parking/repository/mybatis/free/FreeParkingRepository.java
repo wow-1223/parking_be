@@ -5,14 +5,15 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import com.google.gson.reflect.TypeToken;
-import com.parking.handler.ParkingIntervalChecker;
+import com.parking.util.business.ParkingIntervalChecker;
 import com.parking.mapper.mybatis.ParkingOccupiedMapper;
 import com.parking.mapper.mybatis.ParkingSpotMapper;
 import com.parking.model.entity.mybatis.ParkingSpot;
 import com.parking.model.param.parking.request.NearbyParkingSpotRequest;
-import com.parking.model.vo.parking.rule.ParkingSpotRuleVO;
-import com.parking.util.tool.DateUtil;
-import com.parking.util.tool.JsonUtil;
+import com.parking.model.vo.parking.ParkingSpotRuleStrVO;
+import com.parking.model.vo.parking.ParkingSpotRuleVO;
+import com.parking.util.DateUtil;
+import com.parking.util.JsonUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,11 +91,12 @@ public class FreeParkingRepository {
         List<ParkingSpot> availableSpots = new ArrayList<>();
 
         for (ParkingSpot parkingSpot : parkingSpots) {
-            Type type =  new TypeToken<List<ParkingSpotRuleVO>>(){}.getType();
-            List<ParkingSpotRuleVO> rules = JsonUtil.fromJson(parkingSpot.getRules(), type);
-            if (CollectionUtils.isEmpty(rules)) {
+            Type type =  new TypeToken<List<ParkingSpotRuleStrVO>>(){}.getType();
+            List<ParkingSpotRuleStrVO> ruleStrList = JsonUtil.fromJson(parkingSpot.getRules(), type);
+            if (CollectionUtils.isEmpty(ruleStrList)) {
                 continue;
             }
+            List<ParkingSpotRuleVO> rules = ruleStrList.stream().map(ParkingSpotRuleVO::new).toList();
 
             boolean availiable = false;
             // 判断startTime和endTime是否在rule.startTime - rule.endTime中

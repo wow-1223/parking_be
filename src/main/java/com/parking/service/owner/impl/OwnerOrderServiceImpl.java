@@ -7,13 +7,15 @@ import com.parking.model.dto.owner.DailyStatisticsDTO;
 import com.parking.model.entity.mybatis.Order;
 import com.parking.model.param.common.DetailResponse;
 import com.parking.model.param.common.PageResponse;
+import com.parking.model.param.owner.request.StatisticsRequest;
 import com.parking.model.param.owner.response.EarningsStatisticsResponse;
+import com.parking.model.param.owner.response.StatisticsResponse;
 import com.parking.model.param.owner.response.UsageStatisticsResponse;
 import com.parking.service.BaseOrderService;
 import com.parking.service.owner.OwnerOrderService;
 
-import com.parking.util.tool.DateUtil;
-import com.parking.util.tool.MoneyUtil;
+import com.parking.util.DateUtil;
+import com.parking.util.MoneyUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -24,7 +26,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.parking.util.tool.DateUtil.DATE_FORMATTER;
+import static com.parking.util.DateUtil.DATE_FORMATTER;
 
 @Service
 public class OwnerOrderServiceImpl extends BaseOrderService implements OwnerOrderService {
@@ -42,31 +44,31 @@ public class OwnerOrderServiceImpl extends BaseOrderService implements OwnerOrde
     }
 
     @Override
-    public EarningsStatisticsResponse getEarningsStatistics(Long ownerId, LocalDateTime startDate, LocalDateTime endDate) {
-        List<Object[]> statistics = orderRepository.getEarningsStatistics(
-                ownerId,
-                startDate,
-                endDate
+    public EarningsStatisticsResponse getEarningsStatistics(StatisticsRequest request) {
+        List<StatisticsResponse> statistics = orderRepository.getEarningsStatistics(
+                request.getOwnerId(),
+                DateUtil.parseDate(request.getStartTime()),
+                DateUtil.parseDate(request.getEndTime())
         );
 
         return buildEarningsResponse(statistics);
     }
 
     @Override
-    public UsageStatisticsResponse getUsageStatistics(Long ownerId, Long parkingSpotId, LocalDateTime startDate, LocalDateTime endDate) {
-        List<Object[]> statistics;
-        if (parkingSpotId != null) {
+    public UsageStatisticsResponse getUsageStatistics(StatisticsRequest request) {
+        List<StatisticsResponse> statistics;
+        if (request.getParkingSpotId() != null) {
             statistics = orderRepository.getParkingUsageStatistics(
-                    ownerId,
-                    parkingSpotId,
-                    startDate,
-                    endDate
+                    request.getOwnerId(),
+                    request.getParkingSpotId(),
+                    DateUtil.parseDate(request.getStartTime()),
+                    DateUtil.parseDate(request.getEndTime())
             );
         } else {
             statistics = orderRepository.getOverallUsageStatistics(
-                    ownerId,
-                    startDate,
-                    endDate
+                    request.getOwnerId(),
+                    DateUtil.parseDate(request.getStartTime()),
+                    DateUtil.parseDate(request.getEndTime())
             );
         }
 
@@ -105,17 +107,17 @@ public class OwnerOrderServiceImpl extends BaseOrderService implements OwnerOrde
     /**
      * 构建收益统计响应
      */
-    private EarningsStatisticsResponse buildEarningsResponse(List<Object[]> statistics) {
+    private EarningsStatisticsResponse buildEarningsResponse(List<StatisticsResponse> statistics) {
         EarningsStatisticsResponse response = new EarningsStatisticsResponse();
         List<DailyStatisticsDTO> dailyStats = new ArrayList<>();
 
         BigDecimal totalAmount = BigDecimal.ZERO;
         long totalOrders = 0;
 
-        for (Object[] stat : statistics) {
-            LocalDate date = ((java.sql.Date) stat[0]).toLocalDate();
-            BigDecimal amount = (BigDecimal) stat[1];
-            Long orderCount = (Long) stat[2];
+        for (StatisticsResponse stat : statistics) {
+            LocalDate date = stat.getDate();
+            BigDecimal amount = BigDecimal.valueOf(stat.getTotalAmount());
+            Long orderCount = Long.valueOf(stat.getOrderCount());
 
             DailyStatisticsDTO daily = new DailyStatisticsDTO();
             daily.setDate(date.format(DATE_FORMATTER));
@@ -146,26 +148,24 @@ public class OwnerOrderServiceImpl extends BaseOrderService implements OwnerOrde
     /**
      * 构建使用统计响应
      */
-    private UsageStatisticsResponse buildUsageResponse(List<Object[]> statistics) {
+    private UsageStatisticsResponse buildUsageResponse(List<StatisticsResponse> statistics) {
         UsageStatisticsResponse response = new UsageStatisticsResponse();
         List<DailyStatisticsDTO> dailyStats = new ArrayList<>();
 
         double totalUsageRate = 0;
         int validDays = 0;
 
-        for (Object[] stat : statistics) {
-            LocalDate date = ((java.sql.Date) stat[0]).toLocalDate();
-            Double usageRate = (Double) stat[1];
+        for (StatisticsResponse stat : statistics) {
+            LocalDate date = stat.getDate();
+            Double usageRate = Double.valueOf(stat.getTotalAmount());
 
-            if (usageRate != null) {
-                DailyStatisticsDTO daily = new DailyStatisticsDTO();
-                daily.setDate(date.format(DATE_FORMATTER));
-                daily.setUsageRate(Math.round(usageRate * 10) / 10.0);
-                dailyStats.add(daily);
+            DailyStatisticsDTO daily = new DailyStatisticsDTO();
+            daily.setDate(date.format(DATE_FORMATTER));
+            daily.setUsageRate(Math.round(usageRate * 10) / 10.0);
+            dailyStats.add(daily);
 
-                totalUsageRate += usageRate;
-                validDays++;
-            }
+            totalUsageRate += usageRate;
+            validDays++;
         }
 
         // 计算平均使用率

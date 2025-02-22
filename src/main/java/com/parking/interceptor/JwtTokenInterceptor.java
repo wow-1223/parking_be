@@ -1,7 +1,7 @@
 package com.parking.interceptor;
 
 import com.parking.exception.UnauthorizedException;
-import com.parking.util.tool.JwtUtil;
+import com.parking.handler.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;

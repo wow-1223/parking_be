@@ -12,10 +12,10 @@ spring:
   data:
     redis:
       host: dbconn.sealosgzg.site
-      port: 35471
+      port: 32652
       database: 0
       username: default
-      password: xjcwsdq2
+      password: 8fd5bkmg
       timeout: 10000ms
       lettuce:
         pool:
@@ -69,11 +69,11 @@ wechat:
 # ali pay
 alipay:
   appid: your_app_id
-  private-key: your_private_key
+  private-key: -----BEGIN PRIVATE KEY-----MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC7VJTUt9Us8cKj...-----END PRIVATE KEY-----
   public-key: alipay_public_key
   server-url: https://openapi.alipay.com/gateway.do
-  notify-url: https://139.224.209.172:8080/api/alipay/notify
-  return-url: https://139.224.209.172:8080/pay/result
+  notify-url: http://localhost:8080/api/pay/notify/alipay
+  return-url: https://localhost:8080/pay/result
   sign-type: RSA2
   charset: UTF-8
   format: json

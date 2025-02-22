@@ -13,11 +13,11 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="0@dbconn.sealosgzg.site" uuid="adae92fc-677a-48c7-a750-1715a7ded8ad">
+    <data-source source="LOCAL" name="xiaoxin_park_redis" uuid="adae92fc-677a-48c7-a750-1715a7ded8ad">
       <driver-ref>redis</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>jdbc.RedisDriver</jdbc-driver>
-      <jdbc-url>jdbc:redis://dbconn.sealosgzg.site:35471/0</jdbc-url>
+      <jdbc-url>jdbc:redis://dbconn.sealosgzg.site:32652/0</jdbc-url>
       <jdbc-additional-properties>
         <property name="com.intellij.clouds.kubernetes.db.host.port" />
         <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />

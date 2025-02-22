@@ -21,7 +21,7 @@ public class Order {
     private Long parkingOccupiedId;
     private BigDecimal amount;
     private BigDecimal refundAmount;
-    @TableField(fill = FieldFill.INSERT, jdbcType = JdbcType.VARCHAR)
+    @TableField(jdbcType = JdbcType.VARCHAR)
     private String carNumber;
     private String transactionId;
     private Integer status;

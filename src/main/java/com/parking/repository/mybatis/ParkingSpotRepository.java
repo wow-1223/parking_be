@@ -1,13 +1,12 @@
 package com.parking.repository.mybatis;
 
-import com.baomidou.mybatisplus.core.conditions.query.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import com.parking.mapper.mybatis.ParkingSpotMapper;
 import com.parking.model.entity.mybatis.ParkingSpot;
-import com.parking.util.tool.DateUtil;
+import com.parking.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

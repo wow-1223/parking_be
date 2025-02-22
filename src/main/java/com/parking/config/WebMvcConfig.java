@@ -2,7 +2,9 @@ package com.parking.config;
 
 import com.parking.interceptor.JwtTokenInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -20,8 +22,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/api/user/login/**",   // 登录接口
                         "/api/user/register",   // 注册接口
                         "/api/user/sendVerifyCode",   // 发送验证码
+                        "/api/user/verifyCode",   // 验证码验证
+                        "/api/pay/notify/**",   // 支付回调接口
                         "/api/upload/**"    // 文件上传接口
                 );
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
 //    @Override

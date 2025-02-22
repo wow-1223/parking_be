@@ -3,7 +3,7 @@ package com.parking.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.google.common.collect.Lists;
 import com.google.gson.reflect.TypeToken;
-import com.parking.handler.ParkingIntervalChecker;
+import com.parking.util.business.ParkingIntervalChecker;
 import com.parking.model.dto.parking.ParkingSpotDTO;
 import com.parking.model.dto.parking.ParkingSpotDetailDTO;
 import com.parking.model.dto.user.UserDTO;
@@ -12,9 +12,10 @@ import com.parking.model.entity.mybatis.ParkingSpot;
 import com.parking.model.entity.mybatis.User;
 import com.parking.model.param.common.DetailResponse;
 import com.parking.model.param.common.PageResponse;
-import com.parking.model.vo.parking.rule.ParkingSpotRuleVO;
-import com.parking.util.tool.DateUtil;
-import com.parking.util.tool.JsonUtil;
+import com.parking.model.vo.parking.ParkingSpotRuleStrVO;
+import com.parking.model.vo.parking.ParkingSpotRuleVO;
+import com.parking.util.DateUtil;
+import com.parking.util.JsonUtil;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.lang.reflect.Type;
@@ -41,14 +42,18 @@ public interface ParkSpotService {
     /**
      * 转换为详情响应
      */
-    default DetailResponse<ParkingSpotDetailDTO> convertToDetailResponse(
-            Boolean needAvailableTime, ParkingSpot parkingSpot,
-            User owner, List<OccupiedSpot> occupiedSpots,
-            String startTime, String endTime) {
+    default DetailResponse<ParkingSpotDetailDTO> convertToDetailResponse(Boolean needAvailableTime,
+                                                                         User owner,
+                                                                         ParkingSpot parkingSpot,
+                                                                         List<OccupiedSpot> occupiedSpots,
+                                                                         String startTime, String endTime) {
 
-        Type type = new TypeToken<List<ParkingSpotRuleVO>>() {}.getType();
-        List<ParkingSpotRuleVO> rules = JsonUtil.fromJson(parkingSpot.getRules(), type);
-
+        Type type = new TypeToken<List<ParkingSpotRuleStrVO>>() {}.getType();
+        List<ParkingSpotRuleStrVO> ruleStrList = JsonUtil.fromJson(parkingSpot.getRules(), type);
+        if (ruleStrList == null || ruleStrList.isEmpty()) {
+            return DetailResponse.detailSuccess(null, "there are no available spots");
+        }
+        List<ParkingSpotRuleVO> rules = ruleStrList.stream().map(ParkingSpotRuleVO::new).toList();
         // 计算可用时间区间
         List<ParkingSpotDetailDTO.IntervalDTO> parkingIntervals = Lists.newArrayListWithCapacity(rules.size());
         for (ParkingSpotRuleVO rule : rules) {
@@ -77,12 +82,14 @@ public interface ParkSpotService {
         detail.setFacilities(JsonUtil.toListString(parkingSpot.getFacilities()));
         detail.setParkingIntervals(parkingIntervals);
 
-        List<ParkingSpotDetailDTO.IntervalDTO> occupiedIntervals = Lists.newArrayListWithCapacity(occupiedSpots.size());
-        for (OccupiedSpot occupiedSpot : occupiedSpots) {
-            occupiedIntervals.add(new ParkingSpotDetailDTO.IntervalDTO(
-                    occupiedSpot.getStartTime().toLocalTime(), occupiedSpot.getEndTime().toLocalTime()));
+        if (CollectionUtils.isNotEmpty(occupiedSpots)) {
+            List<ParkingSpotDetailDTO.IntervalDTO> occupiedIntervals = Lists.newArrayListWithCapacity(occupiedSpots.size());
+            for (OccupiedSpot occupiedSpot : occupiedSpots) {
+                occupiedIntervals.add(new ParkingSpotDetailDTO.IntervalDTO(
+                        occupiedSpot.getStartTime().toLocalTime(), occupiedSpot.getEndTime().toLocalTime()));
+            }
+            detail.setOccupiedIntervals(occupiedIntervals);
         }
-        detail.setOccupiedIntervals(occupiedIntervals);
 
         // 设置所有者信息
         UserDTO owr = new UserDTO();

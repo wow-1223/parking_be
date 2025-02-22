@@ -17,8 +17,8 @@ import com.parking.repository.mybatis.ParkingSpotRepository;
 import com.parking.repository.mybatis.UserRepository;
 import com.parking.repository.mybatis.free.FreeParkingRepository;
 import com.parking.service.user.UserParkingService;
-import com.parking.util.tool.AesUtil;
-import com.parking.util.tool.DateUtil;
+import com.parking.handler.encrypt.AesUtil;
+import com.parking.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -77,7 +77,7 @@ public class UserParkingServiceImpl implements UserParkingService {
                 spot.getId(), DateUtil.convertToLocalDate(request.getStartTime()));
 
         DetailResponse<ParkingSpotDetailDTO> detail = convertToDetailResponse(false,
-                spot, owner, occupiedSpots, request.getStartTime(), request.getStartTime());
+                owner, spot, occupiedSpots, request.getStartTime(), request.getStartTime());
         if (detail != null && detail.getData() != null && detail.getData().getOwner()!= null) {
             // todo for test
             detail.getData().getOwner().setPhone(aesUtil.decrypt("Uu3+EuYVaOf4/w7QhxGfiA=="));

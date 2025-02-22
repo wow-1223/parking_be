@@ -9,7 +9,5 @@ public class UpdateParkingRequest extends OwnerParkingRequest {
 
     private Long id;
 
-    private Long ownerId;
-
     private Integer status;
 } 

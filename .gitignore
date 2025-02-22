@@ -40,7 +40,6 @@
  src/main/resources/application-local.properties
 /src/.gitignore
 /target/classes/com/parking/config/AlipayConfig.class
-/target/classes/com/parking/service/payment/impl/AliPayServiceImpl.class
 /target/classes/application.properties
 /target/classes/application.yml
 /target/classes/application-dev.properties

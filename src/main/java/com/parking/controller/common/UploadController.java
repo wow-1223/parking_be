@@ -1,7 +1,7 @@
 package com.parking.controller.common;
 
 import com.parking.model.param.upload.UploadResponse;
-import com.parking.service.upload.UploadService;
+import com.parking.handler.upload.UploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

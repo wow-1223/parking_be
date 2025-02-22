@@ -5,8 +5,8 @@ import lombok.Getter;
 @Getter
 public enum SpotStatusEnum {
 
-    PENDING(0, "pending"),
-    APPROVED(1, "approved"),
+//    PENDING(0, "pending"),
+    APPROVING(1, "approving"),
     AVAILABLE(2, "available"),
     REJECTED(3, "rejected");
 

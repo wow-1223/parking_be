@@ -5,8 +5,8 @@ import lombok.Getter;
 @Getter
 public enum PayTypeEnum {
 
-    WECHAT_PAY("wechat_pay"),
-    ALIPAY("alipay");
+    WECHAT_PAY("WECHAT_PAY"),
+    ALIPAY("ALIPAY");
 
     private final String value;
 

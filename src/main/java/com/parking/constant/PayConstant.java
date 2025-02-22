@@ -45,6 +45,15 @@ public class PayConstant {
         public static final String REFUNDED = "REFUNDED";
     }
 
+    public static class NotifyType {
+
+        public static final String PAY = "PAY";
+
+        public static final String CLOSE = "CLOSE";
+
+        public static final String REFUND = "REFUND";
+    }
+
     /**
      * 交易类型
      */

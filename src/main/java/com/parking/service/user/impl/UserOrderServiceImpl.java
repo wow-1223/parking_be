@@ -18,7 +18,8 @@ import com.parking.model.param.user.request.CancelOrderRequest;
 import com.parking.model.param.user.request.CreateOrderRequest;
 import com.parking.service.BaseOrderService;
 import com.parking.service.user.UserOrderService;
-import com.parking.util.tool.DateUtil;
+import com.parking.handler.encrypt.AesUtil;
+import com.parking.util.DateUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,13 @@ import java.util.List;
 
 @Service
 public class UserOrderServiceImpl extends BaseOrderService implements UserOrderService {
+
+    private final AesUtil aesUtil;
+
+    public UserOrderServiceImpl(AesUtil aesUtil) {
+        super();
+        this.aesUtil = aesUtil;
+    }
 
     @Override
     public PageResponse<OrderDTO> getOrders(Long userId, Integer status, Integer page, Integer size) {
@@ -81,7 +89,7 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
         order.setUserId(request.getUserId());
         order.setParkingSpotId(spot.getId());
         order.setParkingOccupiedId(occupiedSpot.getId());
-        order.setCarNumber(request.getCarNumber());
+        order.setCarNumber(aesUtil.encrypt(request.getCarNumber()));
         order.setStatus(OrderStatusEnum.PENDING_PAYMENT.getStatus());
         order.setAmount(calculateAmount(spot.getPrice(), st, ed));
 

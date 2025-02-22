@@ -1,18 +1,19 @@
 package com.parking.controller.payment;
 
 import com.parking.enums.PayTypeEnum;
-import com.parking.event.PayNotifyEvent;
-import com.parking.factory.PayServiceFactory;
-import com.parking.service.payment.PayService;
-import com.parking.handler.PayNotifyParser;
+import com.parking.handler.payment.notify.PayNotifyService;
+import com.parking.model.vo.pay.PayNotifyVO;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
+/**
+ * 回调处理
+ *  支付回调：1、解析参数 2、验证签名 3、返回成功或失败 4、异步处理业务逻辑（包含重试机制）
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api/pay/notify")
@@ -22,31 +23,25 @@ public class PayNotifyController {
     private static final String FAIL = "fail";
 
     @Autowired
-    private PayServiceFactory payServiceFactory;
-
-    @Autowired
-    private ApplicationEventPublisher eventPublisher;
-
-    @Autowired
-    private PayNotifyParser payNotifyParser;
+    private PayNotifyService payNotifyService;
 
     @PostMapping("/alipay")
     public String handleAliPayNotify(HttpServletRequest request) {
         try {
             // 解析支付宝回调参数
-            Map<String, String> params = payNotifyParser.parseAlipayNotify(request);
+            Map<String, String> params = payNotifyService.parseAlipayNotify(request);
             log.info("received ali pay notify：{}", params);
 
             // 验证签名
-            PayService payService = payServiceFactory.getPayService(PayTypeEnum.ALIPAY);
-            payService.handleNotify(params);
+            payNotifyService.verifyNotifySign(PayTypeEnum.ALIPAY, params);
 
-            // 发布支付回调事件
-            PayNotifyEvent event = payNotifyParser.buildAlipayNotifyEvent(params);
-            eventPublisher.publishEvent(event);
+            // 构建回调参数
+            PayNotifyVO notify = payNotifyService.generatePayNotifyVO(PayTypeEnum.ALIPAY, params);
+
+            // 异步处理业务逻辑（包含重试机制）
+            payNotifyService.handleNotify(notify);
 
             return SUCCESS;
-
         } catch (Exception e) {
             log.error("handle ali pay notify failed:", e);
             return FAIL;
@@ -62,20 +57,16 @@ public class PayNotifyController {
             @RequestHeader("Wechatpay-Serial") String serialNumber) {
         try {
             // 解析微信支付回调参数
-            Map<String, String> params = payNotifyParser.parseWechatPayNotify(
+            Map<String, String> params = payNotifyService.parseWechatPayNotify(
                     notifyData, signature, nonce, timestamp, serialNumber);
-            log.info("received wechat pay notify：{}", params);
 
-            // 验证签名
-            PayService payService = payServiceFactory.getPayService(PayTypeEnum.WECHAT_PAY);
-            payService.handleNotify(params);
+            // 构建回调参数
+            PayNotifyVO notify = payNotifyService.generatePayNotifyVO(PayTypeEnum.WECHAT_PAY, params);
 
-            // 发布支付回调事件
-            PayNotifyEvent event = payNotifyParser.buildWechatPayNotifyEvent(params);
-            eventPublisher.publishEvent(event);
+            // 异步处理业务逻辑（包含重试机制）
+            payNotifyService.handleNotify(notify);
 
             return SUCCESS;
-
         } catch (Exception e) {
             log.error("handle wechat pay notify failed:", e);
             return FAIL;
@@ -85,22 +76,23 @@ public class PayNotifyController {
     @PostMapping("/alipay/refund")
     public String handleAlipayRefundNotify(HttpServletRequest request) {
         try {
-            // 解析支付宝退款回调参数
-            Map<String, String> params = payNotifyParser.parseAlipayNotify(request);
-            log.info("received ali pay refund notify：{}", params);
+            // 解析支付宝回调参数
+            Map<String, String> params = payNotifyService.parseAlipayNotify(request);
+            log.info("received ali refund notify：{}", params);
 
             // 验证签名
-            PayService payService = payServiceFactory.getPayService(PayTypeEnum.ALIPAY);
-            payService.handleNotify(params);
+            payNotifyService.verifyNotifySign(PayTypeEnum.ALIPAY, params);
 
-            // 发布退款回调事件
-            PayNotifyEvent event = payNotifyParser.buildAlipayRefundNotifyEvent(params);
-            eventPublisher.publishEvent(event);
+            // 构建回调参数
+            PayNotifyVO notify = payNotifyService.generateRefundNotifyVO(PayTypeEnum.ALIPAY, params);
+
+            // 异步处理业务逻辑（包含重试机制）
+            payNotifyService.handleNotify(notify);
 
             return SUCCESS;
 
         } catch (Exception e) {
-            log.error("处理支付宝退款回调失败", e);
+            log.error("Process ali pay refund notify failed ", e);
             return FAIL;
         }
     }
@@ -113,26 +105,19 @@ public class PayNotifyController {
             @RequestHeader("Wechatpay-Timestamp") String timestamp,
             @RequestHeader("Wechatpay-Serial") String serialNumber) {
         try {
-            // 解析微信支付退款回调参数
-            Map<String, String> params = payNotifyParser.parseWechatPayNotify(
+            // 解析微信支付回调参数
+            Map<String, String> params = payNotifyService.parseWechatPayNotify(
                     notifyData, signature, nonce, timestamp, serialNumber);
-            log.info("received wechat pay refund notify：{}", params);
 
-            // 验证签名
-            PayService payService = payServiceFactory.getPayService(PayTypeEnum.WECHAT_PAY);
-            payService.handleNotify(params);
+            // 构建回调参数
+            PayNotifyVO notify = payNotifyService.generateRefundNotifyVO(PayTypeEnum.WECHAT_PAY, params);
 
-            // 发布退款回调事件
-            PayNotifyEvent event = payNotifyParser.buildWechatPayRefundNotifyEvent(params);
-            if (event == null) {
-                return FAIL;
-            }
-            eventPublisher.publishEvent(event);
+            // 异步处理业务逻辑（包含重试机制）
+            payNotifyService.handleNotify(notify);
 
             return SUCCESS;
-
         } catch (Exception e) {
-            log.error("handle wechat refund notify failed:", e);
+            log.error("handle wechat pay notify failed:", e);
             return FAIL;
         }
     }

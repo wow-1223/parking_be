@@ -35,6 +35,16 @@ public class OccupiedSpotRepository {
         return occupiedSpotMapper.selectById(id);
     }
 
+    public OccupiedSpot findById(Long id, List<String> fields) {
+        return occupiedSpotMapper.selectOne(
+                new QueryWrapper<OccupiedSpot>().eq("id", id).eq("deleted_at", 0L).select(fields));
+    }
+
+    public List<OccupiedSpot> findById(List<Long> idList, List<String> fields) {
+        return occupiedSpotMapper.selectList(
+                new QueryWrapper<OccupiedSpot>().in("id", idList).eq("deleted_at", 0L).select(fields));
+    }
+
     /**
      * 查询指定时间范围内的预定记录
      */
@@ -65,11 +75,6 @@ public class OccupiedSpotRepository {
      */
     public List<OccupiedOrderDTO> findTimeoutSpotsWithOrders(LocalDateTime checkTime, Integer timeout, Integer orderStatus) {
         return occupiedSpotMapper.findTimeoutSpotsWithOrders(checkTime, timeout, orderStatus);
-    }
-
-    public OccupiedSpot findById(Long id, List<String> fields) {
-        return occupiedSpotMapper.selectOne(
-                new QueryWrapper<OccupiedSpot>().eq("id", id).eq("deleted_at", 0L).select(fields));
     }
 
     public List<OccupiedSpot> findByDay(Long spotId, LocalDate parkingDay) {

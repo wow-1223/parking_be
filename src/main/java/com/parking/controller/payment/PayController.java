@@ -33,13 +33,13 @@ public class PayController {
         return payService.queryOrder(orderId);
     }
 
-    @PostMapping("/refund/{orderId}")
-    public PayResponse refund(
-            @PathVariable String orderId,
-            @RequestParam String payType,
-            @RequestParam Long amount,
-            @RequestParam String reason) {
-        PayService payService = payServiceFactory.getPayService(PayTypeEnum.fromValue(payType));
-        return payService.refund(orderId, amount, reason);
-    }
+//    @PostMapping("/refund/{orderId}")
+//    public PayResponse refund(
+//            @PathVariable String orderId,
+//            @RequestParam String payType,
+//            @RequestParam Long amount,
+//            @RequestParam String reason) {
+//        PayService payService = payServiceFactory.getPayService(PayTypeEnum.fromValue(payType));
+//        return payService.refund(orderId, amount, reason);
+//    }
 }

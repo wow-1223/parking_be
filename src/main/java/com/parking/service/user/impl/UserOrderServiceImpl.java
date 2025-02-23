@@ -27,6 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -195,5 +197,47 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
             log.error("Complete order failed, order id: {}", order.getId(), e);
             throw new BusinessException("Complete order failed, order id: " + order.getId());
         }
+    }
+
+    /**
+     * 计算退款金额
+     * @param order 订单
+     * @return 退款金额
+     */
+    public BigDecimal calculateRefundAmount(Order order, LocalDateTime startTime) {
+        LocalDateTime now = LocalDateTime.now();
+
+        // 1. 如果订单未支付，全额退款
+        if (OrderStatusEnum.PENDING_PAYMENT.getStatus() == order.getStatus()) {
+            return order.getAmount();
+        }
+
+        // 2. 如果距离开始时间不足2小时，不予退款
+        if (Duration.between(now, startTime).toHours() < 2) {
+            return BigDecimal.ZERO;
+        }
+
+        // 3. 根据距离开始时间计算退款比例
+        BigDecimal refundRate;
+        long hoursBeforeStart = Duration.between(now, startTime).toHours();
+
+        if (hoursBeforeStart >= 24) {
+            // 提前24小时以上取消，全额退款
+            refundRate = BigDecimal.ONE;
+        } else if (hoursBeforeStart >= 12) {
+            // 提前12-24小时取消，退款90%
+            refundRate = new BigDecimal("0.90");
+        } else if (hoursBeforeStart >= 6) {
+            // 提前6-12小时取消，退款70%
+            refundRate = new BigDecimal("0.70");
+        } else {
+            // 提前2-6小时取消，退款50%
+            refundRate = new BigDecimal("0.50");
+        }
+
+        // 4. 计算退款金额
+        return order.getAmount()
+                .multiply(refundRate)
+                .setScale(2, RoundingMode.HALF_UP);
     }
 }

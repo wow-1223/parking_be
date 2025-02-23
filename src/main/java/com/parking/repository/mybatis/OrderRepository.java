@@ -81,15 +81,13 @@ public class OrderRepository {
                 .eq("id", id).eq("user_id", userId).eq("deleted_at", 0L));
     }
 
-    public List<Order> findByOccupiedSpotIds(List<Long> occupiedSpotIds, Integer status) {
-        QueryWrapper<Order> query = new QueryWrapper<>();
-        query.in("parking_occupied_id", occupiedSpotIds);
-        if (status != null) {
-            query.eq("status", status);
-        }
-        query.eq("deleted_at", 0L);
-        return orderMapper.selectList(query);
+    /**
+     * 根据订单状态查找
+     */
+    public List<Order> findByStatus(Integer status) {
+        return orderMapper.selectList(new QueryWrapper<Order>().eq("status", status).eq("deleted_at", 0L));
     }
+
 
     /**
      * 根据用户ID分页查找订单

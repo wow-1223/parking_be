@@ -21,6 +21,7 @@ public class Order {
     private Long occupiedSpotId;
     private BigDecimal amount;
     private BigDecimal refundAmount;
+    private String payType;
     @TableField(jdbcType = JdbcType.VARCHAR)
     private String carNumber;
     private String transactionId;

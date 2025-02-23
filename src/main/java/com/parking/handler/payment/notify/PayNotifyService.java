@@ -192,13 +192,11 @@ public class PayNotifyService {
         order.setTransactionId(notify.getTradeNo());
         switch (notify.getStatus()) {
             case PayConstant.PayStatus.SUCCESS:
-                // todo 更新订单状态为支付成功
                 order.setStatus(OrderStatusEnum.RESERVED.getStatus());
                 orderRepository.update(order);
                 break;
             case PayConstant.PayStatus.REFUNDED:
-                // todo 更新订单状态为已退款
-                order.setStatus(OrderStatusEnum.CANCELING.getStatus());
+                order.setStatus(OrderStatusEnum.REFUNDED.getStatus());
                 orderRepository.update(order);
                 break;
             default:

@@ -75,7 +75,7 @@ public class ParkingReminderJob {
                     .map(OccupiedSpot::getId)
                     .collect(Collectors.toList());
             List<OrderUserDTO> orderUsers = orderRepository
-                    .findOrderWithUserByOccupied(occupiedIds, OrderStatusEnum.RESERVED.getStatus());
+                    .findOrderWithUserByOccupied(StringUtils.join(occupiedIds), OrderStatusEnum.RESERVED.getStatus());
             if (CollectionUtils.isEmpty(orderUsers)) {
                 return;
             }

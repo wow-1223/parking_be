@@ -87,6 +87,6 @@ public interface OrderMapper extends BaseMapper<Order> {
                                                 @Param("endDate") LocalDateTime endDate);
 
     @Select(SELECT_ORDER_WITH_USER_BY_OCCUPIED)
-    List<OrderUserDTO> selectOrderWithUserByOccupied(@Param("occupiedIds") List<Long> occupiedIds,
+    List<OrderUserDTO> selectOrderWithUserByOccupied(@Param("occupiedIds") String occupiedIds,
                                                      @Param("status") Integer status);
 }

@@ -146,7 +146,7 @@ public class OrderRepository {
     // end 统计相关
 
     // 联表查询
-    public List<OrderUserDTO> findOrderWithUserByOccupied(List<Long> occupiedIds, Integer status) {
+    public List<OrderUserDTO> findOrderWithUserByOccupied(String occupiedIds, Integer status) {
         return orderMapper.selectOrderWithUserByOccupied(occupiedIds, status);
     }
 

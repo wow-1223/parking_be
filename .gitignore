@@ -97,7 +97,7 @@
 /target/classes/com/parking/ParkingApplication.class
 /target/classes/com/parking/handler/ParkingIntervalChecker$1.class
 /target/classes/com/parking/handler/ParkingIntervalChecker.class
-/target/classes/com/parking/mapper/mybatis/ParkingOccupiedMapper.class
+/target/classes/com/parking/mapper/mybatis/OccupiedSpotMapper.class
 /target/classes/com/parking/model/entity/mybatis/ParkingSpot.class
 /target/classes/com/parking/model/dto/parking/ParkingSpotDetailDTO$IntervalDTO.class
 /target/classes/com/parking/model/dto/parking/ParkingSpotDetailDTO$OwnerDTO.class

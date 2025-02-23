@@ -1,6 +1,7 @@
 package com.parking.mapper.mybatis;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.parking.model.dto.join.OrderUserDTO;
 import com.parking.model.entity.mybatis.Order;
 import com.parking.model.param.owner.response.StatisticsResponse;
 import org.apache.ibatis.annotations.Mapper;
@@ -59,6 +60,16 @@ public interface OrderMapper extends BaseMapper<Order> {
             ORDER BY date ASC
         """;
 
+    String SELECT_ORDER_WITH_USER_BY_OCCUPIED = """
+            SELECT o.*, u.phone, u.nick_name
+            FROM orders o
+            LEFT JOIN users u ON o.user_id = u.id
+            WHERE o.parking_occupied_id IN (${occupiedIds})
+            AND o.status = #{status}
+            AND o.deleted_at = 0
+            AND u.deleted_at = 0
+        """;
+
     @Select(SELECT_EARNING_SQL)
     List<StatisticsResponse> selectEarningsStatistics(@Param("ownerId") Long ownerId,
                                             @Param("startDate") LocalDateTime startDate,
@@ -75,4 +86,7 @@ public interface OrderMapper extends BaseMapper<Order> {
                                                 @Param("startDate") LocalDateTime startDate,
                                                 @Param("endDate") LocalDateTime endDate);
 
+    @Select(SELECT_ORDER_WITH_USER_BY_OCCUPIED)
+    List<OrderUserDTO> selectOrderWithUserByOccupied(@Param("occupiedIds") List<Long> occupiedIds,
+                                                     @Param("status") Integer status);
 }

@@ -50,23 +50,9 @@ public class SmsServiceImpl implements SmsService {
             // 3. 构建短信参数
             Map<String, String> templateParam = new HashMap<>();
             templateParam.put("code", code);
-
-            SendSmsRequest sendSmsRequest = new SendSmsRequest()
-                    .setPhoneNumbers(phone)
-                    .setSignName(smsConfig.getSignName())
-                    .setTemplateCode(smsConfig.getTemplateCode())
-                    .setTemplateParam(JsonUtil.toJson(templateParam));
-
-            RuntimeOptions runtime = new RuntimeOptions();
-
             // 4. 发送短信
-            // todo: 测试时注释掉
-//            SendSmsResponse response = smsClient.sendSmsWithOptions(sendSmsRequest, runtime);
-//            log.info("send sms message failed: {}", gson.toJson(response));
-
-//            if (!"OK".equals(response.getBody().getCode())) {
-//                throw new BusinessException("send sms message failed: " + response.getBody().getMessage());
-//            }
+            // todo for test
+//            send(phone, smsConfig.getTemplateCode(), templateParam);
 
             // 5. 将验证码保存到Redis
             String verifyKey = VERIFY_CODE_PREFIX + phone;
@@ -77,7 +63,29 @@ public class SmsServiceImpl implements SmsService {
             return code;
         } catch (Exception e) {
             log.error("send sms message error", e);
-            throw new BusinessException("", "send sms message failed, please try again later");
+            throw new BusinessException("send sms message failed, please try again later");
+        }
+    }
+
+    @Override
+    public void sendOrderConfirmMessage(String phone, String message) {
+        try {
+            Map<String, String> templateParam = new HashMap<>();
+            templateParam.put("orderConfirmPrompt", message);
+            send(phone, "orderConfirmPromptTemplate", templateParam);
+        } catch (Exception e) {
+            log.error("send sms message error", e);
+            throw new BusinessException("send sms message failed, please try again later");
+        }
+    }
+
+    @Override
+    public void sendMessage(String phone, String message) {
+        try {
+            send(phone, "blank_template", Map.of("message", message));
+        } catch (Exception e) {
+            log.error("send sms message error", e);
+            throw new BusinessException("send sms message failed, please try again later");
         }
     }
 
@@ -92,5 +100,31 @@ public class SmsServiceImpl implements SmsService {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 发送短信
+     *
+     * @param phone         手机号
+     * @param templateCode  短信模板
+     * @param templateParam 短信参数
+     */
+    private void send(String phone, String templateCode, Map<String, String> templateParam) throws Exception {
+        SendSmsRequest sendSmsRequest = new SendSmsRequest()
+                .setPhoneNumbers(phone)
+                .setSignName(smsConfig.getSignName())
+                .setTemplateCode(templateCode)
+                .setTemplateParam(JsonUtil.toJson(templateParam));
+
+        RuntimeOptions runtime = new RuntimeOptions();
+
+        // 4. 发送短信
+        // todo: 测试时注释掉
+        SendSmsResponse response = smsClient.sendSmsWithOptions(sendSmsRequest, runtime);
+        log.info("send sms message failed: {}", JsonUtil.toJson(response));
+
+        if (!"OK".equals(response.getBody().getCode())) {
+            throw new BusinessException("send sms message failed: " + response.getBody().getMessage());
+        }
     }
 }

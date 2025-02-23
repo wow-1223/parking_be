@@ -54,7 +54,7 @@ public abstract class BaseOrderService implements OrderService {
         }
         List<Order> records = page.getRecords();
         List<Long> parkingSpotIds = records.stream().map(Order::getParkingSpotId).toList();
-        List<Long> occupiedSpotIds = records.stream().map(Order::getParkingOccupiedId).toList();
+        List<Long> occupiedSpotIds = records.stream().map(Order::getOccupiedSpotId).toList();
         // 查询停车位信息
         List<ParkingSpot> parkingSpots = parkingSpotRepository.findAll(
                 parkingSpotIds, Lists.newArrayList("id", "owner_id", "longitude", "latitude", "location"));
@@ -77,7 +77,7 @@ public abstract class BaseOrderService implements OrderService {
             if (parkingSpot == null) {
                 throw new ResourceNotFoundException("ParkingSpot not found");
             }
-            OccupiedSpot occupiedSpot = occupiedSpotMap.get(order.getParkingOccupiedId());
+            OccupiedSpot occupiedSpot = occupiedSpotMap.get(order.getOccupiedSpotId());
             OrderDTO dto = convertToDTO(order, parkingSpot, occupiedSpot);
             orders.add(dto);
         }
@@ -125,7 +125,7 @@ public abstract class BaseOrderService implements OrderService {
         dto.setLocation(parkingSpot.getLocation());
 
         // 设置占用信息
-        OccupiedSpot occupiedSpot = occupiedSpotRepository.findById(order.getParkingOccupiedId(),
+        OccupiedSpot occupiedSpot = occupiedSpotRepository.findById(order.getOccupiedSpotId(),
                 Lists.newArrayList("id", "parking_day", "start_time", "end_time"));
         if (occupiedSpot == null) {
             throw new ResourceNotFoundException("OccupiedSpot not found");

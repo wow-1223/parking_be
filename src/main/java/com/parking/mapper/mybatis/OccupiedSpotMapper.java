@@ -1,6 +1,7 @@
 package com.parking.mapper.mybatis;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.parking.model.dto.join.OccupiedOrderDTO;
 import com.parking.model.entity.mybatis.OccupiedSpot;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
-public interface ParkingOccupiedMapper extends BaseMapper<OccupiedSpot> {
+public interface OccupiedSpotMapper extends BaseMapper<OccupiedSpot> {
 
     String GET_OCCUPIED_SPOT_ID_LIST =
             "SELECT parking_spot_id " +
@@ -27,6 +28,16 @@ public interface ParkingOccupiedMapper extends BaseMapper<OccupiedSpot> {
             "WHERE parking_spot_id = #{spotId} " +
             "AND ((start_time >= #{startTime} AND start_time <= #{endTime}) OR (end_time >= #{startTime} AND end_time <= #{endTime})) " +
             "AND deleted_at = 0 ";
+
+    String FIND_OVERDUE_SPOTS_WITH_ORDERS =
+            "SELECT po.*, o.* " +
+                    "FROM parking_occupied po " +
+                    "INNER JOIN orders o ON o.parking_occupied_id = po.id " +
+                    "WHERE po.end_time <= #{checkTime} " +
+                    "AND po.end_time >= DATE_SUB(#{checkTime}, INTERVAL #{timeout} MINUTE) " +
+                    "AND o.status = #{orderStatus} " +
+                    "AND po.deleted_at = 0 " +
+                    "AND o.deleted_at = 0";
 
     /**
      * 根据停车位ID与时间区间查找车位占用记录
@@ -44,4 +55,13 @@ public interface ParkingOccupiedMapper extends BaseMapper<OccupiedSpot> {
     List<OccupiedSpot> getParkingSpotsByTimeInterval(@Param("spotId") Long spotId,
                                                      @Param("startTime") LocalDateTime startTime,
                                                      @Param("endTime") LocalDateTime endTime);
+
+    /**
+     * 联表查询即将超时的订单和占用信息
+     */
+    @Select(FIND_OVERDUE_SPOTS_WITH_ORDERS)
+    List<OccupiedOrderDTO> findTimeoutSpotsWithOrders(
+            @Param("checkTime") LocalDateTime checkTime,
+            @Param("timeout") Integer timeout,
+            @Param("orderStatus") Integer orderStatus);
 }

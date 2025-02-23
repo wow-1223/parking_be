@@ -10,6 +10,13 @@ public interface SmsService {
     String sendVerifyCode(String phone);
 
     /**
+     * 发送订单确认短信
+     */
+    void sendOrderConfirmMessage(String phone, String message);
+
+    void sendMessage(String phone, String message);
+
+    /**
      * 验证验证码
      */
     boolean verifyCode(String phone, String code);

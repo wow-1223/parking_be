@@ -66,4 +66,11 @@ public class UserRepository {
     public User findByPhone(String phone) {
         return userMapper.selectOne(new QueryWrapper<User>().eq("phone", phone).eq("deleted_at", 0));
     }
+
+    /**
+     * 根据ID列表查找用户
+     */
+    public List<User> findByIds(List<Long> ids) {
+        return userMapper.selectBatchIds(ids);
+    }
 }

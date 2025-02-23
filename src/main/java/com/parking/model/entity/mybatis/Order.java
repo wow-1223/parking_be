@@ -1,6 +1,5 @@
 package com.parking.model.entity.mybatis;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -18,7 +17,8 @@ public class Order {
     private Long userId;
     private Long parkingSpotId;
     private Long ownerId;
-    private Long parkingOccupiedId;
+    @TableField(value = "parking_occupied_id")
+    private Long occupiedSpotId;
     private BigDecimal amount;
     private BigDecimal refundAmount;
     @TableField(jdbcType = JdbcType.VARCHAR)

@@ -26,7 +26,7 @@ public class OrderDTO {
     private BigDecimal amount;
     private BigDecimal refundAmount;
     private String transactionId;
-    // status: 0:pending payment | 1:reserved | 2:confirmed | 3:processing | 4:completed | 5: canceling | 6: canceled | 7:refunding | 8:refunded | 9:overdue | 10: overdue pending payment | 11:leave temporarily
+    // status: 0:pending payment | 1:reserved | 2:confirmed | 3:processing | 4:completed | 5: canceling | 6: canceled | 7:refunding | 8:refunded | 9:timeout | 10: timeout pending payment | 11:leave temporarily
     private Integer status;
 
 }

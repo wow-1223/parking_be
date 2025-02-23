@@ -7,9 +7,11 @@ import com.google.common.collect.Lists;
 import com.parking.mapper.mybatis.ParkingSpotMapper;
 import com.parking.model.entity.mybatis.ParkingSpot;
 import com.parking.util.DateUtil;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -73,6 +75,22 @@ public class ParkingSpotRepository {
     /**
      * 根据ID列表查找车位指定信息
      */
+    public IPage<ParkingSpot> findByPage(List<Long> ids, List<String> selectFields, Integer page, Integer size) {
+        return parkingSpotMapper.selectPage(new Page<>(page, size),
+                new QueryWrapper<ParkingSpot>()
+                        .in("id", ids)
+                        .eq("deleted_at", 0L)
+                        .orderByDesc("update_time")
+                        .select(selectFields));
+    }
+
+    public IPage<ParkingSpot> findFavoriteParkingSpots(Long userId, Integer page, Integer size) {
+        return parkingSpotMapper.getFavoriteParkingSpots(new Page<>(page, size), userId);
+    }
+
+    /**
+     * 根据ID列表查找车位指定信息
+     */
     public List<ParkingSpot> findAll(List<Long> ids, List<String> selectFields) {
         return parkingSpotMapper.selectList(
                 new QueryWrapper<ParkingSpot>()
@@ -80,6 +98,12 @@ public class ParkingSpotRepository {
                         .eq("deleted_at", 0L)
                         .orderByDesc("update_time")
                         .select(selectFields));
+    }
+
+    public List<ParkingSpot> findAvailableParkingSpotIdList(
+            Double longitude, Double latitude, Integer radius, BigDecimal price) {
+        return parkingSpotMapper.getAvailableParkingSpotIdList(
+                longitude, latitude, radius, price);
     }
 
     /**

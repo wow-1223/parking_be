@@ -51,7 +51,6 @@ public class OccupiedSpotRepository {
     public List<OccupiedSpot> findReservedByTimeRange(LocalDateTime startTime, LocalDateTime endTime) {
         return occupiedSpotMapper.selectList(
                 new QueryWrapper<OccupiedSpot>()
-                        .eq("status", "RESERVED")
                         .ge("start_time", startTime)
                         .lt("start_time", endTime)
                         .eq("deleted_at", 0)

@@ -2,10 +2,13 @@ package com.parking.util.business;
 
 import com.parking.model.vo.parking.DateRangeVO;
 import com.parking.model.vo.parking.ParkingSpotRuleVO;
+import org.springframework.util.CollectionUtils;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.List;
 
 public class ParkingIntervalChecker {

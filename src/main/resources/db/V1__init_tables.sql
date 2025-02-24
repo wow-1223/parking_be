@@ -85,7 +85,7 @@ CREATE TABLE orders (
     car_number VARCHAR(30) NOT NULL COMMENT 'car number',
     amount DECIMAL(10,2) NOT NULL COMMENT 'order amount',
     refund_amount DECIMAL(10,2) NOT NULL DEFAULT 0 COMMENT 'refund amount',
-    pay_type VARCHAR(20) NOT NULL DEFAULT 1 COMMENT 'pay type: WECHAT_PAY | ALIPAY',
+    pay_type VARCHAR(20) NOT NULL DEFAULT '' COMMENT 'pay type: WECHAT_PAY | ALIPAY',
     transaction_id VARCHAR(64) UNIQUE COMMENT 'payment transaction id',
     status TINYINT NOT NULL DEFAULT 0 COMMENT 'status: 0:pending payment | 1:reserved | 2:confirmed | 3:processing | 4:completed | 5: canceling | 6: canceled | 7:refunding | 8:refunded | 9:timeout | 10: timeout pending payment | 11:leave temporarily',
 --     payment_id VARCHAR(64) COMMENT 'payment id',

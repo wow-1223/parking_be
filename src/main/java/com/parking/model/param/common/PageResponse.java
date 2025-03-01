@@ -17,13 +17,13 @@ public class PageResponse<T> extends BaseResponse {
 
     public static <T> PageResponse<T> pageSuccess(List<T> list, long total) {
         PageResponse<T> response = new PageResponse<>();
-        response.setCode("200");
+        response.setCode(200);
         response.setTotal(total);
         response.setList(list);
         return response;
     }
 
-    public static <T> PageResponse<T> pageFail(String code, String message) {
+    public static <T> PageResponse<T> pageFail(Integer code, String message) {
         PageResponse<T> response = new PageResponse<>();
         response.setCode(code);
         response.setMessage(message);

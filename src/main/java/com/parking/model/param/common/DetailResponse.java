@@ -15,13 +15,13 @@ public class DetailResponse<T> extends BaseResponse {
 
     public static <T> DetailResponse<T> detailSuccess(T data, String message) {
         DetailResponse<T> response = new DetailResponse<>();
-        response.setCode("200");
+        response.setCode(200);
         response.setData(data);
         response.setMessage(message);
         return response;
     }
 
-    public static <T> DetailResponse<T> detailFail(String code, String message) {
+    public static <T> DetailResponse<T> detailFail(Integer code, String message) {
         DetailResponse<T> response = new DetailResponse<>();
         response.setCode(code);
         response.setMessage(message);

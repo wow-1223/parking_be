@@ -5,13 +5,13 @@ package com.parking.exception;
  */
 public class BusinessException extends RuntimeException {
 
-    private String code;
+    private Integer code;
 
     public BusinessException(String message) {
         super(message);
     }
 
-    public BusinessException(String code, String message) {
+    public BusinessException(Integer code, String message) {
         super(message);
         this.code = code;
     }
@@ -20,7 +20,7 @@ public class BusinessException extends RuntimeException {
         super(message, cause);
     }
 
-    public String getCode() {
+    public Integer getCode() {
         return code;
     }
 }

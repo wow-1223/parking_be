@@ -2,9 +2,9 @@
 -- users table
 CREATE TABLE users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    open_id VARCHAR(64) UNIQUE NOT NULL COMMENT 'wechat open id',
-    phone CHAR(20) UNIQUE COMMENT 'phone (encrypted)',
-    password CHAR(60) COMMENT 'password (encrypted)',
+    open_id VARCHAR(64) UNIQUE NOT NULL DEFAULT '' COMMENT 'wechat open id',
+    phone CHAR(40) UNIQUE NOT NULL DEFAULT '' COMMENT 'phone (encrypted)',
+    password CHAR(60) NOT NULL DEFAULT '' COMMENT 'password (encrypted)',
     nick_name VARCHAR(64) COMMENT 'nick name',
     avatar_url VARCHAR(500) COMMENT 'avatar url',
     role TINYINT NOT NULL DEFAULT 1 COMMENT 'role: 1: user | 2: owner | 3: admin',

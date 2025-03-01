@@ -17,14 +17,14 @@ public class LoginResponse<T> extends BaseResponse {
 
     public static <T> LoginResponse<T> loginSuccess(T data, String message) {
         LoginResponse<T> response = new LoginResponse<>();
-        response.setCode("200");
+        response.setCode(200);
         response.setData(data);
         response.setSuccess(true);
         response.setMessage(message);
         return response;
     }
 
-    public static <T> LoginResponse<T> loginFail(String code, String message) {
+    public static <T> LoginResponse<T> loginFail(Integer code, String message) {
         LoginResponse<T> response = new LoginResponse<>();
         response.setCode(code);
         response.setMessage(message);

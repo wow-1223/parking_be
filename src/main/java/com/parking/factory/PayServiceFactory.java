@@ -29,7 +29,7 @@ public class PayServiceFactory {
     public PayService getPayService(PayTypeEnum payType) {
         PayService payService = payServices.get(payType);
         if (payService == null) {
-            throw new PaymentException(PayConstant.PayError.INVALID_PAY_TYPE, "invalid pay type: " + payType.getValue());
+            throw new PaymentException("invalid pay type: " + payType.getValue());
         }
         return payService;
     }

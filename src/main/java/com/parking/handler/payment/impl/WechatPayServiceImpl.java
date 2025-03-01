@@ -169,7 +169,7 @@ public class WechatPayServiceImpl implements PayService {
             boolean isSignValid = wechatPayUtil.verifyNotifySign(
                     notifyData, signature, nonce, timestamp, serialNumber);
             if (!isSignValid) {
-                throw new PaymentException(PayConstant.PayError.INVALID_SIGN, "wechat pay notify sign verify failed");
+                throw new PaymentException("wechat pay notify sign verify failed");
             }
 
             // 解密回调通知数据

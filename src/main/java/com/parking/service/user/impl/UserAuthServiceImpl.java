@@ -65,7 +65,7 @@ public class UserAuthServiceImpl implements UserAuthService {
         validateLoginRequest(request);
 
         // 1. 验证手机号是否已注册
-        User user = userRepository.findByPhone(request.getPhone());
+        User user = userRepository.findByPhone(aesUtil.encrypt(request.getPhone()));
         if (user == null) {
             throw new BusinessException("phone is not registered");
         }
@@ -98,20 +98,20 @@ public class UserAuthServiceImpl implements UserAuthService {
         validateLoginRequest(request);
 
         // 1. 验证手机号是否已注册
-        User usr = userRepository.findByPhone(request.getPhone());
+        User usr = userRepository.findByPhone(aesUtil.encrypt(request.getPhone()));
         if (usr != null) {
-            throw new BusinessException("400", "phone is already in use");
+            throw new BusinessException("phone is already in use");
         }
 
         // 2. 验证验证码
         boolean verifyCode = smsService.verifyCode(request.getPhone(), request.getVerifyCode());
         if (!verifyCode) {
-            throw new BusinessException("400", "invalid verify code");
+            throw new BusinessException("invalid verify code");
         }
 
         // 3. 创建用户
         User user = new User();
-        user.setPhone(request.getPhone());
+        user.setPhone(aesUtil.encrypt(request.getPhone()));
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         // 默认普通用户
         user.setRole(UserRoleEnum.USER.getRole());

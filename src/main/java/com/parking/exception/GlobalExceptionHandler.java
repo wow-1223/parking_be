@@ -19,34 +19,34 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse handleUnauthorizedException(UnauthorizedException e) {
         log.error("Unauthorized", e);
-        return new ErrorResponse("401", e.getMessage());
+        return new ErrorResponse(401, e.getMessage());
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleResourceNotFoundException(ResourceNotFoundException e) {
         log.error("Resource not found", e);
-        return new ErrorResponse("404", e.getMessage());
+        return new ErrorResponse(404, e.getMessage());
     }
 
     @ExceptionHandler(BusinessException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBusinessException(BusinessException e) {
         log.error("Business error", e);
-        return new ErrorResponse("402", e.getMessage());
+        return new ErrorResponse(402, e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleException(Exception e) {
         log.error("Internal server error", e);
-        return new ErrorResponse("500", "服务器内部错误");
+        return new ErrorResponse(500, "服务器内部错误");
     }
 
     @ExceptionHandler(PaymentException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handlePaymentException(PaymentException e) {
         log.error("Payment error", e);
-        return new ErrorResponse("901", e.getMessage());
+        return new ErrorResponse(901, e.getMessage());
     }
 }

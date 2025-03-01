@@ -12,7 +12,7 @@ public class BaseResponse {
     /**
      * 错误码
      */
-    private String code;
+    private Integer code;
 
     /**
      * 错误信息

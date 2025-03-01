@@ -23,6 +23,7 @@ import com.parking.handler.encrypt.AesUtil;
 import com.parking.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,6 +64,10 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
     @Override
     @Transactional
     public OperationResponse createOrder(CreateOrderRequest request) {
+        Long userId = Long.valueOf((String) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal());
+
         // 1. 验证停车位是否可用
         ParkingSpot spot = parkingSpotRepository.findById(request.getParkingSpotId(), Lists.newArrayList("id", "owner_id", "price", "status"));
         if (spot == null) {
@@ -89,17 +94,17 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
             occupiedSpot.setParkingDay(DateUtil.convertToLocalDate(request.getStartTime()));
             occupiedSpot.setStartTime(st);
             occupiedSpot.setEndTime(ed);
+            occupiedSpotRepository.insert(occupiedSpot);
 
             order.setOwnerId(spot.getOwnerId());
-            order.setUserId(request.getUserId());
+            order.setUserId(userId);
             order.setParkingSpotId(spot.getId());
             order.setOccupiedSpotId(occupiedSpot.getId());
             order.setCarNumber(aesUtil.encrypt(request.getCarNumber()));
             order.setStatus(OrderStatusEnum.PENDING_PAYMENT.getStatus());
             order.setAmount(calculateAmount(spot.getPrice(), st, ed));
-
-            occupiedSpotRepository.insert(occupiedSpot);
             orderRepository.insert(order);
+
         } catch (Exception e) {
             log.error("Create order failed, order id: {}", order.getId(), e);
             throw new BusinessException("Create order failed, order id: " + order.getId());

@@ -19,7 +19,7 @@ CREATE TABLE users (
 CREATE TABLE parking_spots (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     owner_id BIGINT NOT NULL COMMENT 'owner id',
-    lock_device_id BIGINT NOT NULL COMMENT 'lock device id',
+    lock_device_id BIGINT NOT NULL Default 0 COMMENT 'lock device id',
     location VARCHAR(255) NOT NULL COMMENT 'location',
     longitude DECIMAL(10, 6) NOT NULL COMMENT 'longitude',
     latitude DECIMAL(10, 6) NOT NULL COMMENT 'latitude',

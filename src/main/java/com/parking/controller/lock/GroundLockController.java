@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/api/lock")
-public class FloorLockController {
+public class GroundLockController {
 
     @PostMapping("/getLockNumber")
     public static String getLockNumber(String floorNumber) {

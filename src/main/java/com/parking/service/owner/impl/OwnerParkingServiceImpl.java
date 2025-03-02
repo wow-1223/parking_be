@@ -6,6 +6,7 @@ import com.parking.enums.parking.SpotStatusEnum;
 import com.parking.enums.user.UserRoleEnum;
 import com.parking.exception.BusinessException;
 import com.parking.exception.ResourceNotFoundException;
+import com.parking.handler.jwt.TokenUtil;
 import com.parking.model.dto.parking.ParkingSpotDTO;
 import com.parking.model.dto.parking.ParkingSpotDetailDTO;
 import com.parking.model.entity.mybatis.ParkingSpot;
@@ -67,11 +68,11 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
         // 校验参数
         checkParkingSpot(request);
 
-        checkDuplicate(request);
+        checkDuplicateForCreate(request);
 
         // 创建车位
         ParkingSpot parkingSpot = new ParkingSpot();
-        parkingSpot.setOwnerId(request.getUserId());
+        parkingSpot.setOwnerId(TokenUtil.getUserId());
         parkingSpot.setLocation(request.getLocation());
         parkingSpot.setLatitude(BigDecimal.valueOf(request.getLatitude()));
         parkingSpot.setLongitude(BigDecimal.valueOf(request.getLongitude()));
@@ -166,20 +167,21 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
             throw new BusinessException("User is not allowed to change status");
         }
 
-        if (!spot.getOwnerId().equals(request.getUserId())) {
+        if (!spot.getOwnerId().equals(TokenUtil.getUserId())) {
             throw new BusinessException("Parking spot owner id mismatch");
         }
 
         return spot;
     }
 
-    public void checkDuplicate(OwnerParkingRequest request) {
-
+    public void checkDuplicateForCreate(OwnerParkingRequest request) {
+        // 检查是否有重复的车位
     }
 
     public void checkParkingSpot(OwnerParkingRequest request) {
 
-        checkOwner(request);
+        // user can publish parking spot, after approved and installed floor lock, make role be owner
+//        checkOwner(request);
 
         if (request.getLocation() == null) {
             throw new ResourceNotFoundException("Location is required");
@@ -213,10 +215,11 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
     }
 
     public User checkOwner(OwnerParkingRequest request) {
-        if (request.getUserId() == null) {
-            throw new ResourceNotFoundException("Owner is required");
-        }
-        User user = userRepository.findById(request.getUserId(), Lists.newArrayList("id", "role"));
+        Long userId = TokenUtil.getUserId();
+//        if (userId == null) {
+//            throw new ResourceNotFoundException("Owner is required");
+//        }
+        User user = userRepository.findById(userId, Lists.newArrayList("id", "role"));
         if (user == null) {
             throw new ResourceNotFoundException("Owner not found");
         }

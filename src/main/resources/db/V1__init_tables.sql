@@ -19,6 +19,7 @@ CREATE TABLE users (
 CREATE TABLE parking_spots (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     owner_id BIGINT NOT NULL COMMENT 'owner id',
+    lock_device_id BIGINT NOT NULL COMMENT 'lock device id',
     location VARCHAR(255) NOT NULL COMMENT 'location',
     longitude DECIMAL(10, 6) NOT NULL COMMENT 'longitude',
     latitude DECIMAL(10, 6) NOT NULL COMMENT 'latitude',
@@ -29,6 +30,7 @@ CREATE TABLE parking_spots (
     rules VARCHAR(1000) COMMENT 'rule list for available periods',
     facilities VARCHAR(500) COMMENT 'facility list',
     status TINYINT NOT NULL DEFAULT 0 COMMENT 'status: 0: approving | 1: approved | 2: available | 3: rejected | 4:breakdown',
+    rating DECIMAL(3,2) NOT NULL DEFAULT 0 COMMENT 'rating',
     create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
     update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
     deleted_at BIGINT default 0 not null COMMENT 'deleted at',
@@ -75,6 +77,35 @@ CREATE TABLE orders (
     INDEX idx_parking_spot_id (parking_spot_id),
     INDEX idx_parking_occupied_id (parking_occupied_id)
 ) COMMENT 'orders table';
+
+-- parking spot revenue table
+CREATE TABLE parking_spot_revenue (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    parking_spot_id BIGINT NOT NULL COMMENT 'parking spot id',
+    owner_id BIGINT NOT NULL COMMENT 'owner id',
+    parking_day DATE NOT NULL COMMENT 'day',
+    revenue DECIMAL(10,2) NOT NULL DEFAULT 0 COMMENT 'revenue',
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+    deleted_at BIGINT default 0 not null COMMENT 'deleted at',
+    INDEX idx_parking_spot_id (parking_spot_id),
+    INDEX idx_owner_id (owner_id)
+) COMMENT 'parking spot revenue table';
+
+-- parking spot withdraw table
+CREATE TABLE parking_spot_withdraw_log (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    parking_spot_id BIGINT NOT NULL COMMENT 'parking spot id',
+    owner_id BIGINT NOT NULL COMMENT 'owner id',
+    amount DECIMAL(10,2) NOT NULL COMMENT 'amount',
+    status VARCHAR(20) NOT NULL COMMENT 'handle status：SUCCESS/FAILED',
+    error_msg TEXT COMMENT 'error message',
+    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+    deleted_at BIGINT default 0 not null COMMENT 'deleted at',
+    INDEX idx_parking_spot_id (parking_spot_id),
+    INDEX idx_owner_id (owner_id)
+) COMMENT 'parking spot withdraw log table';
 
 -- pay notify log table
 CREATE TABLE pay_notify_log (

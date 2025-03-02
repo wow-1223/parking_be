@@ -8,7 +8,8 @@ public enum SpotStatusEnum {
 //    PENDING(0, "pending"),
     APPROVING(1, "approving"),
     AVAILABLE(2, "available"),
-    REJECTED(3, "rejected");
+    REJECTED(3, "rejected"),
+    BREAKDOWN(4, "breakdown");
 
     private final int status;
     private final String description;
@@ -16,14 +17,6 @@ public enum SpotStatusEnum {
     SpotStatusEnum(int status, String description) {
         this.status = status;
         this.description = description;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     // 根据 code 获取对应的枚举实例

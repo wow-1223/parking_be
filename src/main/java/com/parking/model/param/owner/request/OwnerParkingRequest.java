@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class OwnerParkingRequest {
-    private Long userId;
+//    private Long userId;
     private String location;
     private Double latitude;
     private Double longitude;

@@ -1,8 +1,8 @@
 # API 接口文档及测试用例
 
 ```bash
-api domain: http://localhost:8080
-eg. http://localhost:8080/api/user/register
+api domain: http://139.224.209.172:8080
+eg. http://139.224.209.172:8080/api/user/register
 
 
 mysql:
@@ -33,16 +33,16 @@ redis:
 - 响应结果:
 ```json
 {
-  "code": "200",
+  "code": 200,
   "message": "send verify code success",
   "success": true,
-  "data": "038699"  // 测试时返回，生产时短信验证码发送至用户手机
+  "data": "723033"
 }
 ```
 
 测试用例:
 ```bash
-curl -X POST 'http://localhost:8080/api/user/sendVerifyCode?phone=13812345678'
+curl -X POST 'http://139.224.209.172:8080/api/user/sendVerifyCode?phone=13812345679'
 ```
 
 ### 1.2 用户注册
@@ -51,29 +51,29 @@ curl -X POST 'http://localhost:8080/api/user/sendVerifyCode?phone=13812345678'
 - 请求参数:
 ```json
 {
-  "phone": "13812345678",
-  "password": "1234567890",
-  "verifyCode": "038699"
+  "phone": "13812345679",
+  "password": "123456",
+  "verifyCode": "723033"
 }
 ```
 - 响应结果:
 ```json
 {
-  "code": "200",
+  "code": 200,
   "message": "register success",
   "success": true,
-  "data": 1892922997525282817 // userId
+  "data": 5
 }
 ```
 
 测试用例:
 ```bash
-curl -X POST http://localhost:8080/api/user/register \
+curl -X POST http://139.224.209.172:8080/api/user/register \
   -H 'Content-Type: application/json' \
   -d '{
-    "phone": "13812345678",
+    "phone": "13812345679",
     "password": "123456",
-    "verifyCode": "123456"
+    "verifyCode": "723033"
   }'
 ```
 
@@ -83,28 +83,28 @@ curl -X POST http://localhost:8080/api/user/register \
 - 请求参数:
 ```json
 {
-  "phone": "13812345678",
+  "phone": "13812345679",
   "verifyCode": "482104"
 }
 ``` 
 ``` json
 {
   "phone": "13812345678",
-  "password": "1234567890"
+  "password": "1234569
 }
 ```
 - 响应结果:
 ```json
 {
-  "code": "200",
+  "code": 200,
   "message": "login success",
   "success": true,
   "data": {
     "id": null,
     "name": null,
-    "phone": "13812345678",
-    "token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxODkyOTIyOTk3NTI1MjgyODE3IiwiaWF0IjoxNzQwMTQzMDYxLCJleHAiOjE3NDAyMjk0NjF9.f0PLtPv179aKHk_oeq_YWrFTT6eWc7OqliFbn8vISvocHgfBvjp6x2-EzKHqWSgWPn31xhg0Yw4qSane5sW1Rg",
-    "userId": 1892922997525282817,
+    "phone": "13812345679",
+    "token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzQwNTAzMjI0LCJleHAiOjE3NDA1ODk2MjR9.NdhthuzBNT8FEUd_Q-jYZ7UlPtRccVpeI3t_liU9mVOeuD11jIZwtaZj8yk-dWj_Y81HRWcC6xwvTIYpXhz9EA",
+    "userId": 5,
     "nickName": null,
     "avatarUrl": null
   }
@@ -114,18 +114,18 @@ curl -X POST http://localhost:8080/api/user/register \
 测试用例:
 ```bash
 # 验证码登录
-curl -X POST http://localhost:8080/api/user/login/phone \
+curl -X POST http://139.224.209.172:8080/api/user/login/phone \
   -H 'Content-Type: application/json' \
   -d '{
-    "phone": "13812345678",
+    "phone": "13812345679",
     "verifyCode": "123456"
   }'
 
 # 密码登录
-curl -X POST http://localhost:8080/api/user/login/phone \
+curl -X POST http://139.224.209.172:8080/api/user/login/phone \
   -H 'Content-Type: application/json' \
   -d '{
-    "phone": "13812345678",
+    "phone": "13812345679",
     "password": "123456"
   }'
 ```
@@ -153,7 +153,7 @@ curl -X POST http://localhost:8080/api/user/login/phone \
 测试用例:
 ```bash
 # 微信登录
-curl -X POST http://localhost:8080/api/user/login/wechat/wx_code_01
+curl -X POST http://139.224.209.172:8080/api/user/login/wechat/wx_code_01
 ```
 
 ## 2. 用户停车位接口 (/api/user/parking)
@@ -164,57 +164,28 @@ curl -X POST http://localhost:8080/api/user/login/wechat/wx_code_01
 - 请求参数:
 ```json
 {
-    "longitude": 121.368116,  // 经度
-    "latitude": 31.035439,    // 纬度
-    "radius": 3000,          // 搜索半径(米)
-    "price": 50,             // 最高价格(可选)
-    "startTime": "2024-03-21 10:00:00",  // 开始时间
-    "endTime": "2024-03-21 12:00:00",    // 结束时间
-    "page": 1,              // 页码
-    "size": 20             // 每页数量
+  "longitude": 114.339859,
+  "latitude": 30.500637,
+  "radius": 3000,
+  "startTime": "2024-03-17 10:00:00",
+  "endTime": "2024-03-17 12:00:00",
+  "page": 1,
+  "size": 20
 }
 ```
 - 响应结果:
 ```json
 {
-  "code": "200",
+  "code": 200,
   "message": null,
-  "total": 5,
+  "total": 1,
   "list": [
     {
-      "id": 76,
-      "latitude": 31.139342,
-      "longitude": 121.110764,
-      "location": "上海市测试地址76",
-      "price": 6.52
-    },
-    {
-      "id": 440,
-      "latitude": 31.136165,
-      "longitude": 121.113167,
-      "location": "上海市测试地址440",
-      "price": 5.55
-    },
-    {
-      "id": 502,
-      "latitude": 31.137019,
-      "longitude": 121.128981,
-      "location": "上海市测试地址502",
-      "price": 29.58
-    },
-    {
-      "id": 673,
-      "latitude": 31.133552,
-      "longitude": 121.122662,
-      "location": "上海市测试地址673",
-      "price": 29.18
-    },
-    {
-      "id": 937,
-      "latitude": 31.106708,
-      "longitude": 121.104509,
-      "location": "上海市测试地址937",
-      "price": 23.83
+      "id": 1,
+      "latitude": 30.500637,
+      "longitude": 114.339859,
+      "location": "湖北省武汉市洪山区洪山街街道文治街特1号鸿湖景天",
+      "price": 5.00
     }
   ]
 }
@@ -222,18 +193,18 @@ curl -X POST http://localhost:8080/api/user/login/wechat/wx_code_01
 
 测试用例:
 ```bash
-curl -X POST 'http://localhost:8080/api/user/parking/nearby' \
+curl -X POST 'http://139.224.209.172:8080/api/user/parking/nearby' \
   -H 'Authorization: Bearer your_token_here' \
   -H 'Content-Type: application/json' \
   -d '{
-    "longitude": 121.123456,
-    "latitude": 31.123456,
-    "radius": 3000,
-    "startTime": "2024-03-21 10:00:00",
-    "endTime": "2024-03-21 12:00:00",
-    "page": 1,
-    "size": 20
-  }'
+        "longitude": 114.339859,
+        "latitude": 30.500637,
+        "radius": 3000,
+        "startTime": "2024-03-17 10:00:00",
+        "endTime": "2024-03-17 12:00:00",
+        "page": 1,
+        "size": 20
+      }'
 ```
 
 ### 2.2 获取停车位详情
@@ -242,58 +213,59 @@ curl -X POST 'http://localhost:8080/api/user/parking/nearby' \
 - 请求参数:
 ```json
 {
-  "id": 920,
-  "startTime": "2024-03-21 10:00:00",
-  "endTime": "2024-03-21 13:00:00"
+  "id": 1,
+  "startTime": "2024-03-17 10:00:00",
+  "endTime": "2024-03-17 12:00:00"
 }
 ```
 - 响应结果:
 ```json
 {
-  "code": "200",
+  "code": 200,
   "message": "get detail success",
   "data": {
-    "id": 920,
-    "latitude": 31.054138,
-    "longitude": 121.343743,
-    "location": "上海市测试地址920",
-    "price": 17.75,
-    "description": "测试停车位描述920",
+    "id": 1,
+    "latitude": 30.500637,
+    "longitude": 114.339859,
+    "location": "湖北省武汉市洪山区洪山街街道文治街特1号鸿湖景天",
+    "price": 5.00,
+    "description": "哈哈哈哈哈哈",
     "images": [
-      "https://example.com/parking/spot920_1.jpg",
-      "https://example.com/parking/spot920_2.jpg"
+      "https://mp-fa5abe1a-b771-400c-b2da-d486572e23e2.cdn.bspapp.com/cloudstorage/64ee454e-062f-4a16-b1c2-9a83e518d997.jpg",
+      "https://mp-fa5abe1a-b771-400c-b2da-d486572e23e2.cdn.bspapp.com/cloudstorage/312cc630-f8ae-45af-8292-74631c1ffe4b.jpg",
+      "https://mp-fa5abe1a-b771-400c-b2da-d486572e23e2.cdn.bspapp.com/cloudstorage/dbef6bb4-43e9-4acf-8aa4-e296100b4037.jpg"
     ],
     "facilities": [
-      "CAMERA",
-      null,
-      null,
-      null
+      "带充电桩",
+      "地面停车场",
+      "有门禁",
+      "有照明"
     ],
     "owner": {
-      "id": 831,
-      "name": "用户831",
+      "id": 3,
+      "name": "owner",
       "phone": "13812345678"
     },
     "parkingIntervals": [
       {
-        "startTime": "06:11:00",
-        "endTime": "20:38:00"
+        "startTime": "10:00:00",
+        "endTime": "23:00:00"
       }
     ],
-    "occupiedIntervals": []
+    "occupiedIntervals": null
   }
 }
 ```
 
 测试用例:
 ```bash
-curl -X POST 'http://localhost:8080/api/user/parking/detail' \
+curl -X POST 'http://139.224.209.172:8080/api/user/parking/detail' \
   -H 'Authorization: Bearer your_token_here' \
   -H 'Content-Type: application/json' \
   -d '{
-        "id": 920,
-        "startTime": "2024-03-21 10:00:00",
-        "endTime": "2024-03-21 13:00:00"
+        "id": 1,
+        "startTime": "2024-03-17 10:00:00",
+        "endTime": "2024-03-17 12:00:00"
     }'
 ```
 
@@ -358,7 +330,7 @@ curl -X POST 'http://localhost:8080/api/user/parking/detail' \
 
 测试用例:
 ```bash
-curl -X GET 'http://localhost:8080/api/user/orders/getOrders?userId=1&page=1&size=20' \
+curl -X GET 'http://139.224.209.172:8080/api/user/orders/getOrders?userId=1&page=1&size=20' \
   -H 'Authorization: Bearer your_token_here'
 ```
 
@@ -388,7 +360,7 @@ curl -X GET 'http://localhost:8080/api/user/orders/getOrders?userId=1&page=1&siz
 
 测试用例:
 ```bash
-curl -X POST http://localhost:8080/api/user/orders/createOrder \
+curl -X POST http://139.224.209.172:8080/api/user/orders/createOrder \
   -H 'Content-Type: application/json' \
   -d '{
         "userId": 2,
@@ -422,7 +394,7 @@ curl -X POST http://localhost:8080/api/user/orders/createOrder \
 
 测试用例:
 ```bash
-curl -X POST http://localhost:8080/api/user/orders/cancelOrder \
+curl -X POST http://139.224.209.172:8080/api/user/orders/cancelOrder \
   -H 'Content-Type: application/json' \
   -d '{
       "userId": 2,
@@ -469,7 +441,7 @@ curl -X POST http://localhost:8080/api/user/orders/cancelOrder \
 
 测试用例:
 ```bash
-curl -X POST http://localhost:8080/api/user/favorites/toggleFavorite \
+curl -X POST http://139.224.209.172:8080/api/user/favorites/toggleFavorite \
   -H 'Authorization: Bearer your_token_here' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -479,7 +451,7 @@ curl -X POST http://localhost:8080/api/user/favorites/toggleFavorite \
   }'
 ```
 ```bash
-curl -X POST http://localhost:8080/api/user/favorites/toggleFavorite \
+curl -X POST http://139.224.209.172:8080/api/user/favorites/toggleFavorite \
   -H 'Authorization: Bearer your_token_here' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -519,7 +491,7 @@ curl -X POST http://localhost:8080/api/user/favorites/toggleFavorite \
 
 测试用例:
 ```bash
-curl -X GET 'http://localhost:8080/api/user/favorites/getFavorites?userId=1&page=1&size=20' \
+curl -X GET 'http://139.224.209.172:8080/api/user/favorites/getFavorites?userId=1&page=1&size=20' \
   -H 'Authorization: Bearer your_token_here'
 ```
 

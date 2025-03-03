@@ -1,5 +1,6 @@
 package com.parking.model.entity.mybatis;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 @Table(name = "pay_notify_log")
 public class PayNotifyLog {
 
-    @TableId
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**

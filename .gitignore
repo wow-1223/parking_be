@@ -218,3 +218,4 @@
 /target/classes/com/parking/model/dto/user/UserDTO.class
 /target/classes/com/parking/service/user/impl/UserFavoriteServiceImpl.class
 /target/classes/com/parking/model/dto/user/UserLoginDTO.class
+/.idea/

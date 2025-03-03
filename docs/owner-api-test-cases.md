@@ -8,63 +8,95 @@
 - 请求参数:
 ```json
 {
-  "ownerId": 807,
-  "location": "停车位详细地址",
-  "longitude": 121.123456,
-  "latitude": 31.123456,
-  "price": 40.00,
-  "images": ["https://example.com/uploads/202403/abc123.jpg", "https://example.com/uploads/202403/abc456.jpg"],
+  "userId": 3,
+  "name": "123",
+  "type": "地下车位",
+  "location": "湖北省武汉市洪山区洪山街街道文治街特1号鸿湖景天",
+  "longitude": 114.339859,
+  "latitude": 30.500637,
+  "price": 5,
+  "images": [
+    "https://mp-fa5abe1a-b771-400c-b2da-d486572e23e2.cdn.bspapp.com/cloudstorage/64ee454e-062f-4a16-b1c2-9a83e518d997.jpg",
+    "https://mp-fa5abe1a-b771-400c-b2da-d486572e23e2.cdn.bspapp.com/cloudstorage/312cc630-f8ae-45af-8292-74631c1ffe4b.jpg",
+    "https://mp-fa5abe1a-b771-400c-b2da-d486572e23e2.cdn.bspapp.com/cloudstorage/dbef6bb4-43e9-4acf-8aa4-e296100b4037.jpg"
+  ],
   "rules": [
     {
       "mode": "weekly",
-      "startTime": "09:00:00",
-      "endTime": "21:00:00",
-      "weekDays": [1, 2, 3, 4, 5]
+      "startTime": "0:00:00",
+      "endTime": "3:00:00",
+      "specificWeekDays": [
+        2,
+        3,
+        4,
+        5
+      ]
     }
   ],
   "facilities": [
     "带充电桩",
-    "地面停车场"
+    "地面停车场",
+    "有门禁",
+    "有照明"
   ],
-  "description": "停车位描述"
+  "description": "哈哈哈哈哈哈",
+  "phone": "17720512489",
+  "idCardFront": "https://mp-fa5abe1a-b771-400c-b2da-d486572e23e2.cdn.bspapp.com/cloudstorage/8e62f1a9-65cd-4d55-955e-2659cbfaa091.jpg",
+  "idCardBack": "https://mp-fa5abe1a-b771-400c-b2da-d486572e23e2.cdn.bspapp.com/cloudstorage/6b02d41d-bb25-40c1-adf1-5462f00a613a.jpg"
 }
 ```
 - 响应结果:
 ```json
 {
-  "code": "200",
+  "code": 200,
   "message": "create success",
   "success": true,
-  "id": 1892955854868144130
+  "id": 2
 }
 ```
 
 测试用例:
 ```bash
-curl -X POST http://localhost:8080/api/owner/parking/createParking \
+curl -X POST http://139.224.209.172:8080/api/owner/parking/createParking \
   -H 'Authorization: Bearer your_token_here' \
   -H 'Content-Type: application/json' \
   -d '{
-        "ownerId": 807,
-        "location": "停车位详细地址",
-        "longitude": 121.123456,
-        "latitude": 31.123456,
-        "price": 40.00,
-        "images": ["https://example.com/uploads/202403/abc123.jpg", "https://example.com/uploads/202403/abc456.jpg"],
+        "userId": 3,
+        "name": "123",
+        "type": "地下车位",
+        "location": "湖北省武汉市洪山区洪山街街道文治街特1号鸿湖景天",
+        "longitude": 114.339859,
+        "latitude": 30.500637,
+        "price": 5,
+        "images": [
+            "https://mp-fa5abe1a-b771-400c-b2da-d486572e23e2.cdn.bspapp.com/cloudstorage/64ee454e-062f-4a16-b1c2-9a83e518d997.jpg",
+            "https://mp-fa5abe1a-b771-400c-b2da-d486572e23e2.cdn.bspapp.com/cloudstorage/312cc630-f8ae-45af-8292-74631c1ffe4b.jpg",
+            "https://mp-fa5abe1a-b771-400c-b2da-d486572e23e2.cdn.bspapp.com/cloudstorage/dbef6bb4-43e9-4acf-8aa4-e296100b4037.jpg"
+        ],
         "rules": [
             {
                 "mode": "weekly",
-                "startTime": "09:00:00",
-                "endTime": "21:00:00",
-                "weekDays": [1, 2, 3, 4, 5]
+                "startTime": "0:00:00",
+                "endTime": "3:00:00",
+                "specificWeekDays": [
+                    2,
+                    3,
+                    4,
+                    5
+                ]
             }
         ],
         "facilities": [
             "带充电桩",
-            "地面停车场"
+            "地面停车场",
+            "有门禁",
+            "有照明"
         ],
-        "description": "停车位描述"
-      }'
+        "description": "哈哈哈哈哈哈",
+        "phone": "17720512489",
+        "idCardFront": "https://mp-fa5abe1a-b771-400c-b2da-d486572e23e2.cdn.bspapp.com/cloudstorage/8e62f1a9-65cd-4d55-955e-2659cbfaa091.jpg",
+        "idCardBack": "https://mp-fa5abe1a-b771-400c-b2da-d486572e23e2.cdn.bspapp.com/cloudstorage/6b02d41d-bb25-40c1-adf1-5462f00a613a.jpg"
+    }'
 ```
 
 ### 1.2 更新停车位
@@ -73,8 +105,8 @@ curl -X POST http://localhost:8080/api/owner/parking/createParking \
 - 请求参数:
 ```json
 {
-  "id": 1892955854868144130,
-  "userId": 807,
+  "id": 1,
+  "userId": 1,
   // "location": "停车位详细地址-updated",
   // "longitude": 121.123456,
   // "latitude": 31.123456,
@@ -87,27 +119,27 @@ curl -X POST http://localhost:8080/api/owner/parking/createParking \
   //         "weekDays": [1, 2, 3, 4, 5, 6, 7]
   //     }
   // ],
-  "status": 2
+  "status": 3
 }
 ```
 - 响应结果:
 ```json
 {
-  "code": "200",
-  "message": "create success",
+  "code": 200,
+  "message": "update success",
   "success": true,
-  "id": 1892955854868144130
+  "id": 1
 }
 ```
 
 测试用例:
 ```bash
-curl -X POST http://localhost:8080/api/owner/parking/updateParking \
+curl -X POST http://139.224.209.172:8080/api/owner/parking/updateParking \
   -H 'Authorization: Bearer your_token_here' \
   -H 'Content-Type: application/json' \
   -d '{
-        "id": 1892955854868144130,
-        "userId": 807,
+        "id": 1,
+        "userId": 1,
         // "location": "停车位详细地址-updated",
         // "longitude": 121.123456,
         // "latitude": 31.123456,
@@ -130,8 +162,8 @@ curl -X POST http://localhost:8080/api/owner/parking/updateParking \
 - 请求参数:
 ```json
 {
-  "userId": 818,
-  "parkingSpotId": 986
+  "userId": 3,
+  "parkingSpotId": 2
 }
 ```
 
@@ -141,18 +173,18 @@ curl -X POST http://localhost:8080/api/owner/parking/updateParking \
   "code": "200",
   "message": "delete success",
   "success": true,
-  "id": 986
+  "id": 2
 }
 ```
 
 测试用例:
 ```bash
-curl -X POST http://localhost:8080/api/owner/parking/deleteParking \
+curl -X POST http://139.224.209.172:8080/api/owner/parking/deleteParking \
    -H 'Authorization: Bearer your_token_here' \
   -H 'Content-Type: application/json' \
   -d '{
-        "userId": 818,
-        "parkingSpotId": 986
+          "userId": 3,
+          "parkingSpotId": 2
       }' 
 ```
 
@@ -167,79 +199,16 @@ curl -X POST http://localhost:8080/api/owner/parking/deleteParking \
 - 响应结果:
 ```json
 {
-  "code": "200",
+  "code": 200,
   "message": null,
-  "total": 10,
+  "total": 1,
   "list": [
     {
-      "id": 1892955854868144130,
-      "latitude": 31.123456,
-      "longitude": 121.123456,
-      "location": "\"停车位详细地址-updated\"",
-      "price": 35.00
-    },
-    {
-      "id": 75,
-      "latitude": 31.038109,
-      "longitude": 121.04222,
-      "location": "上海市测试地址75",
-      "price": 11.36
-    },
-    {
-      "id": 192,
-      "latitude": 31.402232,
-      "longitude": 121.787486,
-      "location": "上海市测试地址192",
-      "price": 21.49
-    },
-    {
-      "id": 240,
-      "latitude": 31.324307,
-      "longitude": 121.357184,
-      "location": "上海市测试地址240",
-      "price": 9.28
-    },
-    {
-      "id": 274,
-      "latitude": 31.310224,
-      "longitude": 121.149726,
-      "location": "上海市测试地址274",
-      "price": 21.32
-    },
-    {
-      "id": 451,
-      "latitude": 31.282285,
-      "longitude": 121.338936,
-      "location": "上海市测试地址451",
-      "price": 25.15
-    },
-    {
-      "id": 549,
-      "latitude": 31.250048,
-      "longitude": 121.12736,
-      "location": "上海市测试地址549",
-      "price": 7.95
-    },
-    {
-      "id": 772,
-      "latitude": 31.229403,
-      "longitude": 121.719674,
-      "location": "上海市测试地址772",
-      "price": 8.37
-    },
-    {
-      "id": 822,
-      "latitude": 31.230112,
-      "longitude": 121.118062,
-      "location": "上海市测试地址822",
-      "price": 28.67
-    },
-    {
-      "id": 897,
-      "latitude": 31.264105,
-      "longitude": 121.733318,
-      "location": "上海市测试地址897",
-      "price": 16.02
+      "id": 1,
+      "latitude": 30.500637,
+      "longitude": 114.339859,
+      "location": "湖北省武汉市洪山区洪山街街道文治街特1号鸿湖景天",
+      "price": 5.00
     }
   ]
 }
@@ -247,7 +216,7 @@ curl -X POST http://localhost:8080/api/owner/parking/deleteParking \
 
 测试用例:
 ```bash
-curl -X GET 'http://localhost:8080/api/owner/parking/getParkingList?userId=1&status=1&page=1&size=20' \
+curl -X GET 'http://139.224.209.172:8080/api/owner/parking/getParkingList?userId=3&status=3&page=1&size=20' \
   -H 'Authorization: Bearer your_token_here'
 ```
 
@@ -260,32 +229,35 @@ curl -X GET 'http://localhost:8080/api/owner/parking/getParkingList?userId=1&sta
 - 响应结果:
 ```json
 {
-  "code": "200",
+  "code": 200,
   "message": "get detail success",
   "data": {
-    "id": 1892983387374317570,
-    "latitude": 31.123456,
-    "longitude": 121.123456,
-    "location": "停车位详细地址_create",
-    "price": 40.00,
-    "description": "停车位描述",
+    "id": 1,
+    "latitude": 30.500637,
+    "longitude": 114.339859,
+    "location": "湖北省武汉市洪山区洪山街街道文治街特1号鸿湖景天",
+    "price": 5.00,
+    "description": "哈哈哈哈哈哈",
     "images": [
-      "https://example.com/uploads/202403/abc123.jpg",
-      "https://example.com/uploads/202403/abc456.jpg"
+      "https://mp-fa5abe1a-b771-400c-b2da-d486572e23e2.cdn.bspapp.com/cloudstorage/64ee454e-062f-4a16-b1c2-9a83e518d997.jpg",
+      "https://mp-fa5abe1a-b771-400c-b2da-d486572e23e2.cdn.bspapp.com/cloudstorage/312cc630-f8ae-45af-8292-74631c1ffe4b.jpg",
+      "https://mp-fa5abe1a-b771-400c-b2da-d486572e23e2.cdn.bspapp.com/cloudstorage/dbef6bb4-43e9-4acf-8aa4-e296100b4037.jpg"
     ],
     "facilities": [
       "带充电桩",
-      "地面停车场"
+      "地面停车场",
+      "有门禁",
+      "有照明"
     ],
     "owner": {
-      "id": 807,
-      "name": "用户807",
+      "id": 3,
+      "name": "owner",
       "phone": null
     },
     "parkingIntervals": [
       {
-        "startTime": "09:00:00",
-        "endTime": "21:00:00"
+        "startTime": "10:00:00",
+        "endTime": "23:00:00"
       }
     ],
     "occupiedIntervals": null
@@ -294,9 +266,7 @@ curl -X GET 'http://localhost:8080/api/owner/parking/getParkingList?userId=1&sta
 ```
 测试用例:
 ```bash
-测试用例:
-bash
-curl -X GET 'URL_ADDRESScurl -X GET 'http://localhost:8080/api/owner/parking/getParkingDetail?userId=807&parkingSpotId=1892983387374317570' \
+curl -X GET 'URL_ADDRESScurl -X GET 'http://139.224.209.172:8080/api/owner/parking/getParkingDetail?userId=3&parkingSpotId=1' \
   -H 'Authorization: Bearer your_token_here'
 ```
 
@@ -358,7 +328,7 @@ curl -X GET 'URL_ADDRESScurl -X GET 'http://localhost:8080/api/owner/parking/get
 
 测试用例:
 ```bash
-curl -X GET 'http://localhost:8080/api/owner/orders/getOrders?ownerId=1&status=1&page=1&size=20' \
+curl -X GET 'http://139.224.209.172:8080/api/owner/orders/getOrders?ownerId=1&status=1&page=1&size=20' \
   -H 'Authorization: Bearer your_token_here'
 ```
 
@@ -400,7 +370,7 @@ curl -X GET 'http://localhost:8080/api/owner/orders/getOrders?ownerId=1&status=1
 
 测试用例:
 ```bash
-curl -X GET 'http://localhost:8080/api/owner/orders/earnings' \
+curl -X GET 'http://139.224.209.172:8080/api/owner/orders/earnings' \
   -H 'Authorization: Bearer your_token_here'
   -H 'Content-Type: application/json' \
   -d '{
@@ -462,7 +432,7 @@ curl -X GET 'http://localhost:8080/api/owner/orders/earnings' \
 
 测试用例:
 ```bash
-curl -X GET 'http://localhost:8080/api/owner/orders/usage' \
+curl -X GET 'http://139.224.209.172:8080/api/owner/orders/usage' \
   -H 'Authorization: Bearer your_token_here'
   -H 'Content-Type: application/json' \
   -d '{

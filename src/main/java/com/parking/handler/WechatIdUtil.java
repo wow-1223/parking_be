@@ -47,13 +47,13 @@ public class WechatIdUtil {
             }
 
             if (body != null && body.containsKey("errmsg")) {
-                throw new BusinessException("WX001", body.get("errmsg"));
+                throw new BusinessException(body.get("errmsg"));
             }
 
-            throw new BusinessException("WX002", "get openId failed");
+            throw new BusinessException("get openId failed");
         } catch (Exception e) {
             log.error("call wechat api failed", e);
-            throw new BusinessException("WX003", "call wechat api failed");
+            throw new BusinessException("call wechat api failed");
         }
     }
 

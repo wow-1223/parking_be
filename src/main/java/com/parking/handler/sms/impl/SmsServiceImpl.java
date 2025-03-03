@@ -5,6 +5,7 @@ import com.aliyun.dysmsapi20170525.models.*;
 import com.aliyun.teautil.models.RuntimeOptions;
 import com.parking.config.SmsConfig;
 import com.parking.exception.BusinessException;
+import com.parking.handler.encrypt.AesUtil;
 import com.parking.handler.sms.SmsService;
 import com.parking.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,9 @@ public class SmsServiceImpl implements SmsService {
 
     @Autowired
     private SmsConfig smsConfig;
+
+    @Autowired
+    private AesUtil aesUtil;
 
     @Override
     public String sendVerifyCode(String phone) {

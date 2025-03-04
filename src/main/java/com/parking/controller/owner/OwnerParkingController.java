@@ -1,5 +1,6 @@
 package com.parking.controller.owner;
 
+import com.parking.handler.jwt.TokenUtil;
 import com.parking.model.dto.parking.ParkingSpotDTO;
 import com.parking.model.dto.parking.ParkingSpotDetailDTO;
 import com.parking.model.param.common.DetailResponse;
@@ -9,6 +10,7 @@ import com.parking.model.param.owner.request.DeleteParkingRequest;
 import com.parking.model.param.owner.request.OwnerParkingRequest;
 import com.parking.model.param.owner.request.UpdateParkingRequest;
 import com.parking.service.owner.OwnerParkingService;
+import org.apache.el.parser.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,17 +38,15 @@ public class OwnerParkingController {
 
     @GetMapping("/getParkingList")
     public PageResponse<ParkingSpotDTO> getParkingList(
-            @RequestParam Long userId,
             @RequestParam(required = false) Integer status,
             @RequestParam(required = false, defaultValue = "1") Integer page,
             @RequestParam(required = false, defaultValue = "20") Integer size) {
-        return ownerParkingService.getParkingList(userId, status, page, size);
+        return ownerParkingService.getParkingList(TokenUtil.getUserId(), status, page, size);
     }
 
     @GetMapping("/getParkingDetail")
     public DetailResponse<ParkingSpotDetailDTO> getParkingList(
-            @RequestParam Long userId,
             @RequestParam Long parkingSpotId) {
-        return ownerParkingService.getParkingDetail(userId, parkingSpotId);
+        return ownerParkingService.getParkingDetail(TokenUtil.getUserId(), parkingSpotId);
     }
 } 

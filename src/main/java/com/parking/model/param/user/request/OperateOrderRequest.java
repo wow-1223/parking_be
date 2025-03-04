@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class OperateOrderRequest {
-    private Long userId;
+
     private Long orderId;
 }

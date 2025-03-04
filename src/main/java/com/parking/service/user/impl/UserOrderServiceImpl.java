@@ -114,7 +114,7 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
     @Override
     @Transactional
     public OperationResponse cancelOrder(OperateOrderRequest request) {
-        Order order = orderRepository.findByIdAndUserId(request.getOrderId(), request.getUserId());
+        Order order = orderRepository.findByIdAndUserId(request.getOrderId(), TokenUtil.getUserId());
         if (order == null) {
             throw new ResourceNotFoundException("Order not found");
         }
@@ -162,7 +162,7 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
         }
 
         // 2. 验证用户权限
-        if (!order.getUserId().equals(request.getUserId())) {
+        if (!order.getUserId().equals(TokenUtil.getUserId())) {
             throw new BusinessException("You are not allowed to complete this order");
         }
 

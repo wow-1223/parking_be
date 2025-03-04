@@ -129,14 +129,15 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
 
     @Override
     public OperationResponse deleteParking(DeleteParkingRequest request) {
-        if (request.getUserId() == null || request.getParkingSpotId() == null) {
+        Long userId = TokenUtil.getUserId();
+        if (request.getParkingSpotId() == null) {
             throw new ResourceNotFoundException("UserId and Parking spot id is required");
         }
         ParkingSpot spot = parkingSpotRepository.findById(request.getParkingSpotId(), Lists.newArrayList("id", "owner_id"));
         if (spot == null) {
             throw new ResourceNotFoundException("Parking spot not found");
         }
-        if (!Objects.equals(spot.getOwnerId(), request.getUserId())) {
+        if (!Objects.equals(spot.getOwnerId(), userId)) {
             throw new BusinessException("Parking spot owner id mismatch");
         }
         parkingSpotRepository.delete(request.getParkingSpotId());

@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import org.apache.ibatis.type.JdbcType;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -23,7 +22,6 @@ public class Order {
     private BigDecimal amount;
     private BigDecimal refundAmount;
     private String payType;
-    @TableField(jdbcType = JdbcType.VARCHAR)
     private String carNumber;
     private String transactionId;
     private Integer status;

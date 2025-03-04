@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class DeleteParkingRequest {
-    private Long userId;
+    // private Long userId;
     private Long parkingSpotId;
 }

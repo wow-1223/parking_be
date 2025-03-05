@@ -3,6 +3,7 @@ package com.parking.handler.redis;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 public class RedisUtil {
     
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private StringRedisTemplate redisTemplate;
 
 
 
@@ -22,21 +23,21 @@ public class RedisUtil {
     /**
      * 设置字符串类型的值
      */
-    public void set(String key, Object value) {
+    public void set(String key, String value) {
         redisTemplate.opsForValue().set(key, value);
     }
 
     /**
      * 设置字符串类型的值，同时设置过期时间
      */
-    public void set(String key, Object value, long timeout, TimeUnit timeUnit) {
+    public void set(String key, String value, long timeout, TimeUnit timeUnit) {
         redisTemplate.opsForValue().set(key, value, timeout, timeUnit);
     }
 
     /**
      * 获取字符串类型的值
      */
-    public Object get(String key) {
+    public String get(String key) {
         return redisTemplate.opsForValue().get(key);
     }
 
@@ -45,15 +46,15 @@ public class RedisUtil {
     /**
      * 设置Hash的属性
      */
-    public void hSet(String key, String hashKey, Object value) {
+    public void hSet(String key, String hashKey, String value) {
         redisTemplate.opsForHash().put(key, hashKey, value);
     }
 
     /**
      * 获取Hash的属性值
      */
-    public Object hGet(String key, String hashKey) {
-        return redisTemplate.opsForHash().get(key, hashKey);
+    public String hGet(String key, String hashKey) {
+        return (String) redisTemplate.opsForHash().get(key, hashKey);
     }
 
     /**
@@ -62,13 +63,13 @@ public class RedisUtil {
      * @param fields 需要获取的field列表
      * @return field-value映射的Map
      */
-    public Map<String, Object> hMultiGet(String key, List<String> fields) {
+    public Map<String, String> hMultiGet(String key, List<String> fields) {
         List<Object> values = redisTemplate.opsForHash().multiGet(key, Lists.newArrayList(fields));
-        Map<String, Object> result = new HashMap<>();
+        Map<String, String> result = new HashMap<>();
         int i = 0;
         for (String field : fields) {
             if (values.get(i) != null) {
-                result.put(field, values.get(i));
+                result.put(field, (String) values.get(i));
             }
             i++;
         }
@@ -78,15 +79,20 @@ public class RedisUtil {
     /**
      * 设置整个Hash
      */
-    public void hSetAll(String key, Map<String, Object> map) {
+    public void hSetAll(String key, Map<String, String> map) {
         redisTemplate.opsForHash().putAll(key, map);
     }
 
     /**
      * 获取整个Hash
      */
-    public Map<Object, Object> hGetAll(String key) {
-        return redisTemplate.opsForHash().entries(key);
+    public Map<String, String> hGetAll(String key) {
+        Map<Object, Object> entries = redisTemplate.opsForHash().entries(key);
+        Map<String, String> result = new HashMap<>();
+        for (Map.Entry<Object, Object> entry : entries.entrySet()) {
+            result.put(entry.getKey().toString(), entry.getValue().toString());
+        }
+        return result;
     }
 
     // ====== List类型操作 ======
@@ -94,21 +100,21 @@ public class RedisUtil {
     /**
      * 从左边添加元素到List
      */
-    public void lPush(String key, Object value) {
+    public void lPush(String key, String value) {
         redisTemplate.opsForList().leftPush(key, value);
     }
 
     /**
      * 从右边添加元素到List
      */
-    public void rPush(String key, Object value) {
+    public void rPush(String key, String value) {
         redisTemplate.opsForList().rightPush(key, value);
     }
 
     /**
      * 获取List范围内的元素
      */
-    public List<Object> lRange(String key, long start, long end) {
+    public List<String> lRange(String key, long start, long end) {
         return redisTemplate.opsForList().range(key, start, end);
     }
 
@@ -117,14 +123,14 @@ public class RedisUtil {
     /**
      * 添加元素到Set
      */
-    public void sAdd(String key, Object... values) {
+    public void sAdd(String key, String... values) {
         redisTemplate.opsForSet().add(key, values);
     }
 
     /**
      * 获取Set中的所有元素
      */
-    public Set<Object> sMembers(String key) {
+    public Set<String> sMembers(String key) {
         return redisTemplate.opsForSet().members(key);
     }
 

@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
-public class ScheduleExecutor {
+public class ScheduleHandler {
 
     @Autowired
     private DynamicScheduleManager scheduleManager;

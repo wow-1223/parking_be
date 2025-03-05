@@ -1,6 +1,5 @@
 package com.parking.service.lock.impl;
 
-import com.google.common.collect.Maps;
 import com.parking.exception.ResourceNotFoundException;
 import com.parking.handler.redis.RedisUtil;
 import com.parking.model.entity.mybatis.ParkingSpot;
@@ -77,17 +76,12 @@ public class LockServiceImpl implements LockService {
 
     @Override
     public String getLockStatus(String deviceId) {
-        return (String) redisUtil.hGet(LOCK_KEY, getLockKey(deviceId));
+        return redisUtil.hGet(LOCK_KEY, getLockKey(deviceId));
     }
 
     @Override
     public Map<String, String> getLockStatus(List<String> deviceIds) {
-        Map<String, Object> res = redisUtil.hMultiGet(LOCK_KEY, deviceIds);
-        Map<String, String> result = Maps.newHashMapWithExpectedSize(res.size());
-        for (Map.Entry<String, Object> entry : res.entrySet()) {
-            result.put(entry.getKey(), (String) entry.getValue());
-        }
-        return result;
+        return redisUtil.hMultiGet(LOCK_KEY, deviceIds);
     }
 
     private String getLockKey(String deviceId) {

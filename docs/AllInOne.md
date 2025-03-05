@@ -2,13 +2,13 @@
 
 | Version | Update Time | Status | Author | Description |
 |---------|-------------|--------|--------|-------------|
-|v2025-03-04 17:56:29|2025-03-04 17:56:29|auto|@tadowli|Created by smart-doc|
+|v2025-03-05 15:28:07|2025-03-05 15:28:07|auto|@tadowli|Created by smart-doc|
 
 
 
 # 公共模块
-## 
-### 
+## 文件上传
+### 文件上传
 **URL:** /api/upload/file
 
 **Type:** POST
@@ -16,13 +16,13 @@
 
 **Content-Type:** multipart/form-data
 
-**Description:** 
+**Description:** 文件上传
 
 **Query-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|file|file|true|No comments found.|-|
+|file|file|true|文件|-|
 
 **Request-example:**
 ```bash
@@ -32,9 +32,9 @@ curl -X POST -H 'Content-Type: multipart/form-data' -F 'file=' -i '/api/upload/f
 
 | Field | Type | Description | Since |
 |-------|------|-------------|-------|
-|success|boolean|No comments found.|-|
-|message|string|No comments found.|-|
-|data|string|No comments found.|-|
+|success|boolean|是否成功|-|
+|message|string|信息|-|
+|data|string|数据|-|
 
 **Response-example:**
 ```json
@@ -45,7 +45,7 @@ curl -X POST -H 'Content-Type: multipart/form-data' -F 'file=' -i '/api/upload/f
 }
 ```
 
-### 
+### 文件批量上传
 **URL:** /api/upload/files
 
 **Type:** POST
@@ -53,13 +53,13 @@ curl -X POST -H 'Content-Type: multipart/form-data' -F 'file=' -i '/api/upload/f
 
 **Content-Type:** multipart/form-data
 
-**Description:** 
+**Description:** 文件批量上传
 
 **Query-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|files|file|true|No comments found.(array of file)|-|
+|files|file|true|文件列表(array of file)|-|
 
 **Request-example:**
 ```bash
@@ -69,9 +69,9 @@ curl -X POST -H 'Content-Type: multipart/form-data' -F 'files=' -i '/api/upload/
 
 | Field | Type | Description | Since |
 |-------|------|-------------|-------|
-|success|boolean|No comments found.|-|
-|message|string|No comments found.|-|
-|data|array|No comments found.|-|
+|success|boolean|是否成功|-|
+|message|string|信息|-|
+|data|array|数据|-|
 
 **Response-example:**
 ```json
@@ -85,7 +85,7 @@ curl -X POST -H 'Content-Type: multipart/form-data' -F 'files=' -i '/api/upload/
 }
 ```
 
-### 
+### 文件删除
 **URL:** /api/upload
 
 **Type:** DELETE
@@ -93,13 +93,13 @@ curl -X POST -H 'Content-Type: multipart/form-data' -F 'files=' -i '/api/upload/
 
 **Content-Type:** application/x-www-form-urlencoded;charset=UTF-8
 
-**Description:** 
+**Description:** 文件删除
 
 **Query-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|fileUrl|string|true|No comments found.|-|
+|fileUrl|string|true|文件地址|-|
 
 **Request-example:**
 ```bash
@@ -109,9 +109,9 @@ curl -X DELETE -i '/api/upload?fileUrl='
 
 | Field | Type | Description | Since |
 |-------|------|-------------|-------|
-|success|boolean|No comments found.|-|
-|message|string|No comments found.|-|
-|data|object|No comments found.|-|
+|success|boolean|是否成功|-|
+|message|string|信息|-|
+|data|object|数据|-|
 
 **Response-example:**
 ```json
@@ -160,8 +160,8 @@ curl -X POST -H 'Content-Type: application/json' -H 'AUTHORIZATION' -i '/api/loc
 |-------|------|-------------|-------|
 |code|int32|错误码|-|
 |message|string|错误信息|-|
-|success|boolean|No comments found.|-|
-|id|int64|No comments found.|-|
+|success|boolean|是否成功|-|
+|id|int64|车位id|-|
 
 **Response-example:**
 ```json
@@ -212,8 +212,8 @@ curl -X POST -H 'Content-Type: application/json' -H 'AUTHORIZATION' -i '/api/loc
 |-------|------|-------------|-------|
 |code|int32|错误码|-|
 |message|string|错误信息|-|
-|success|boolean|No comments found.|-|
-|id|int64|No comments found.|-|
+|success|boolean|是否成功|-|
+|id|int64|车位id|-|
 
 **Response-example:**
 ```json
@@ -264,8 +264,8 @@ curl -X POST -H 'Content-Type: application/json' -H 'AUTHORIZATION' -i '/api/loc
 |-------|------|-------------|-------|
 |code|int32|错误码|-|
 |message|string|错误信息|-|
-|success|boolean|No comments found.|-|
-|id|int64|No comments found.|-|
+|success|boolean|是否成功|-|
+|id|int64|车位id|-|
 
 **Response-example:**
 ```json
@@ -327,8 +327,8 @@ curl -X GET -H 'AUTHORIZATION' -i '/api/lock/{deviceId}'
 ```
 
 # 租户模块
-## 
-### 
+## 租户停车位相关接口
+### 创建停车位
 **URL:** /api/owner/parking/createParking
 
 **Type:** POST
@@ -336,28 +336,28 @@ curl -X GET -H 'AUTHORIZATION' -i '/api/lock/{deviceId}'
 
 **Content-Type:** application/json
 
-**Description:** 
+**Description:** 创建停车位
 
 **Body-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|location|string|false|No comments found.|-|
-|latitude|double|false|No comments found.|-|
-|longitude|double|false|No comments found.|-|
-|description|string|false|No comments found.|-|
-|price|number|false|No comments found.|-|
-|images|array|false|No comments found.|-|
-|rules|array|false|No comments found.|-|
-|└─mode|string|false|No comments found.|-|
-|└─startTime|string|false|No comments found.|-|
-|└─endTime|string|false|No comments found.|-|
+|location|string|false|停车场名称|-|
+|latitude|double|false|纬度|-|
+|longitude|double|false|经度|-|
+|description|string|false|车位描述|-|
+|price|number|false|车位价格|-|
+|images|array|false|车位图片|-|
+|rules|array|false|车位规则|-|
+|└─mode|string|false|车位出租模式|-|
+|└─startTime|string|false|开始时间|-|
+|└─endTime|string|false|结束时间|-|
 |└─specificDates|array|false|No comments found.|-|
 |└─specificWeekDays|array|false|No comments found.|-|
 |└─specificMonthDateRanges|array|false|No comments found.|-|
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─startDay|int32|false|No comments found.|-|
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─endDay|int32|false|No comments found.|-|
-|facilities|array|false|No comments found.|-|
+|facilities|array|false|车位设施|-|
 
 **Request-example:**
 ```bash
@@ -400,8 +400,8 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/owner/parking/createPa
 |-------|------|-------------|-------|
 |code|int32|错误码|-|
 |message|string|错误信息|-|
-|success|boolean|No comments found.|-|
-|id|int64|No comments found.|-|
+|success|boolean|是否成功|-|
+|id|int64|车位id|-|
 
 **Response-example:**
 ```json
@@ -413,7 +413,7 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/owner/parking/createPa
 }
 ```
 
-### 
+### 更新停车位
 **URL:** /api/owner/parking/updateParking
 
 **Type:** POST
@@ -421,30 +421,30 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/owner/parking/createPa
 
 **Content-Type:** application/json
 
-**Description:** 
+**Description:** 更新停车位
 
 **Body-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|location|string|false|No comments found.|-|
-|latitude|double|false|No comments found.|-|
-|longitude|double|false|No comments found.|-|
-|description|string|false|No comments found.|-|
-|price|number|false|No comments found.|-|
-|images|array|false|No comments found.|-|
-|rules|array|false|No comments found.|-|
-|└─mode|string|false|No comments found.|-|
-|└─startTime|string|false|No comments found.|-|
-|└─endTime|string|false|No comments found.|-|
+|location|string|false|停车场名称|-|
+|latitude|double|false|纬度|-|
+|longitude|double|false|经度|-|
+|description|string|false|车位描述|-|
+|price|number|false|车位价格|-|
+|images|array|false|车位图片|-|
+|rules|array|false|车位规则|-|
+|└─mode|string|false|车位出租模式|-|
+|└─startTime|string|false|开始时间|-|
+|└─endTime|string|false|结束时间|-|
 |└─specificDates|array|false|No comments found.|-|
 |└─specificWeekDays|array|false|No comments found.|-|
 |└─specificMonthDateRanges|array|false|No comments found.|-|
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─startDay|int32|false|No comments found.|-|
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─endDay|int32|false|No comments found.|-|
-|facilities|array|false|No comments found.|-|
-|id|int64|false|No comments found.|-|
-|status|int32|false|No comments found.|-|
+|facilities|array|false|车位设施|-|
+|id|int64|false|车位id|-|
+|status|int32|false|车位状态|-|
 
 **Request-example:**
 ```bash
@@ -489,8 +489,8 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/owner/parking/updatePa
 |-------|------|-------------|-------|
 |code|int32|错误码|-|
 |message|string|错误信息|-|
-|success|boolean|No comments found.|-|
-|id|int64|No comments found.|-|
+|success|boolean|是否成功|-|
+|id|int64|车位id|-|
 
 **Response-example:**
 ```json
@@ -502,7 +502,7 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/owner/parking/updatePa
 }
 ```
 
-### 
+### 删除停车位
 **URL:** /api/owner/parking/deleteParking
 
 **Type:** POST
@@ -510,13 +510,13 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/owner/parking/updatePa
 
 **Content-Type:** application/json
 
-**Description:** 
+**Description:** 删除停车位
 
 **Body-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|parkingSpotId|int64|false|No comments found.|-|
+|parkingSpotId|int64|false|车位id|-|
 
 **Request-example:**
 ```bash
@@ -530,8 +530,8 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/owner/parking/deletePa
 |-------|------|-------------|-------|
 |code|int32|错误码|-|
 |message|string|错误信息|-|
-|success|boolean|No comments found.|-|
-|id|int64|No comments found.|-|
+|success|boolean|是否成功|-|
+|id|int64|车位id|-|
 
 **Response-example:**
 ```json
@@ -543,7 +543,7 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/owner/parking/deletePa
 }
 ```
 
-### 
+### 获取停车位列表
 **URL:** /api/owner/parking/getParkingList
 
 **Type:** GET
@@ -551,15 +551,15 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/owner/parking/deletePa
 
 **Content-Type:** application/x-www-form-urlencoded;charset=UTF-8
 
-**Description:** 
+**Description:** 获取停车位列表
 
 **Query-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|status|int32|false|No comments found.|-|
-|page|int32|false|No comments found.|-|
-|size|int32|false|No comments found.|-|
+|status|int32|false|停车位状态，可选，不传则查询全部|-|
+|page|int32|false|页码，默认1|-|
+|size|int32|false|每页数量，默认20|-|
 
 **Request-example:**
 ```bash
@@ -597,7 +597,7 @@ curl -X GET -i '/api/owner/parking/getParkingList?status=0&page=1&size=20' --dat
 }
 ```
 
-### 
+### 获取停车位详情
 **URL:** /api/owner/parking/getParkingDetail
 
 **Type:** GET
@@ -605,13 +605,13 @@ curl -X GET -i '/api/owner/parking/getParkingList?status=0&page=1&size=20' --dat
 
 **Content-Type:** application/x-www-form-urlencoded;charset=UTF-8
 
-**Description:** 
+**Description:** 获取停车位详情
 
 **Query-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|parkingSpotId|int64|true|No comments found.|-|
+|parkingSpotId|int64|true|停车位id|-|
 
 **Request-example:**
 ```bash
@@ -682,8 +682,8 @@ curl -X GET -i '/api/owner/parking/getParkingDetail?parkingSpotId=0' --data '&0'
 }
 ```
 
-## 
-### 
+## 租户订单
+### 获取订单列表
 **URL:** /api/owner/orders/getOrders
 
 **Type:** GET
@@ -691,16 +691,16 @@ curl -X GET -i '/api/owner/parking/getParkingDetail?parkingSpotId=0' --data '&0'
 
 **Content-Type:** application/x-www-form-urlencoded;charset=UTF-8
 
-**Description:** 
+**Description:** 获取订单列表
 
 **Query-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|ownerId|int64|true|No comments found.|-|
-|status|int32|false|No comments found.|-|
-|page|int32|false|No comments found.|-|
-|size|int32|false|No comments found.|-|
+|ownerId|int64|true|租户id|-|
+|status|int32|false| 订单状态|-|
+|page|int32|false|   页码|-|
+|size|int32|false|   每页数量|-|
 
 **Request-example:**
 ```bash
@@ -758,7 +758,7 @@ curl -X GET -i '/api/owner/orders/getOrders?ownerId=0&status=0&page=1&size=20' -
 }
 ```
 
-### 
+### 获取订单详情
 **URL:** /api/owner/orders/earnings
 
 **Type:** POST
@@ -766,21 +766,19 @@ curl -X GET -i '/api/owner/orders/getOrders?ownerId=0&status=0&page=1&size=20' -
 
 **Content-Type:** application/json
 
-**Description:** 
+**Description:** 获取订单详情
 
 **Body-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|ownerId|int64|false|No comments found.|-|
-|parkingSpotId|int64|false|No comments found.|-|
-|startTime|string|false|No comments found.|-|
-|endTime|string|false|No comments found.|-|
+|parkingSpotId|int64|false|车位id|-|
+|startTime|string|false|开始时间|-|
+|endTime|string|false|结束时间|-|
 
 **Request-example:**
 ```bash
 curl -X POST -H 'Content-Type: application/json' -i '/api/owner/orders/earnings' --data '{
-  "ownerId": 0,
   "parkingSpotId": 0,
   "startTime": "",
   "endTime": ""
@@ -832,7 +830,7 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/owner/orders/earnings'
 }
 ```
 
-### 
+### 获取使用统计
 **URL:** /api/owner/orders/usage
 
 **Type:** POST
@@ -840,21 +838,19 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/owner/orders/earnings'
 
 **Content-Type:** application/json
 
-**Description:** 
+**Description:** 获取使用统计
 
 **Body-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|ownerId|int64|false|No comments found.|-|
-|parkingSpotId|int64|false|No comments found.|-|
-|startTime|string|false|No comments found.|-|
-|endTime|string|false|No comments found.|-|
+|parkingSpotId|int64|false|车位id|-|
+|startTime|string|false|开始时间|-|
+|endTime|string|false|结束时间|-|
 
 **Request-example:**
 ```bash
 curl -X POST -H 'Content-Type: application/json' -i '/api/owner/orders/usage' --data '{
-  "ownerId": 0,
   "parkingSpotId": 0,
   "startTime": "",
   "endTime": ""
@@ -915,8 +911,8 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/owner/orders/usage' --
 ```
 
 # 用户模块
-## 
-### 
+## 用户收藏相关接口
+### 收藏/取消收藏
 **URL:** /api/user/favorites/toggleFavorite
 
 **Type:** POST
@@ -924,22 +920,20 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/owner/orders/usage' --
 
 **Content-Type:** application/json
 
-**Description:** 
+**Description:** 收藏/取消收藏
 
 **Body-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|id|int64|false|No comments found.|-|
-|userId|int64|false|No comments found.|-|
-|parkingSpotId|int64|false|No comments found.|-|
-|action|boolean|false|No comments found.|-|
+|id|int64|false|收藏id|-|
+|parkingSpotId|int64|false|收藏车位id|-|
+|action|boolean|false|收藏车位动作 true-收藏 false-取消收藏|-|
 
 **Request-example:**
 ```bash
 curl -X POST -H 'Content-Type: application/json' -i '/api/user/favorites/toggleFavorite' --data '{
   "id": 0,
-  "userId": 0,
   "parkingSpotId": 0,
   "action": true
 }'
@@ -950,8 +944,8 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/favorites/toggleF
 |-------|------|-------------|-------|
 |code|int32|错误码|-|
 |message|string|错误信息|-|
-|success|boolean|No comments found.|-|
-|id|int64|No comments found.|-|
+|success|boolean|是否成功|-|
+|id|int64|车位id|-|
 
 **Response-example:**
 ```json
@@ -963,7 +957,7 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/favorites/toggleF
 }
 ```
 
-### 
+### 获取用户收藏列表
 **URL:** /api/user/favorites/getFavorites
 
 **Type:** GET
@@ -971,19 +965,18 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/favorites/toggleF
 
 **Content-Type:** application/x-www-form-urlencoded;charset=UTF-8
 
-**Description:** 
+**Description:** 获取用户收藏列表
 
 **Query-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|userId|int64|true|No comments found.|-|
-|page|int32|false|No comments found.|-|
-|size|int32|false|No comments found.|-|
+|page|int32|false|页码|-|
+|size|int32|false|每页数量|-|
 
 **Request-example:**
 ```bash
-curl -X GET -i '/api/user/favorites/getFavorites?userId=0&page=1&size=20' --data '&0&"1"&"20"'
+curl -X GET -i '/api/user/favorites/getFavorites?page=1&size=20' --data '&"1"&"20"'
 ```
 **Response-fields:**
 
@@ -1017,7 +1010,7 @@ curl -X GET -i '/api/user/favorites/getFavorites?userId=0&page=1&size=20' --data
 }
 ```
 
-## 
+## 用户查询车位相关接口
 ### 
 **URL:** /api/user/parking/nearby
 
@@ -1032,14 +1025,18 @@ curl -X GET -i '/api/user/favorites/getFavorites?userId=0&page=1&size=20' --data
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|latitude|double|false|No comments found.|-|
-|longitude|double|false|No comments found.|-|
-|radius|int32|false|No comments found.|-|
-|price|number|false|No comments found.|-|
-|startTime|string|false|No comments found.|-|
-|endTime|string|false|No comments found.|-|
-|page|int32|false|No comments found.|-|
-|size|int32|false|No comments found.|-|
+|latitude|double|false|经纬度|-|
+|longitude|double|false|经纬度|-|
+|radius|int32|false|半径|-|
+|maxPrice|number|false|最高价格|-|
+|minPrice|number|false|最低价格|-|
+|parkingType|string|false|停车场类型|-|
+|startTime|string|false|开始时间|-|
+|endTime|string|false|结束时间|-|
+|page|int32|false|页数|-|
+|size|int32|false|每页大小|-|
+|sortType|string|false|排序类型|-|
+|sortOrder|string|false|排序方式|-|
 
 **Request-example:**
 ```bash
@@ -1047,11 +1044,15 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/parking/nearby' -
   "latitude": 0.0,
   "longitude": 0.0,
   "radius": 0,
-  "price": 0,
+  "maxPrice": 0,
+  "minPrice": 0,
+  "parkingType": "",
   "startTime": "",
   "endTime": "",
   "page": 0,
-  "size": 0
+  "size": 0,
+  "sortType": "",
+  "sortOrder": ""
 }'
 ```
 **Response-fields:**
@@ -1177,8 +1178,8 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/parking/detail' -
 }
 ```
 
-## 
-### 
+## 用户登陆注册相关接口
+### 测试接口，返回字符串&lt;br&gt;
 **URL:** /api/user/test
 
 **Type:** GET
@@ -1186,7 +1187,7 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/parking/detail' -
 
 **Content-Type:** application/x-www-form-urlencoded;charset=UTF-8
 
-**Description:** 
+**Description:** 测试接口，返回字符串<br>
 
 **Request-example:**
 ```bash
@@ -1198,7 +1199,7 @@ curl -X GET -i '/api/user/test'
 string
 ```
 
-### 
+### 微信登录接口
 **URL:** /api/user/login/wechat/{code}
 
 **Type:** POST
@@ -1206,13 +1207,13 @@ string
 
 **Content-Type:** application/x-www-form-urlencoded;charset=UTF-8
 
-**Description:** 
+**Description:** 微信登录接口
 
 **Path-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|code|string|true|No comments found.|-|
+|code|string|true|微信code，用于获取openid和session_key，用于登录|-|
 
 **Request-example:**
 ```bash
@@ -1252,7 +1253,7 @@ curl -X POST -i '/api/user/login/wechat/{code}'
 }
 ```
 
-### 
+### 手机号登录接口
 **URL:** /api/user/login/phone
 
 **Type:** POST
@@ -1260,15 +1261,15 @@ curl -X POST -i '/api/user/login/wechat/{code}'
 
 **Content-Type:** application/json
 
-**Description:** 
+**Description:** 手机号登录接口
 
 **Body-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|phone|string|false|No comments found.|-|
-|verifyCode|string|false|No comments found.|-|
-|password|string|false|No comments found.|-|
+|phone|string|false|手机号|-|
+|verifyCode|string|false|验证码|-|
+|password|string|false|密码|-|
 
 **Request-example:**
 ```bash
@@ -1312,7 +1313,7 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/login/phone' --da
 }
 ```
 
-### 
+### 发送验证码接口
 **URL:** /api/user/sendVerifyCode
 
 **Type:** POST
@@ -1320,13 +1321,13 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/login/phone' --da
 
 **Content-Type:** application/x-www-form-urlencoded;charset=UTF-8
 
-**Description:** 
+**Description:** 发送验证码接口
 
 **Query-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|phone|string|true|No comments found.|-|
+|phone|string|true|手机号|-|
 
 **Request-example:**
 ```bash
@@ -1351,7 +1352,7 @@ curl -X POST -i '/api/user/sendVerifyCode' --data 'phone='
 }
 ```
 
-### 
+### 注册接口
 **URL:** /api/user/register
 
 **Type:** POST
@@ -1359,15 +1360,15 @@ curl -X POST -i '/api/user/sendVerifyCode' --data 'phone='
 
 **Content-Type:** application/json
 
-**Description:** 
+**Description:** 注册接口
 
 **Body-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|phone|string|false|No comments found.|-|
-|verifyCode|string|false|No comments found.|-|
-|password|string|false|No comments found.|-|
+|phone|string|false|手机号|-|
+|verifyCode|string|false|验证码|-|
+|password|string|false|密码|-|
 
 **Request-example:**
 ```bash
@@ -1396,8 +1397,8 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/register' --data 
 }
 ```
 
-## 
-### 
+## 用户订单相关接口
+### 获取用户订单列表
 **URL:** /api/user/orders/getOrders
 
 **Type:** GET
@@ -1405,15 +1406,15 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/register' --data 
 
 **Content-Type:** application/x-www-form-urlencoded;charset=UTF-8
 
-**Description:** 
+**Description:** 获取用户订单列表
 
 **Query-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|status|int32|false|No comments found.|-|
-|page|int32|false|No comments found.|-|
-|size|int32|false|No comments found.|-|
+|status|int32|false|订单状态|-|
+|page|int32|false| 当前页数，默认1|-|
+|size|int32|false| 每页数量，默认20|-|
 
 **Request-example:**
 ```bash
@@ -1471,7 +1472,7 @@ curl -X GET -i '/api/user/orders/getOrders?status=0&page=1&size=20' --data '&0&"
 }
 ```
 
-### 
+### 创建订单
 **URL:** /api/user/orders/createOrder
 
 **Type:** POST
@@ -1479,16 +1480,16 @@ curl -X GET -i '/api/user/orders/getOrders?status=0&page=1&size=20' --data '&0&"
 
 **Content-Type:** application/json
 
-**Description:** 
+**Description:** 创建订单
 
 **Body-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|parkingSpotId|int64|false|No comments found.|-|
-|startTime|string|false|No comments found.|-|
-|endTime|string|false|No comments found.|-|
-|carNumber|string|false|No comments found.|-|
+|parkingSpotId|int64|false|停车场id|-|
+|startTime|string|false|开始时间|-|
+|endTime|string|false|结束时间|-|
+|carNumber|string|false|车牌号|-|
 
 **Request-example:**
 ```bash
@@ -1505,8 +1506,8 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/orders/createOrde
 |-------|------|-------------|-------|
 |code|int32|错误码|-|
 |message|string|错误信息|-|
-|success|boolean|No comments found.|-|
-|id|int64|No comments found.|-|
+|success|boolean|是否成功|-|
+|id|int64|车位id|-|
 
 **Response-example:**
 ```json
@@ -1518,7 +1519,7 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/orders/createOrde
 }
 ```
 
-### 
+### 取消订单
 **URL:** /api/user/orders/cancelOrder
 
 **Type:** POST
@@ -1526,13 +1527,13 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/orders/createOrde
 
 **Content-Type:** application/json
 
-**Description:** 
+**Description:** 取消订单
 
 **Body-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|orderId|int64|false|No comments found.|-|
+|orderId|int64|false|订单id|-|
 
 **Request-example:**
 ```bash
@@ -1546,8 +1547,8 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/orders/cancelOrde
 |-------|------|-------------|-------|
 |code|int32|错误码|-|
 |message|string|错误信息|-|
-|success|boolean|No comments found.|-|
-|id|int64|No comments found.|-|
+|success|boolean|是否成功|-|
+|id|int64|车位id|-|
 
 **Response-example:**
 ```json
@@ -1573,7 +1574,7 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/orders/cancelOrde
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|orderId|int64|false|No comments found.|-|
+|orderId|int64|false|订单id|-|
 
 **Request-example:**
 ```bash
@@ -1587,8 +1588,8 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/orders/complete' 
 |-------|------|-------------|-------|
 |code|int32|错误码|-|
 |message|string|错误信息|-|
-|success|boolean|No comments found.|-|
-|id|int64|No comments found.|-|
+|success|boolean|是否成功|-|
+|id|int64|车位id|-|
 
 **Response-example:**
 ```json
@@ -1601,8 +1602,8 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/orders/complete' 
 ```
 
 # 支付模块
-## 
-### 
+## 支付相关接口
+### 创建支付订单
 **URL:** /api/pay/createPayOrder
 
 **Type:** POST
@@ -1610,7 +1611,7 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/orders/complete' 
 
 **Content-Type:** application/json
 
-**Description:** 
+**Description:** 创建支付订单
 
 **Body-parameters:**
 
@@ -1651,7 +1652,7 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/pay/createPayOrder' --
 }
 ```
 
-### 
+### 查询支付订单状态
 **URL:** /api/pay/query/{orderId}
 
 **Type:** GET
@@ -1659,19 +1660,19 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/pay/createPayOrder' --
 
 **Content-Type:** application/x-www-form-urlencoded;charset=UTF-8
 
-**Description:** 
+**Description:** 查询支付订单状态
 
 **Path-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|orderId|string|true|No comments found.|-|
+|orderId|string|true|订单号|-|
 
 **Query-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|payType|string|true|No comments found.|-|
+|payType|string|true|支付类型|-|
 
 **Request-example:**
 ```bash
@@ -1690,120 +1691,6 @@ curl -X GET -i '/api/pay/query/{orderId}?payType='
   "orderId": "",
   "status": ""
 }
-```
-
-## 回调处理
- 支付回调：1、解析参数 2、验证签名 3、返回成功或失败 4、异步处理业务逻辑（包含重试机制）
-### 
-**URL:** /api/pay/notify/alipay
-
-**Type:** POST
-
-
-**Content-Type:** application/x-www-form-urlencoded;charset=UTF-8
-
-**Description:** 
-
-**Request-example:**
-```bash
-curl -X POST -i '/api/pay/notify/alipay'
-```
-
-**Response-example:**
-```json
-string
-```
-
-### 
-**URL:** /api/pay/notify/wechatpay
-
-**Type:** POST
-
-
-**Content-Type:** application/json
-
-**Description:** 
-
-**Request-headers:**
-
-| Header | Type | Required | Description | Since |
-|--------|------|----------|-------------|-------|
-|Wechatpay-Signature|string|true|No comments found.|-|
-|Wechatpay-Nonce|string|true|No comments found.|-|
-|Wechatpay-Timestamp|string|true|No comments found.|-|
-|Wechatpay-Serial|string|true|No comments found.|-|
-
-
-**Body-parameters:**
-
-| Parameter | Type | Required | Description | Since |
-|-----------|------|----------|-------------|-------|
-|notifyData|string|false|No comments found.|-|
-
-**Request-example:**
-```bash
-curl -X POST -H 'Content-Type: application/json' -H 'Wechatpay-Signature' -H 'Wechatpay-Nonce' -H 'Wechatpay-Timestamp' -H 'Wechatpay-Serial' -i '/api/pay/notify/wechatpay'
-```
-
-**Response-example:**
-```json
-string
-```
-
-### 
-**URL:** /api/pay/notify/alipay/refund
-
-**Type:** POST
-
-
-**Content-Type:** application/x-www-form-urlencoded;charset=UTF-8
-
-**Description:** 
-
-**Request-example:**
-```bash
-curl -X POST -i '/api/pay/notify/alipay/refund'
-```
-
-**Response-example:**
-```json
-string
-```
-
-### 
-**URL:** /api/pay/notify/wechatpay/refund
-
-**Type:** POST
-
-
-**Content-Type:** application/json
-
-**Description:** 
-
-**Request-headers:**
-
-| Header | Type | Required | Description | Since |
-|--------|------|----------|-------------|-------|
-|Wechatpay-Signature|string|true|No comments found.|-|
-|Wechatpay-Nonce|string|true|No comments found.|-|
-|Wechatpay-Timestamp|string|true|No comments found.|-|
-|Wechatpay-Serial|string|true|No comments found.|-|
-
-
-**Body-parameters:**
-
-| Parameter | Type | Required | Description | Since |
-|-----------|------|----------|-------------|-------|
-|notifyData|string|false|No comments found.|-|
-
-**Request-example:**
-```bash
-curl -X POST -H 'Content-Type: application/json' -H 'Wechatpay-Signature' -H 'Wechatpay-Nonce' -H 'Wechatpay-Timestamp' -H 'Wechatpay-Serial' -i '/api/pay/notify/wechatpay/refund'
-```
-
-**Response-example:**
-```json
-string
 ```
 
 

@@ -11,11 +11,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class StatisticsRequest {
 
-    private Long ownerId;
-
+    /**
+     * 车位id
+     */
     private Long parkingSpotId;
 
+    /**
+     * 开始时间
+     */
     private String startTime;
 
+    /**
+     * 结束时间
+     */
     private String endTime;
 }

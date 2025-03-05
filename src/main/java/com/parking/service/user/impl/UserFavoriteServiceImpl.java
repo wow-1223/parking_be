@@ -3,6 +3,7 @@ package com.parking.service.user.impl;
 import com.google.common.collect.Lists;
 import com.parking.exception.BusinessException;
 import com.parking.exception.ResourceNotFoundException;
+import com.parking.handler.jwt.TokenUtil;
 import com.parking.model.entity.mybatis.Favorite;
 import com.parking.model.param.common.OperationResponse;
 import com.parking.model.param.user.request.FavoriteRequest;
@@ -28,6 +29,7 @@ public class UserFavoriteServiceImpl implements FavoriteService {
     @Override
     @Transactional
     public OperationResponse toggleFavorite(FavoriteRequest request) {
+        Long userId = TokenUtil.getUserId();
         if (request.getAction()) {
             // 收藏
             Boolean exist = parkingSpotRepository.exist(request.getParkingSpotId());
@@ -35,10 +37,10 @@ public class UserFavoriteServiceImpl implements FavoriteService {
                 throw new ResourceNotFoundException("ParkingSpot not found");
             }
 
-            Favorite favorite = favoriteRepository.exist(null, request.getUserId(), request.getParkingSpotId(), false);
+            Favorite favorite = favoriteRepository.exist(null, userId, request.getParkingSpotId(), false);
             if (favorite == null) {
                 favorite = new Favorite();
-                favorite.setUserId(request.getUserId());
+                favorite.setUserId(userId);
                 favorite.setParkingSpotId(request.getParkingSpotId());
                 favoriteRepository.insert(favorite);
             } else if (favorite.getDeletedAt() != 0) {

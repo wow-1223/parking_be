@@ -7,8 +7,14 @@ import lombok.EqualsAndHashCode;
 @Data
 public class OperationResponse extends BaseResponse {
 
+    /**
+     * 是否成功
+     */
     private boolean success;
 
+    /**
+     * 车位id
+     */
     private Long id;
 
     public static OperationResponse operationSuccess(Long id, String message) {

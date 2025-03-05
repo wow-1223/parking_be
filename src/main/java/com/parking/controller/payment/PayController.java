@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 支付相关接口
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api/pay")
@@ -18,6 +21,11 @@ public class PayController {
     @Autowired
     private PayServiceFactory payServiceFactory;
 
+    /**
+     * 创建支付订单
+     * @param request 支付请求参数
+     * @return 支付结果
+     */
     @PostMapping("/createPayOrder")
     public PayResponse createPayOrder(@RequestBody PayRequest request) {
         log.info("create pay order, request：{}", request);
@@ -25,6 +33,12 @@ public class PayController {
         return payService.createOrder(request);
     }
 
+    /**
+     * 查询支付订单状态
+     * @param orderId 订单号
+     * @param payType 支付类型
+     * @return 支付结果
+     */
     @GetMapping("/query/{orderId}")
     public PayResponse queryOrder(
             @PathVariable String orderId,

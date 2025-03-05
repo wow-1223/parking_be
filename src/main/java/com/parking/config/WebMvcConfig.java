@@ -24,7 +24,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/api/user/sendVerifyCode",   // 发送验证码
                         "/api/user/verifyCode",   // 验证码验证
                         "/api/pay/notify/**",   // 支付回调接口
-                        "/api/upload/**"    // 文件上传接口
+                        "/api/upload/**",    // 文件上传接口
+                        "/api/user/parking/nearby",    // 附近停车位
+                        "/api/user/parking/detail"    // 停车位详情
                 );
     }
 

@@ -10,8 +10,17 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ParkingSpotRuleStrVO {
+    /**
+     * 车位出租模式
+     */
     private String mode;
+    /**
+     * 开始时间
+     */
     private String startTime;
+    /**
+     * 结束时间
+     */
     private String endTime;
     private List<String> specificDates;
     private List<String> specificWeekDays;

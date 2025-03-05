@@ -105,7 +105,7 @@ public class UserParkingServiceImpl implements UserParkingService {
      */
     public IPage<ParkingSpot> findNearbyAvailableSpots(NearbyParkingSpotRequest request) {
         List<ParkingSpot> spots = parkingSpotRepository.findAvailableParkingSpotIdList(
-                request.getLongitude(), request.getLatitude(), request.getRadius(), request.getPrice());
+                request.getLongitude(), request.getLatitude(), request.getRadius(), request.getMaxPrice());
         if (CollectionUtils.isEmpty(spots)) {
             return new Page<>(request.getPage(), request.getSize());
         }

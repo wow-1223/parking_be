@@ -1,6 +1,7 @@
 {
   "outPath": "./docs",
   "packageFilters": "com.parking.controller.*.*",
+  "packageExcludeFilters" : "com.parking.controller.payment.PayNotifyController",
   "allInOne": true,
   "projectName": "parking-be",
   "coverOld": true,

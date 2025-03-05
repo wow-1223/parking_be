@@ -7,7 +7,13 @@ import lombok.EqualsAndHashCode;
 @Data
 public class UpdateParkingRequest extends OwnerParkingRequest {
 
+    /**
+     * 车位id
+     */
     private Long id;
 
+    /**
+     * 车位状态
+     */
     private Integer status;
 } 

@@ -4,9 +4,19 @@ import lombok.Data;
 
 @Data
 public class UploadResponse<T> {
+    /**
+     * 是否成功
+     */
     private boolean success;
+
+    /**
+     * 信息
+     */
     private String message;
 
+    /**
+     * 数据
+     */
     private T data;
 
     public static <T> UploadResponse<T> success(T url) {

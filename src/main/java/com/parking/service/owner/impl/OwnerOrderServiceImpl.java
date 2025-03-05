@@ -1,6 +1,7 @@
 package com.parking.service.owner.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.parking.handler.jwt.TokenUtil;
 import com.parking.model.dto.order.OrderDTO;
 import com.parking.model.dto.order.OrderDetailDTO;
 import com.parking.model.dto.owner.DailyStatisticsDTO;
@@ -46,7 +47,7 @@ public class OwnerOrderServiceImpl extends BaseOrderService implements OwnerOrde
     @Override
     public EarningsStatisticsResponse getEarningsStatistics(StatisticsRequest request) {
         List<StatisticsResponse> statistics = orderRepository.getEarningsStatistics(
-                request.getOwnerId(),
+                TokenUtil.getUserId(),
                 DateUtil.parseDate(request.getStartTime()),
                 DateUtil.parseDate(request.getEndTime())
         );
@@ -59,14 +60,14 @@ public class OwnerOrderServiceImpl extends BaseOrderService implements OwnerOrde
         List<StatisticsResponse> statistics;
         if (request.getParkingSpotId() != null) {
             statistics = orderRepository.getParkingUsageStatistics(
-                    request.getOwnerId(),
+                    TokenUtil.getUserId(),
                     request.getParkingSpotId(),
                     DateUtil.parseDate(request.getStartTime()),
                     DateUtil.parseDate(request.getEndTime())
             );
         } else {
             statistics = orderRepository.getOverallUsageStatistics(
-                    request.getOwnerId(),
+                    TokenUtil.getUserId(),
                     DateUtil.parseDate(request.getStartTime()),
                     DateUtil.parseDate(request.getEndTime())
             );

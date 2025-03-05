@@ -4,6 +4,7 @@ import com.parking.enums.parking.SpotModeEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -62,14 +63,14 @@ public class ParkingSpotRuleVO {
     }
 
     public LocalTime getStartTime() {
-        if (startTime == null && ruleStr.getStartTime() != null) {
+        if (startTime == null && StringUtils.isNotBlank(ruleStr.getStartTime())) {
             startTime = LocalTime.parse(ruleStr.getStartTime());
         }
         return startTime;
     }
 
     public LocalTime getEndTime() {
-        if (endTime == null && ruleStr.getEndTime() != null) {
+        if (endTime == null && StringUtils.isNotBlank(ruleStr.getStartTime())) {
             endTime = LocalTime.parse(ruleStr.getEndTime());
         }
         return endTime;

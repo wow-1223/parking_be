@@ -1,0 +1,29 @@
+{
+  "outPath": "./docs",
+  "packageFilters": "com.parking.controller.*.*",
+  "allInOne": true,
+  "projectName": "parking-be",
+  "coverOld": true,
+  "groups": [
+    {
+      "name" : "公共模块",
+      "apis" : "com.parking.controller.common.*"
+    },
+    {
+      "name" : "地锁模块",
+      "apis" : "com.parking.controller.lock.*"
+    },
+    {
+      "name" : "租户模块",
+      "apis" : "com.parking.controller.owner.*"
+    },
+    {
+      "name" : "用户模块",
+      "apis" : "com.parking.controller.user.*"
+    },
+    {
+      "name" : "支付模块",
+      "apis" : "com.parking.controller.payment.*"
+    }
+  ]
+}

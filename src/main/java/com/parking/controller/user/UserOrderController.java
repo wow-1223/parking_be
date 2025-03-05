@@ -1,5 +1,6 @@
 package com.parking.controller.user;
 
+import com.parking.handler.jwt.TokenUtil;
 import com.parking.model.dto.order.OrderDTO;
 import com.parking.model.param.common.OperationResponse;
 import com.parking.model.param.user.request.OperateOrderRequest;
@@ -8,8 +9,8 @@ import com.parking.model.param.common.PageResponse;
 import com.parking.service.user.UserOrderService;
 
 
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -17,16 +18,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/user/orders")
 public class UserOrderController {
 
-    @Autowired
+    @Resource
     private UserOrderService userOrderService;
 
     @GetMapping("/getOrders")
     public PageResponse<OrderDTO> getOrders(
-            @RequestParam Long userId,
             @RequestParam(required = false) Integer status,
             @RequestParam(required = false, defaultValue = "1") Integer page,
             @RequestParam(required = false, defaultValue = "20") Integer size) {
-        return userOrderService.getOrders(userId, status, page, size);
+        return userOrderService.getOrders(TokenUtil.getUserId(), status, page, size);
     }
 
     @PostMapping("/createOrder")

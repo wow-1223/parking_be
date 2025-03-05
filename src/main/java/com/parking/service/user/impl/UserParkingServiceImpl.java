@@ -119,9 +119,7 @@ public class UserParkingServiceImpl implements UserParkingService {
         }
 
         List<Long> spotIds = new ArrayList<>(availableSpots.stream().map(ParkingSpot::getId).toList());
-        String spotIdStr = StringUtils.join(spotIds, ",");
-        List<Long> occupiedSpotIds = occupiedSpotRepository.findParkingSpotIdByTimeInterval(
-                spotIdStr, DateUtil.convertToLocalDate(request.getStartTime()), start, end);
+        List<Long> occupiedSpotIds = occupiedSpotRepository.findParkingSpotIdByTimeInterval(spotIds, start, end);
 
         spotIds.removeAll(occupiedSpotIds);
 

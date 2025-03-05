@@ -16,7 +16,10 @@ public enum OrderStatusEnum {
     REFUNDED(8, "refunded"),
     OVERDUE(9, "timeout"),
     OVERDUE_PENDING_PAYMENT(10, "timeout pending payment"),
-    LEAVE_TEMPORARILY(11, "leave temporarily");
+    LEAVE_TEMPORARILY(11, "leave temporarily"),
+    USER_OCCUPIED(12, "user occupied"),
+    UNKNOWN_OCCUPIED(13, "unknown occupied")
+    ;
 
     private final int status;
     private final String description;

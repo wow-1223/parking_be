@@ -53,7 +53,7 @@ public class ParkingReminderJob {
         try {
             // 1. 获取下一个小时的预定记录
             LocalDateTime nextHour = LocalDateTime.now().plusHours(1);
-            List<OccupiedSpot> occupiedList = occupiedSpotRepository.findReservedByTimeRange(nextHour, nextHour.plusHours(1));
+            List<OccupiedSpot> occupiedList = occupiedSpotRepository.findAllByTimeInterval(nextHour, nextHour.plusHours(1));
             if (CollectionUtils.isEmpty(occupiedList)) {
                 return;
             }
@@ -75,7 +75,7 @@ public class ParkingReminderJob {
                     .map(OccupiedSpot::getId)
                     .collect(Collectors.toList());
             List<OrderUserDTO> orderUsers = orderRepository
-                    .findOrderWithUserByOccupied(StringUtils.join(occupiedIds), OrderStatusEnum.RESERVED.getStatus());
+                    .findOrderWithUserByOccupied(occupiedIds, OrderStatusEnum.RESERVED.getStatus());
             if (CollectionUtils.isEmpty(orderUsers)) {
                 return;
             }

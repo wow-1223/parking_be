@@ -1,5 +1,6 @@
 package com.parking.service.lock.impl;
 
+import com.google.common.collect.Maps;
 import com.parking.exception.ResourceNotFoundException;
 import com.parking.handler.redis.RedisUtil;
 import com.parking.model.entity.mybatis.ParkingSpot;
@@ -15,6 +16,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -22,6 +25,7 @@ public class LockServiceImpl implements LockService {
 
     private static final String LOCK_SHARD_KEY = "lock.shard";
     private static final String LOCK_KEY = "lock:";
+    private static final String SPOT_ID_LOCK_STATUS = "%s:%s";
 
     @Autowired
     private RedisUtil redisUtil;
@@ -74,6 +78,16 @@ public class LockServiceImpl implements LockService {
     @Override
     public String getLockStatus(String deviceId) {
         return (String) redisUtil.hGet(LOCK_KEY, getLockKey(deviceId));
+    }
+
+    @Override
+    public Map<String, String> getLockStatus(List<String> deviceIds) {
+        Map<String, Object> res = redisUtil.hMultiGet(LOCK_KEY, deviceIds);
+        Map<String, String> result = Maps.newHashMapWithExpectedSize(res.size());
+        for (Map.Entry<String, Object> entry : res.entrySet()) {
+            result.put(entry.getKey(), (String) entry.getValue());
+        }
+        return result;
     }
 
     private String getLockKey(String deviceId) {

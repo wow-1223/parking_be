@@ -7,6 +7,7 @@ import com.parking.enums.order.OrderStatusEnum;
 import com.parking.enums.parking.SpotStatusEnum;
 import com.parking.exception.BusinessException;
 import com.parking.exception.ResourceNotFoundException;
+import com.parking.mapper.mybatis.OccupiedSpotMapper;
 import com.parking.model.dto.order.OrderDTO;
 import com.parking.model.dto.order.OrderDetailDTO;
 import com.parking.model.entity.mybatis.OccupiedSpot;
@@ -39,10 +40,12 @@ import java.util.Set;
 public class UserOrderServiceImpl extends BaseOrderService implements UserOrderService {
 
     private final AesUtil aesUtil;
+    private final OccupiedSpotMapper occupiedSpotMapper;
 
-    public UserOrderServiceImpl(AesUtil aesUtil) {
+    public UserOrderServiceImpl(AesUtil aesUtil, OccupiedSpotMapper occupiedSpotMapper) {
         super();
         this.aesUtil = aesUtil;
+        this.occupiedSpotMapper = occupiedSpotMapper;
     }
 
     @Override
@@ -75,11 +78,16 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
             throw new BusinessException("ParkingSpot is not available");
         }
 
-        List<OccupiedSpot> occupiedSpots = occupiedSpotRepository.findByTime(request.getParkingSpotId(),
+        Boolean exist = occupiedSpotRepository.checkExist(request.getParkingSpotId(),
                 DateUtil.parseDate(request.getStartTime()), DateUtil.parseDate(request.getEndTime()));
-        if (CollectionUtils.isNotEmpty(occupiedSpots)) {
+        if (exist) {
             throw new BusinessException("ParkingSpot has been occupied");
         }
+//        List<OccupiedSpot> occupiedSpots = occupiedSpotRepository.findByTime(request.getParkingSpotId(),
+//                DateUtil.parseDate(request.getStartTime()), DateUtil.parseDate(request.getEndTime()));
+//        if (CollectionUtils.isNotEmpty(occupiedSpots)) {
+//            throw new BusinessException("ParkingSpot has been occupied");
+//        }
 
         LocalDateTime st = DateUtil.parseDate(request.getStartTime());
         LocalDateTime ed = DateUtil.parseDate(request.getEndTime());

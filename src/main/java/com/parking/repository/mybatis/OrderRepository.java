@@ -10,6 +10,7 @@ import com.parking.model.entity.mybatis.Order;
 import com.parking.model.param.owner.response.StatisticsResponse;
 import com.parking.util.DateUtil;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -144,8 +145,8 @@ public class OrderRepository {
     // end 统计相关
 
     // 联表查询
-    public List<OrderUserDTO> findOrderWithUserByOccupied(String occupiedIds, Integer status) {
-        return orderMapper.selectOrderWithUserByOccupied(occupiedIds, status);
+    public List<OrderUserDTO> findOrderWithUserByOccupied(List<Long> occupiedIds, Integer status) {
+        return orderMapper.selectOrderWithUserByOccupied(StringUtils.join(occupiedIds), status);
     }
 
 }

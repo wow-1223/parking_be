@@ -1,13 +1,13 @@
 package com.parking.handler.redis;
 
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Component
 public class RedisUtil {
@@ -54,6 +54,25 @@ public class RedisUtil {
      */
     public Object hGet(String key, String hashKey) {
         return redisTemplate.opsForHash().get(key, hashKey);
+    }
+
+    /**
+     * 批量获取Hash中多个field的值
+     * @param key Redis的key
+     * @param fields 需要获取的field列表
+     * @return field-value映射的Map
+     */
+    public Map<String, Object> hMultiGet(String key, List<String> fields) {
+        List<Object> values = redisTemplate.opsForHash().multiGet(key, Lists.newArrayList(fields));
+        Map<String, Object> result = new HashMap<>();
+        int i = 0;
+        for (String field : fields) {
+            if (values.get(i) != null) {
+                result.put(field, values.get(i));
+            }
+            i++;
+        }
+        return result;
     }
 
     /**

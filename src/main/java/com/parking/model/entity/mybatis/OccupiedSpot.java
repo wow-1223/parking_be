@@ -17,6 +17,8 @@ public class OccupiedSpot {
     private LocalDate parkingDay;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    private LocalDateTime actualStartTime;
+    private LocalDateTime actualEndTime;
     private Timestamp createTime;
     private Timestamp updateTime;
     private Long deletedAt;

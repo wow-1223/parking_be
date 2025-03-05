@@ -7,6 +7,9 @@ import com.parking.model.param.lock.ControlLockRequest;
 import com.parking.model.param.lock.OperateLockRequest;
 import com.parking.model.vo.lock.LockVO;
 
+import java.util.List;
+import java.util.Map;
+
 public interface LockService {
 
     OperationResponse bindLock(BindLockRequest request, String token);
@@ -15,5 +18,7 @@ public interface LockService {
     DetailResponse<LockVO> getLockInfo(String deviceId, String token);
 
     String getLockStatus(String deviceId);
+
+    Map<String, String> getLockStatus(List<String> deviceIds);
 
 }

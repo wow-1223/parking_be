@@ -36,6 +36,10 @@ public class DateUtil {
         return localDateTime.toLocalDate();
     }
 
+    public static LocalDate convertToLocalDate(LocalDateTime dateTime) {
+        return dateTime.toLocalDate();
+    }
+
     /**
      * 格式化日期
      */

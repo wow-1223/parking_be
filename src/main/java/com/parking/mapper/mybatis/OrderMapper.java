@@ -61,7 +61,7 @@ public interface OrderMapper extends BaseMapper<Order> {
         """;
 
     String SELECT_ORDER_WITH_USER_BY_OCCUPIED = """
-            SELECT o.*, u.phone, u.nick_name
+            SELECT o.*, u.phone, u.nick_name, u.role
             FROM orders o
             LEFT JOIN users u ON o.user_id = u.id
             WHERE o.parking_occupied_id IN (${occupiedIds})

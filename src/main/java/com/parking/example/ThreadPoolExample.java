@@ -1,6 +1,6 @@
 package com.parking.example;
 
-import com.parking.handler.task.ThreadPoolService;
+import com.parking.handler.task.ThreadPoolUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,17 +12,17 @@ import java.util.concurrent.Future;
 public class ThreadPoolExample {
 
     @Autowired
-    private ThreadPoolService threadPoolService;
+    private ThreadPoolUtil threadPoolUtil;
 
     public void asyncExample() {
         // 执行异步任务
-        threadPoolService.executeAsync(() -> {
+        threadPoolUtil.executeAsync(() -> {
             log.info("Executing async task");
             // 异步任务逻辑
         });
 
         // 执行异步任务并获取结果
-        Future<String> future = threadPoolService.submitAsync(() -> {
+        Future<String> future = threadPoolUtil.submitAsync(() -> {
             log.info("Executing async task with result");
             return "Task Result";
         });
@@ -37,13 +37,13 @@ public class ThreadPoolExample {
 
     public void taskExample() {
         // 执行定时任务
-        threadPoolService.executeTask(() -> {
+        threadPoolUtil.executeTask(() -> {
             log.info("Executing scheduled task");
             // 定时任务逻辑
         });
 
         // 执行定时任务并获取结果
-        Future<String> future = threadPoolService.submitTask(() -> {
+        Future<String> future = threadPoolUtil.submitTask(() -> {
             log.info("Executing scheduled task with result");
             return "Task Result";
         });

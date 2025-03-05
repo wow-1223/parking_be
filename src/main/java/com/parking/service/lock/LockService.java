@@ -14,4 +14,6 @@ public interface LockService {
     OperationResponse controlLock(ControlLockRequest request, String token);
     DetailResponse<LockVO> getLockInfo(String deviceId, String token);
 
+    String getLockStatus(String deviceId);
+
 }

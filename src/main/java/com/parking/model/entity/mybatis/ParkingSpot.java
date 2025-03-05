@@ -20,6 +20,8 @@ public class ParkingSpot {
     private String location;
     private BigDecimal longitude;
     private BigDecimal latitude;
+    @TableField(jdbcType = JdbcType.VARCHAR)
+    private String deviceId;
 //    @TableField("coordinate")
 //    private Point coordinate;
     @TableField(jdbcType = JdbcType.LONGVARCHAR)

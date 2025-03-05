@@ -1,4 +1,4 @@
-package com.parking.job;
+package com.parking.job.confirm;
 
 import com.google.common.collect.Lists;
 import com.parking.enums.order.OrderStatusEnum;
@@ -10,17 +10,15 @@ import com.parking.model.entity.mybatis.User;
 import com.parking.repository.mybatis.OccupiedSpotRepository;
 import com.parking.repository.mybatis.OrderRepository;
 import com.parking.repository.mybatis.ParkingSpotRepository;
-import com.parking.handler.sms.SmsService;
+import com.parking.service.lock.LockService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -52,16 +50,18 @@ public class OrderAutoConfirmJob {
     private OrderRepository orderRepository;
 
     @Autowired
-    private SmsService smsService;
+    private ConfirmHandler confirmHandler;
 
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    @Autowired
+    private LockService lockService;
+
 
     /**
      * 每分钟执行一次，检查15分钟后开始的预定
      */
     @Scheduled(cron = "0 * * * * ?")
     public void autoConfirmOrders() {
-        log.info("Start auto confirming orders");
+        log.info("Start auto confirming reserved orders");
         try {
             // 1. 获取15分钟后的时间点
             LocalDateTime confirmTime = LocalDateTime.now().plusMinutes(15);
@@ -113,56 +113,18 @@ public class OrderAutoConfirmJob {
                     continue;
                 }
 
-                confirmMessages.add(new String[]{user.getPhone(), buildReminderMessage(occupiedSpot, parkingSpot)});
+                confirmMessages.add(new String[]{user.getPhone(),
+                        confirmHandler.buildReminderMessage(occupiedSpot, parkingSpot)});
                 order.setStatus(OrderStatusEnum.CONFIRMED.getStatus());
                 updatedOrders.add(order);
             }
 
             // 8. 批量更新订单
             if (!updatedOrders.isEmpty()) {
-                batchConfirmOrders(updatedOrders, confirmMessages);
+                confirmHandler.batchConfirmOrders(updatedOrders, confirmMessages);
             }
         } catch (Exception e) {
             log.error("Auto confirm orders failed", e);
-        }
-    }
-
-    /**
-     * 构建提醒消息
-     */
-    private String buildReminderMessage(OccupiedSpot occupiedSpot, ParkingSpot parkingSpot) {
-        String startTime = occupiedSpot.getStartTime().format(TIME_FORMATTER);
-        String endTime = occupiedSpot.getEndTime().format(TIME_FORMATTER);
-        return String.format(
-                "您预订的%s(%s-%s)停车位已自动确认，无法取消。请按时使用，祝您停车愉快！",
-                parkingSpot.getLocation(),
-                startTime,
-                endTime
-        );
-    }
-
-    /**
-     * 批量确认订单并发送消息
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public void batchConfirmOrders(List<Order> orders, List<String[]> confirmMessages) {
-        try {
-            // 批量更新订单状态
-            orderRepository.batchUpdate(orders);
-
-            // 批量发送确认消息
-            for (String[] phoneAndMessage : confirmMessages) {
-                try {
-                    log.info("Send confirm message to user: {}, message: {}",
-                            phoneAndMessage[0], phoneAndMessage[1]);
-                    smsService.sendMessage( phoneAndMessage[0], phoneAndMessage[1]);
-                } catch (Exception e) {
-                    log.error("Send confirm message failed, phone: {}",  phoneAndMessage[0], e);
-                }
-            }
-        } catch (Exception e) {
-            log.error("Batch confirm orders failed", e);
-            throw e; // 触发事务回滚
         }
     }
 }

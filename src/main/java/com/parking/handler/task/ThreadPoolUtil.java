@@ -10,7 +10,7 @@ import java.util.concurrent.*;
 
 @Slf4j
 @Component
-public class ThreadPoolService {
+public class ThreadPoolUtil {
 
     @Autowired
     @Qualifier("asyncExecutor")

@@ -1,4 +1,4 @@
-package com.parking.handler.sms.impl;
+package com.parking.service.sms.impl;
 
 import com.aliyun.dysmsapi20170525.Client;
 import com.aliyun.dysmsapi20170525.models.*;
@@ -6,7 +6,7 @@ import com.aliyun.teautil.models.RuntimeOptions;
 import com.parking.config.SmsConfig;
 import com.parking.exception.BusinessException;
 import com.parking.handler.encrypt.AesUtil;
-import com.parking.handler.sms.SmsService;
+import com.parking.service.sms.SmsService;
 import com.parking.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.parking.handler;
+package com.parking.handler.wechat;
 
 import com.parking.config.WechatPayConfig;
 import com.wechat.pay.contrib.apache.httpclient.auth.Verifier;

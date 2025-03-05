@@ -1,4 +1,4 @@
-package com.parking.handler.payment.impl;
+package com.parking.service.payment.impl;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
@@ -15,8 +15,8 @@ import com.parking.config.AlipayConfig;
 import com.parking.constant.PayConstant;
 import com.parking.enums.PayTypeEnum;
 import com.parking.exception.PaymentException;
-import com.parking.handler.payment.PayService;
-import com.parking.handler.task.ThreadPoolService;
+import com.parking.service.payment.PayService;
+import com.parking.handler.task.ThreadPoolUtil;
 import com.parking.model.param.payment.request.PayRequest;
 import com.parking.model.param.payment.response.AliPayResponse;
 import com.parking.model.param.payment.response.PayResponse;
@@ -51,7 +51,7 @@ public class AliPayServiceImpl implements PayService {
     private RestTemplate restTemplate;
 
     @Autowired
-    private ThreadPoolService threadPoolService;
+    private ThreadPoolUtil threadPoolUtil;
 
     private AlipayClient alipayClient;
 
@@ -253,7 +253,7 @@ public class AliPayServiceImpl implements PayService {
 
     private void callNotifyForTest(PayRequest request) {
         // 触发回调逻辑
-        threadPoolService.executeAsync(() -> {
+        threadPoolUtil.executeAsync(() -> {
             log.info("Executing async task: call ali pay notify for test");
             // 异步任务逻辑
             try {

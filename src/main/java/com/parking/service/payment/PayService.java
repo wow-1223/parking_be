@@ -1,4 +1,4 @@
-package com.parking.handler.payment;
+package com.parking.service.payment;
 
 import com.parking.model.param.payment.request.PayRequest;
 import com.parking.model.param.payment.response.PayResponse;

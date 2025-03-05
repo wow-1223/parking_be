@@ -1,4 +1,4 @@
-package com.parking.handler;
+package com.parking.handler.wechat;
 
 import com.parking.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;

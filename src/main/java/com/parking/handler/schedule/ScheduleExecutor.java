@@ -1,6 +1,6 @@
 package com.parking.handler.schedule;
 
-import com.parking.handler.task.ThreadPoolService;
+import com.parking.handler.task.ThreadPoolUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,20 +10,20 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
-public class ScheduleService {
+public class ScheduleExecutor {
 
     @Autowired
     private DynamicScheduleManager scheduleManager;
 
     @Autowired
-    private ThreadPoolService threadPoolService;
+    private ThreadPoolUtil threadPoolUtil;
 
     /**
      * 执行定时任务
      */
     public void executeScheduleTask(String taskId, String cron) {
         scheduleManager.addCronTask(taskId, () -> {
-            threadPoolService.executeTask(() -> {
+            threadPoolUtil.executeTask(() -> {
                 try {
                     log.info("Executing scheduled task: {}", taskId);
                     // 在这里执行具体的任务逻辑
@@ -40,7 +40,7 @@ public class ScheduleService {
      */
     public void executeScheduleTaskWithResult(String taskId, String cron) {
         scheduleManager.addCronTask(taskId, () -> {
-            Future<String> future = threadPoolService.submitTask(() -> {
+            Future<String> future = threadPoolUtil.submitTask(() -> {
                 try {
                     log.info("Executing scheduled task with result: {}", taskId);
                     TimeUnit.SECONDS.sleep(2); // 模拟任务执行
@@ -65,7 +65,7 @@ public class ScheduleService {
      */
     public void executeAsyncScheduleTask(String taskId, String cron) {
         scheduleManager.addCronTask(taskId, () -> {
-            threadPoolService.executeAsync(() -> {
+            threadPoolUtil.executeAsync(() -> {
                 try {
                     log.info("Executing async scheduled task: {}", taskId);
                     TimeUnit.SECONDS.sleep(2); // 模拟任务执行
@@ -82,7 +82,7 @@ public class ScheduleService {
     public void updateScheduleTask(String taskId, String newCron) {
         if (scheduleManager.isTaskRunning(taskId)) {
             scheduleManager.updateCronTask(taskId, () -> {
-                threadPoolService.executeTask(() -> {
+                threadPoolUtil.executeTask(() -> {
                     try {
                         log.info("Executing updated task: {}", taskId);
                         TimeUnit.SECONDS.sleep(2);

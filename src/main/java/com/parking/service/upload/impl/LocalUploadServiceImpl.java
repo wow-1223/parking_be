@@ -1,8 +1,8 @@
-package com.parking.handler.upload.impl;
+package com.parking.service.upload.impl;
 
 import com.parking.config.UploadConfig;
 import com.parking.exception.UploadException;
-import com.parking.handler.upload.UploadService;
+import com.parking.service.upload.UploadService;
 import com.parking.util.FileUtil;
 import com.parking.util.ImageUtil;
 import lombok.extern.slf4j.Slf4j;

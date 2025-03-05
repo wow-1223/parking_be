@@ -1,4 +1,4 @@
-package com.parking.handler.sms;
+package com.parking.service.sms;
 
 public interface SmsService {
 

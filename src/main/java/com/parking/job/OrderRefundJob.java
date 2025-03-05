@@ -3,7 +3,7 @@ package com.parking.job;
 import com.parking.enums.PayTypeEnum;
 import com.parking.enums.order.OrderStatusEnum;
 import com.parking.factory.PayServiceFactory;
-import com.parking.handler.payment.PayService;
+import com.parking.service.payment.PayService;
 import com.parking.model.entity.mybatis.OccupiedSpot;
 import com.parking.model.entity.mybatis.Order;
 import com.parking.repository.mybatis.OrderRepository;

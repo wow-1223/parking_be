@@ -20,6 +20,9 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private Long expiration;
 
+    @Value("${jwt.expiration}")
+    private Long lockExpiration;
+
     /**
      * 生成token
      */
@@ -32,6 +35,21 @@ public class JwtUtil {
 
         return Jwts.builder()
                 .setSubject(userId.toString())
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+    }
+
+    public String generateToken(String id) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + lockExpiration);
+
+        // 根据密钥字符串生成 Key 对象
+        Key key = Keys.hmacShaKeyFor(secret.getBytes());
+
+        return Jwts.builder()
+                .setSubject(id)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key, SignatureAlgorithm.HS512)

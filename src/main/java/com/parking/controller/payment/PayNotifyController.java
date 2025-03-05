@@ -1,7 +1,7 @@
 package com.parking.controller.payment;
 
 import com.parking.enums.PayTypeEnum;
-import com.parking.handler.payment.notify.PayNotifyService;
+import com.parking.service.payment.notify.PayNotifyService;
 import com.parking.model.vo.pay.PayNotifyVO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;

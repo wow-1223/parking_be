@@ -1,4 +1,4 @@
-package com.parking.handler.upload;
+package com.parking.service.upload;
 
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;

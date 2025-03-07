@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import com.google.gson.reflect.TypeToken;
+import com.parking.enums.parking.ParkingTypeEnum;
+import com.parking.enums.sort.SortTypeEnum;
 import com.parking.exception.BusinessException;
 import com.parking.model.dto.parking.ParkingSpotDTO;
 import com.parking.model.dto.parking.ParkingSpotDetailDTO;
@@ -36,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * 用户停车位服务实现
@@ -86,6 +89,7 @@ public class UserParkingServiceImpl implements UserParkingService {
 
         DetailResponse<ParkingSpotDetailDTO> detail = convertToDetailResponse(false,
                 owner, spot, occupiedSpots, request.getStartTime(), request.getStartTime());
+        // todo: hide user-info for anonymous users
         if (detail != null && detail.getData() != null && detail.getData().getOwner()!= null) {
             // todo for test
             detail.getData().getOwner().setPhone(aesUtil.decrypt("Uu3+EuYVaOf4/w7QhxGfiA=="));
@@ -105,7 +109,12 @@ public class UserParkingServiceImpl implements UserParkingService {
      */
     public IPage<ParkingSpot> findNearbyAvailableSpots(NearbyParkingSpotRequest request) {
         List<ParkingSpot> spots = parkingSpotRepository.findAvailableParkingSpotIdList(
-                request.getLongitude(), request.getLatitude(), request.getRadius(), request.getMaxPrice());
+                request.getLongitude(),
+                request.getLatitude(),
+                request.getRadius(),
+                request.getMaxPrice(),
+                request.getMinPrice(),
+                ParkingTypeEnum.getCodeByDescription(request.getParkingType()));
         if (CollectionUtils.isEmpty(spots)) {
             return new Page<>(request.getPage(), request.getSize());
         }
@@ -124,9 +133,10 @@ public class UserParkingServiceImpl implements UserParkingService {
                 spotIdStr, DateUtil.convertToLocalDate(request.getStartTime()), start, end);
 
         spotIds.removeAll(occupiedSpotIds);
-
+        String orderType = SortTypeEnum.from(request.getSortType()).getValue();
         List<String> selectFields = Lists.newArrayList("id", "location", "longitude", "latitude", "price");
-        return parkingSpotRepository.findByPage(spotIds, selectFields, request.getPage(), request.getSize());
+        return parkingSpotRepository.findByPage(spotIds, selectFields, request.getPage(), request.getSize(),
+                orderType, request.getSortOrder());
     }
 
     /**

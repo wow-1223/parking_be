@@ -31,6 +31,7 @@ public class ParkingSpot {
     private String rules;
     @TableField(jdbcType = JdbcType.LONGVARCHAR)
     private String facilities;
+    private Integer parkingType;
     private Integer status;
     private Timestamp createTime;
     private Timestamp updateTime;

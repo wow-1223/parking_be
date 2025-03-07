@@ -2,7 +2,7 @@
 
 | Version | Update Time | Status | Author | Description |
 |---------|-------------|--------|--------|-------------|
-|v2025-03-05 15:28:07|2025-03-05 15:28:07|auto|@tadowli|Created by smart-doc|
+|v2025-03-07 23:08:48|2025-03-07 23:08:48|auto|@Administrator|Created by smart-doc|
 
 
 
@@ -327,361 +327,6 @@ curl -X GET -H 'AUTHORIZATION' -i '/api/lock/{deviceId}'
 ```
 
 # 租户模块
-## 租户停车位相关接口
-### 创建停车位
-**URL:** /api/owner/parking/createParking
-
-**Type:** POST
-
-
-**Content-Type:** application/json
-
-**Description:** 创建停车位
-
-**Body-parameters:**
-
-| Parameter | Type | Required | Description | Since |
-|-----------|------|----------|-------------|-------|
-|location|string|false|停车场名称|-|
-|latitude|double|false|纬度|-|
-|longitude|double|false|经度|-|
-|description|string|false|车位描述|-|
-|price|number|false|车位价格|-|
-|images|array|false|车位图片|-|
-|rules|array|false|车位规则|-|
-|└─mode|string|false|车位出租模式|-|
-|└─startTime|string|false|开始时间|-|
-|└─endTime|string|false|结束时间|-|
-|└─specificDates|array|false|No comments found.|-|
-|└─specificWeekDays|array|false|No comments found.|-|
-|└─specificMonthDateRanges|array|false|No comments found.|-|
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─startDay|int32|false|No comments found.|-|
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─endDay|int32|false|No comments found.|-|
-|facilities|array|false|车位设施|-|
-
-**Request-example:**
-```bash
-curl -X POST -H 'Content-Type: application/json' -i '/api/owner/parking/createParking' --data '{
-  "location": "",
-  "latitude": 0.0,
-  "longitude": 0.0,
-  "description": "",
-  "price": 0,
-  "images": [
-    ""
-  ],
-  "rules": [
-    {
-      "mode": "",
-      "startTime": "",
-      "endTime": "",
-      "specificDates": [
-        ""
-      ],
-      "specificWeekDays": [
-        ""
-      ],
-      "specificMonthDateRanges": [
-        {
-          "startDay": 0,
-          "endDay": 0
-        }
-      ]
-    }
-  ],
-  "facilities": [
-    ""
-  ]
-}'
-```
-**Response-fields:**
-
-| Field | Type | Description | Since |
-|-------|------|-------------|-------|
-|code|int32|错误码|-|
-|message|string|错误信息|-|
-|success|boolean|是否成功|-|
-|id|int64|车位id|-|
-
-**Response-example:**
-```json
-{
-  "code": 0,
-  "message": "",
-  "success": true,
-  "id": 0
-}
-```
-
-### 更新停车位
-**URL:** /api/owner/parking/updateParking
-
-**Type:** POST
-
-
-**Content-Type:** application/json
-
-**Description:** 更新停车位
-
-**Body-parameters:**
-
-| Parameter | Type | Required | Description | Since |
-|-----------|------|----------|-------------|-------|
-|location|string|false|停车场名称|-|
-|latitude|double|false|纬度|-|
-|longitude|double|false|经度|-|
-|description|string|false|车位描述|-|
-|price|number|false|车位价格|-|
-|images|array|false|车位图片|-|
-|rules|array|false|车位规则|-|
-|└─mode|string|false|车位出租模式|-|
-|└─startTime|string|false|开始时间|-|
-|└─endTime|string|false|结束时间|-|
-|└─specificDates|array|false|No comments found.|-|
-|└─specificWeekDays|array|false|No comments found.|-|
-|└─specificMonthDateRanges|array|false|No comments found.|-|
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─startDay|int32|false|No comments found.|-|
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─endDay|int32|false|No comments found.|-|
-|facilities|array|false|车位设施|-|
-|id|int64|false|车位id|-|
-|status|int32|false|车位状态|-|
-
-**Request-example:**
-```bash
-curl -X POST -H 'Content-Type: application/json' -i '/api/owner/parking/updateParking' --data '{
-  "location": "",
-  "latitude": 0.0,
-  "longitude": 0.0,
-  "description": "",
-  "price": 0,
-  "images": [
-    ""
-  ],
-  "rules": [
-    {
-      "mode": "",
-      "startTime": "",
-      "endTime": "",
-      "specificDates": [
-        ""
-      ],
-      "specificWeekDays": [
-        ""
-      ],
-      "specificMonthDateRanges": [
-        {
-          "startDay": 0,
-          "endDay": 0
-        }
-      ]
-    }
-  ],
-  "facilities": [
-    ""
-  ],
-  "id": 0,
-  "status": 0
-}'
-```
-**Response-fields:**
-
-| Field | Type | Description | Since |
-|-------|------|-------------|-------|
-|code|int32|错误码|-|
-|message|string|错误信息|-|
-|success|boolean|是否成功|-|
-|id|int64|车位id|-|
-
-**Response-example:**
-```json
-{
-  "code": 0,
-  "message": "",
-  "success": true,
-  "id": 0
-}
-```
-
-### 删除停车位
-**URL:** /api/owner/parking/deleteParking
-
-**Type:** POST
-
-
-**Content-Type:** application/json
-
-**Description:** 删除停车位
-
-**Body-parameters:**
-
-| Parameter | Type | Required | Description | Since |
-|-----------|------|----------|-------------|-------|
-|parkingSpotId|int64|false|车位id|-|
-
-**Request-example:**
-```bash
-curl -X POST -H 'Content-Type: application/json' -i '/api/owner/parking/deleteParking' --data '{
-  "parkingSpotId": 0
-}'
-```
-**Response-fields:**
-
-| Field | Type | Description | Since |
-|-------|------|-------------|-------|
-|code|int32|错误码|-|
-|message|string|错误信息|-|
-|success|boolean|是否成功|-|
-|id|int64|车位id|-|
-
-**Response-example:**
-```json
-{
-  "code": 0,
-  "message": "",
-  "success": true,
-  "id": 0
-}
-```
-
-### 获取停车位列表
-**URL:** /api/owner/parking/getParkingList
-
-**Type:** GET
-
-
-**Content-Type:** application/x-www-form-urlencoded;charset=UTF-8
-
-**Description:** 获取停车位列表
-
-**Query-parameters:**
-
-| Parameter | Type | Required | Description | Since |
-|-----------|------|----------|-------------|-------|
-|status|int32|false|停车位状态，可选，不传则查询全部|-|
-|page|int32|false|页码，默认1|-|
-|size|int32|false|每页数量，默认20|-|
-
-**Request-example:**
-```bash
-curl -X GET -i '/api/owner/parking/getParkingList?status=0&page=1&size=20' --data '&0&"1"&"20"'
-```
-**Response-fields:**
-
-| Field | Type | Description | Since |
-|-------|------|-------------|-------|
-|code|int32|错误码|-|
-|message|string|错误信息|-|
-|total|int64|No comments found.|-|
-|list|array|No comments found.|-|
-|└─id|int64|No comments found.|-|
-|└─latitude|double|No comments found.|-|
-|└─longitude|double|No comments found.|-|
-|└─location|string|No comments found.|-|
-|└─price|number|No comments found.|-|
-
-**Response-example:**
-```json
-{
-  "code": 0,
-  "message": "",
-  "total": 0,
-  "list": [
-    {
-      "id": 0,
-      "latitude": 0.0,
-      "longitude": 0.0,
-      "location": "",
-      "price": 0
-    }
-  ]
-}
-```
-
-### 获取停车位详情
-**URL:** /api/owner/parking/getParkingDetail
-
-**Type:** GET
-
-
-**Content-Type:** application/x-www-form-urlencoded;charset=UTF-8
-
-**Description:** 获取停车位详情
-
-**Query-parameters:**
-
-| Parameter | Type | Required | Description | Since |
-|-----------|------|----------|-------------|-------|
-|parkingSpotId|int64|true|停车位id|-|
-
-**Request-example:**
-```bash
-curl -X GET -i '/api/owner/parking/getParkingDetail?parkingSpotId=0' --data '&0'
-```
-**Response-fields:**
-
-| Field | Type | Description | Since |
-|-------|------|-------------|-------|
-|code|int32|错误码|-|
-|message|string|错误信息|-|
-|data|object|No comments found.|-|
-|└─id|int64|No comments found.|-|
-|└─latitude|double|No comments found.|-|
-|└─longitude|double|No comments found.|-|
-|└─location|string|No comments found.|-|
-|└─price|number|No comments found.|-|
-|└─description|string|No comments found.|-|
-|└─images|array|No comments found.|-|
-|└─facilities|array|No comments found.|-|
-|└─owner|object|No comments found.|-|
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─id|int64|No comments found.|-|
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─name|string|No comments found.|-|
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─phone|string|No comments found.|-|
-|└─parkingIntervals|array|No comments found.|-|
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─startTime|string|No comments found.|-|
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─endTime|string|No comments found.|-|
-|└─occupiedIntervals|array|No comments found.|-|
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─startTime|string|No comments found.|-|
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─endTime|string|No comments found.|-|
-
-**Response-example:**
-```json
-{
-  "code": 0,
-  "message": "",
-  "data": {
-    "id": 0,
-    "latitude": 0.0,
-    "longitude": 0.0,
-    "location": "",
-    "price": 0,
-    "description": "",
-    "images": [
-      ""
-    ],
-    "facilities": [
-      ""
-    ],
-    "owner": {
-      "id": 0,
-      "name": "",
-      "phone": ""
-    },
-    "parkingIntervals": [
-      {
-        "startTime": "HH:mm:ss",
-        "endTime": "HH:mm:ss"
-      }
-    ],
-    "occupiedIntervals": [
-      {
-        "startTime": "HH:mm:ss",
-        "endTime": "HH:mm:ss"
-      }
-    ]
-  }
-}
-```
-
 ## 租户订单
 ### 获取订单列表
 **URL:** /api/owner/orders/getOrders
@@ -910,32 +555,73 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/owner/orders/usage' --
 }
 ```
 
-# 用户模块
-## 用户收藏相关接口
-### 收藏/取消收藏
-**URL:** /api/user/favorites/toggleFavorite
+## 租户停车位相关接口
+### 创建停车位
+**URL:** /api/owner/parking/createParking
 
 **Type:** POST
 
 
 **Content-Type:** application/json
 
-**Description:** 收藏/取消收藏
+**Description:** 创建停车位
 
 **Body-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|id|int64|false|收藏id|-|
-|parkingSpotId|int64|false|收藏车位id|-|
-|action|boolean|false|收藏车位动作 true-收藏 false-取消收藏|-|
+|location|string|false|停车场名称|-|
+|latitude|double|false|纬度|-|
+|longitude|double|false|经度|-|
+|description|string|false|车位描述|-|
+|price|number|false|车位价格|-|
+|images|array|false|车位图片|-|
+|rules|array|false|车位规则|-|
+|└─mode|string|false|车位出租模式|-|
+|└─startTime|string|false|开始时间|-|
+|└─endTime|string|false|结束时间|-|
+|└─specificDates|array|false|No comments found.|-|
+|└─specificWeekDays|array|false|No comments found.|-|
+|└─specificMonthDateRanges|array|false|No comments found.|-|
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─startDay|int32|false|No comments found.|-|
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─endDay|int32|false|No comments found.|-|
+|facilities|array|false|车位设施|-|
+|parkingType|string|false|停车场类型|-|
 
 **Request-example:**
 ```bash
-curl -X POST -H 'Content-Type: application/json' -i '/api/user/favorites/toggleFavorite' --data '{
-  "id": 0,
-  "parkingSpotId": 0,
-  "action": true
+curl -X POST -H 'Content-Type: application/json' -i '/api/owner/parking/createParking' --data '{
+  "location": "",
+  "latitude": 0.0,
+  "longitude": 0.0,
+  "description": "",
+  "price": 0,
+  "images": [
+    ""
+  ],
+  "rules": [
+    {
+      "mode": "",
+      "startTime": "",
+      "endTime": "",
+      "specificDates": [
+        ""
+      ],
+      "specificWeekDays": [
+        ""
+      ],
+      "specificMonthDateRanges": [
+        {
+          "startDay": 0,
+          "endDay": 0
+        }
+      ]
+    }
+  ],
+  "facilities": [
+    ""
+  ],
+  "parkingType": ""
 }'
 ```
 **Response-fields:**
@@ -957,26 +643,159 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/favorites/toggleF
 }
 ```
 
-### 获取用户收藏列表
-**URL:** /api/user/favorites/getFavorites
+### 更新停车位
+**URL:** /api/owner/parking/updateParking
+
+**Type:** POST
+
+
+**Content-Type:** application/json
+
+**Description:** 更新停车位
+
+**Body-parameters:**
+
+| Parameter | Type | Required | Description | Since |
+|-----------|------|----------|-------------|-------|
+|location|string|false|停车场名称|-|
+|latitude|double|false|纬度|-|
+|longitude|double|false|经度|-|
+|description|string|false|车位描述|-|
+|price|number|false|车位价格|-|
+|images|array|false|车位图片|-|
+|rules|array|false|车位规则|-|
+|└─mode|string|false|车位出租模式|-|
+|└─startTime|string|false|开始时间|-|
+|└─endTime|string|false|结束时间|-|
+|└─specificDates|array|false|No comments found.|-|
+|└─specificWeekDays|array|false|No comments found.|-|
+|└─specificMonthDateRanges|array|false|No comments found.|-|
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─startDay|int32|false|No comments found.|-|
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─endDay|int32|false|No comments found.|-|
+|facilities|array|false|车位设施|-|
+|parkingType|string|false|停车场类型|-|
+|id|int64|false|车位id|-|
+|status|int32|false|车位状态|-|
+
+**Request-example:**
+```bash
+curl -X POST -H 'Content-Type: application/json' -i '/api/owner/parking/updateParking' --data '{
+  "location": "",
+  "latitude": 0.0,
+  "longitude": 0.0,
+  "description": "",
+  "price": 0,
+  "images": [
+    ""
+  ],
+  "rules": [
+    {
+      "mode": "",
+      "startTime": "",
+      "endTime": "",
+      "specificDates": [
+        ""
+      ],
+      "specificWeekDays": [
+        ""
+      ],
+      "specificMonthDateRanges": [
+        {
+          "startDay": 0,
+          "endDay": 0
+        }
+      ]
+    }
+  ],
+  "facilities": [
+    ""
+  ],
+  "parkingType": "",
+  "id": 0,
+  "status": 0
+}'
+```
+**Response-fields:**
+
+| Field | Type | Description | Since |
+|-------|------|-------------|-------|
+|code|int32|错误码|-|
+|message|string|错误信息|-|
+|success|boolean|是否成功|-|
+|id|int64|车位id|-|
+
+**Response-example:**
+```json
+{
+  "code": 0,
+  "message": "",
+  "success": true,
+  "id": 0
+}
+```
+
+### 删除停车位
+**URL:** /api/owner/parking/deleteParking
+
+**Type:** POST
+
+
+**Content-Type:** application/json
+
+**Description:** 删除停车位
+
+**Body-parameters:**
+
+| Parameter | Type | Required | Description | Since |
+|-----------|------|----------|-------------|-------|
+|parkingSpotId|int64|false|车位id|-|
+
+**Request-example:**
+```bash
+curl -X POST -H 'Content-Type: application/json' -i '/api/owner/parking/deleteParking' --data '{
+  "parkingSpotId": 0
+}'
+```
+**Response-fields:**
+
+| Field | Type | Description | Since |
+|-------|------|-------------|-------|
+|code|int32|错误码|-|
+|message|string|错误信息|-|
+|success|boolean|是否成功|-|
+|id|int64|车位id|-|
+
+**Response-example:**
+```json
+{
+  "code": 0,
+  "message": "",
+  "success": true,
+  "id": 0
+}
+```
+
+### 获取停车位列表
+**URL:** /api/owner/parking/getParkingList
 
 **Type:** GET
 
 
 **Content-Type:** application/x-www-form-urlencoded;charset=UTF-8
 
-**Description:** 获取用户收藏列表
+**Description:** 获取停车位列表
 
 **Query-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|page|int32|false|页码|-|
-|size|int32|false|每页数量|-|
+|status|int32|false|停车位状态，可选，不传则查询全部|-|
+|page|int32|false|页码，默认1|-|
+|size|int32|false|每页数量，默认20|-|
 
 **Request-example:**
 ```bash
-curl -X GET -i '/api/user/favorites/getFavorites?page=1&size=20' --data '&"1"&"20"'
+curl -X GET -i '/api/owner/parking/getParkingList?status=0&page=1&size=20' --data '&0&"1"&"20"'
 ```
 **Response-fields:**
 
@@ -1010,108 +829,25 @@ curl -X GET -i '/api/user/favorites/getFavorites?page=1&size=20' --data '&"1"&"2
 }
 ```
 
-## 用户查询车位相关接口
-### 
-**URL:** /api/user/parking/nearby
+### 获取停车位详情
+**URL:** /api/owner/parking/getParkingDetail
 
-**Type:** POST
-
-
-**Content-Type:** application/json
-
-**Description:** 
-
-**Body-parameters:**
-
-| Parameter | Type | Required | Description | Since |
-|-----------|------|----------|-------------|-------|
-|latitude|double|false|经纬度|-|
-|longitude|double|false|经纬度|-|
-|radius|int32|false|半径|-|
-|maxPrice|number|false|最高价格|-|
-|minPrice|number|false|最低价格|-|
-|parkingType|string|false|停车场类型|-|
-|startTime|string|false|开始时间|-|
-|endTime|string|false|结束时间|-|
-|page|int32|false|页数|-|
-|size|int32|false|每页大小|-|
-|sortType|string|false|排序类型|-|
-|sortOrder|string|false|排序方式|-|
-
-**Request-example:**
-```bash
-curl -X POST -H 'Content-Type: application/json' -i '/api/user/parking/nearby' --data '{
-  "latitude": 0.0,
-  "longitude": 0.0,
-  "radius": 0,
-  "maxPrice": 0,
-  "minPrice": 0,
-  "parkingType": "",
-  "startTime": "",
-  "endTime": "",
-  "page": 0,
-  "size": 0,
-  "sortType": "",
-  "sortOrder": ""
-}'
-```
-**Response-fields:**
-
-| Field | Type | Description | Since |
-|-------|------|-------------|-------|
-|code|int32|错误码|-|
-|message|string|错误信息|-|
-|total|int64|No comments found.|-|
-|list|array|No comments found.|-|
-|└─id|int64|No comments found.|-|
-|└─latitude|double|No comments found.|-|
-|└─longitude|double|No comments found.|-|
-|└─location|string|No comments found.|-|
-|└─price|number|No comments found.|-|
-
-**Response-example:**
-```json
-{
-  "code": 0,
-  "message": "",
-  "total": 0,
-  "list": [
-    {
-      "id": 0,
-      "latitude": 0.0,
-      "longitude": 0.0,
-      "location": "",
-      "price": 0
-    }
-  ]
-}
-```
-
-### 
-**URL:** /api/user/parking/detail
-
-**Type:** POST
+**Type:** GET
 
 
-**Content-Type:** application/json
+**Content-Type:** application/x-www-form-urlencoded;charset=UTF-8
 
-**Description:** 
+**Description:** 获取停车位详情
 
-**Body-parameters:**
+**Query-parameters:**
 
 | Parameter | Type | Required | Description | Since |
 |-----------|------|----------|-------------|-------|
-|id|int64|false|No comments found.|-|
-|startTime|string|false|No comments found.|-|
-|endTime|string|false|No comments found.|-|
+|parkingSpotId|int64|true|停车位id|-|
 
 **Request-example:**
 ```bash
-curl -X POST -H 'Content-Type: application/json' -i '/api/user/parking/detail' --data '{
-  "id": 0,
-  "startTime": "",
-  "endTime": ""
-}'
+curl -X GET -i '/api/owner/parking/getParkingDetail?parkingSpotId=0' --data '&0'
 ```
 **Response-fields:**
 
@@ -1178,6 +914,7 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/parking/detail' -
 }
 ```
 
+# 用户模块
 ## 用户登陆注册相关接口
 ### 测试接口，返回字符串&lt;br&gt;
 **URL:** /api/user/test
@@ -1397,6 +1134,105 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/register' --data 
 }
 ```
 
+## 用户收藏相关接口
+### 收藏/取消收藏
+**URL:** /api/user/favorites/toggleFavorite
+
+**Type:** POST
+
+
+**Content-Type:** application/json
+
+**Description:** 收藏/取消收藏
+
+**Body-parameters:**
+
+| Parameter | Type | Required | Description | Since |
+|-----------|------|----------|-------------|-------|
+|id|int64|false|收藏id|-|
+|parkingSpotId|int64|false|收藏车位id|-|
+|action|boolean|false|收藏车位动作 true-收藏 false-取消收藏|-|
+
+**Request-example:**
+```bash
+curl -X POST -H 'Content-Type: application/json' -i '/api/user/favorites/toggleFavorite' --data '{
+  "id": 0,
+  "parkingSpotId": 0,
+  "action": true
+}'
+```
+**Response-fields:**
+
+| Field | Type | Description | Since |
+|-------|------|-------------|-------|
+|code|int32|错误码|-|
+|message|string|错误信息|-|
+|success|boolean|是否成功|-|
+|id|int64|车位id|-|
+
+**Response-example:**
+```json
+{
+  "code": 0,
+  "message": "",
+  "success": true,
+  "id": 0
+}
+```
+
+### 获取用户收藏列表
+**URL:** /api/user/favorites/getFavorites
+
+**Type:** GET
+
+
+**Content-Type:** application/x-www-form-urlencoded;charset=UTF-8
+
+**Description:** 获取用户收藏列表
+
+**Query-parameters:**
+
+| Parameter | Type | Required | Description | Since |
+|-----------|------|----------|-------------|-------|
+|page|int32|false|页码|-|
+|size|int32|false|每页数量|-|
+
+**Request-example:**
+```bash
+curl -X GET -i '/api/user/favorites/getFavorites?page=1&size=20' --data '&"1"&"20"'
+```
+**Response-fields:**
+
+| Field | Type | Description | Since |
+|-------|------|-------------|-------|
+|code|int32|错误码|-|
+|message|string|错误信息|-|
+|total|int64|No comments found.|-|
+|list|array|No comments found.|-|
+|└─id|int64|No comments found.|-|
+|└─latitude|double|No comments found.|-|
+|└─longitude|double|No comments found.|-|
+|└─location|string|No comments found.|-|
+|└─price|number|No comments found.|-|
+
+**Response-example:**
+```json
+{
+  "code": 0,
+  "message": "",
+  "total": 0,
+  "list": [
+    {
+      "id": 0,
+      "latitude": 0.0,
+      "longitude": 0.0,
+      "location": "",
+      "price": 0
+    }
+  ]
+}
+```
+
 ## 用户订单相关接口
 ### 获取用户订单列表
 **URL:** /api/user/orders/getOrders
@@ -1598,6 +1434,174 @@ curl -X POST -H 'Content-Type: application/json' -i '/api/user/orders/complete' 
   "message": "",
   "success": true,
   "id": 0
+}
+```
+
+## 用户查询车位相关接口
+### 获取附近车位
+**URL:** /api/user/parking/nearby
+
+**Type:** POST
+
+
+**Content-Type:** application/json
+
+**Description:** 获取附近车位
+
+**Body-parameters:**
+
+| Parameter | Type | Required | Description | Since |
+|-----------|------|----------|-------------|-------|
+|latitude|double|false|经纬度|-|
+|longitude|double|false|经纬度|-|
+|radius|int32|false|半径|-|
+|maxPrice|number|false|最高价格|-|
+|minPrice|number|false|最低价格|-|
+|parkingType|string|false|停车场类型|-|
+|startTime|string|false|开始时间|-|
+|endTime|string|false|结束时间|-|
+|page|int32|false|页数|-|
+|size|int32|false|每页大小|-|
+|sortType|string|false|排序类型|-|
+|sortOrder|boolean|false|排序方式 true 升序 false 降序|-|
+
+**Request-example:**
+```bash
+curl -X POST -H 'Content-Type: application/json' -i '/api/user/parking/nearby' --data '{
+  "latitude": 0.0,
+  "longitude": 0.0,
+  "radius": 0,
+  "maxPrice": 0,
+  "minPrice": 0,
+  "parkingType": "",
+  "startTime": "",
+  "endTime": "",
+  "page": 0,
+  "size": 0,
+  "sortType": "",
+  "sortOrder": true
+}'
+```
+**Response-fields:**
+
+| Field | Type | Description | Since |
+|-------|------|-------------|-------|
+|code|int32|错误码|-|
+|message|string|错误信息|-|
+|total|int64|No comments found.|-|
+|list|array|No comments found.|-|
+|└─id|int64|No comments found.|-|
+|└─latitude|double|No comments found.|-|
+|└─longitude|double|No comments found.|-|
+|└─location|string|No comments found.|-|
+|└─price|number|No comments found.|-|
+
+**Response-example:**
+```json
+{
+  "code": 0,
+  "message": "",
+  "total": 0,
+  "list": [
+    {
+      "id": 0,
+      "latitude": 0.0,
+      "longitude": 0.0,
+      "location": "",
+      "price": 0
+    }
+  ]
+}
+```
+
+### 获取车位详情
+**URL:** /api/user/parking/detail
+
+**Type:** POST
+
+
+**Content-Type:** application/json
+
+**Description:** 获取车位详情
+
+**Body-parameters:**
+
+| Parameter | Type | Required | Description | Since |
+|-----------|------|----------|-------------|-------|
+|id|int64|false|No comments found.|-|
+|startTime|string|false|No comments found.|-|
+|endTime|string|false|No comments found.|-|
+
+**Request-example:**
+```bash
+curl -X POST -H 'Content-Type: application/json' -i '/api/user/parking/detail' --data '{
+  "id": 0,
+  "startTime": "",
+  "endTime": ""
+}'
+```
+**Response-fields:**
+
+| Field | Type | Description | Since |
+|-------|------|-------------|-------|
+|code|int32|错误码|-|
+|message|string|错误信息|-|
+|data|object|No comments found.|-|
+|└─id|int64|No comments found.|-|
+|└─latitude|double|No comments found.|-|
+|└─longitude|double|No comments found.|-|
+|└─location|string|No comments found.|-|
+|└─price|number|No comments found.|-|
+|└─description|string|No comments found.|-|
+|└─images|array|No comments found.|-|
+|└─facilities|array|No comments found.|-|
+|└─owner|object|No comments found.|-|
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─id|int64|No comments found.|-|
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─name|string|No comments found.|-|
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─phone|string|No comments found.|-|
+|└─parkingIntervals|array|No comments found.|-|
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─startTime|string|No comments found.|-|
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─endTime|string|No comments found.|-|
+|└─occupiedIntervals|array|No comments found.|-|
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─startTime|string|No comments found.|-|
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─endTime|string|No comments found.|-|
+
+**Response-example:**
+```json
+{
+  "code": 0,
+  "message": "",
+  "data": {
+    "id": 0,
+    "latitude": 0.0,
+    "longitude": 0.0,
+    "location": "",
+    "price": 0,
+    "description": "",
+    "images": [
+      ""
+    ],
+    "facilities": [
+      ""
+    ],
+    "owner": {
+      "id": 0,
+      "name": "",
+      "phone": ""
+    },
+    "parkingIntervals": [
+      {
+        "startTime": "HH:mm:ss",
+        "endTime": "HH:mm:ss"
+      }
+    ],
+    "occupiedIntervals": [
+      {
+        "startTime": "HH:mm:ss",
+        "endTime": "HH:mm:ss"
+      }
+    ]
+  }
 }
 ```
 

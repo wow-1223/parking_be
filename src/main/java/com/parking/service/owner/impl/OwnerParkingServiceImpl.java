@@ -2,6 +2,7 @@ package com.parking.service.owner.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.google.common.collect.Lists;
+import com.parking.enums.parking.ParkingTypeEnum;
 import com.parking.enums.parking.SpotStatusEnum;
 import com.parking.enums.user.UserRoleEnum;
 import com.parking.exception.BusinessException;
@@ -79,6 +80,7 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
         parkingSpot.setDescription(request.getDescription());
         parkingSpot.setPrice(request.getPrice());
         parkingSpot.setRules(JsonUtil.toJson(request.getRules()));
+        parkingSpot.setParkingType(ParkingTypeEnum.getCodeByDescription(request.getParkingType()));
         if (request.getImages() != null) {
             parkingSpot.setImages(JsonUtil.toJson(request.getImages()));
         }

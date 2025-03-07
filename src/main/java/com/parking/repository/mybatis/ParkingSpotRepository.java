@@ -75,12 +75,12 @@ public class ParkingSpotRepository {
     /**
      * 根据ID列表查找车位指定信息
      */
-    public IPage<ParkingSpot> findByPage(List<Long> ids, List<String> selectFields, Integer page, Integer size) {
+    public IPage<ParkingSpot> findByPage(List<Long> ids, List<String> selectFields, Integer page, Integer size, String sortType, Boolean asc)  {
         return parkingSpotMapper.selectPage(new Page<>(page, size),
                 new QueryWrapper<ParkingSpot>()
                         .in("id", ids)
                         .eq("deleted_at", 0L)
-                        .orderByDesc("update_time")
+                        .orderBy(true,  asc, sortType)
                         .select(selectFields));
     }
 
@@ -101,9 +101,10 @@ public class ParkingSpotRepository {
     }
 
     public List<ParkingSpot> findAvailableParkingSpotIdList(
-            Double longitude, Double latitude, Integer radius, BigDecimal price) {
+            Double longitude, Double latitude, Integer radius,
+            BigDecimal maxPrice, BigDecimal minPrice, Integer parkingType) {
         return parkingSpotMapper.getAvailableParkingSpotIdList(
-                longitude, latitude, radius, price);
+                longitude, latitude, radius, maxPrice, minPrice, parkingType);
     }
 
     /**

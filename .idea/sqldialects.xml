@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/src/main/java/com/parking/mapper/mybatis/OrderMapper.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/db/V1.1__test_data_init.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/db/V1__init_tables.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/db/migration/V2_init_tables.sql" dialect="MySQL" />

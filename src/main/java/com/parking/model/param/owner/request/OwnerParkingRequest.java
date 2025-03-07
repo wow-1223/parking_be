@@ -41,4 +41,8 @@ public class OwnerParkingRequest {
      * 车位设施
      */
     private List<String> facilities;
+    /**
+     * 停车场类型
+     */
+    private String parkingType;
 } 

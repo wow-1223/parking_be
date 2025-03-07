@@ -1,46 +1,27 @@
 package com.parking.enums.sort;
 
+import lombok.Getter;
+
+@Getter
 public enum SortTypeEnum {
 
-    ALL(0, "all"),
-    PRICE(1, "price"),
-    DISTANCE(2, "distance"),
-    RATING(3, "rating"),
+    PRICE( "price"),
+    DISTANCE("distance"),
+    RATING( "rating"),
     ;
 
-    private final int type;
-    private final String description;
+    private final String value;
 
-    SortTypeEnum(int type, String description) {
-        this.type = type;
-        this.description = description;
+    SortTypeEnum(String value) {
+        this.value = value;
     }
 
-    public int getType() {
-        return type;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    // 根据 code 获取对应的枚举实例
-    public static SortTypeEnum getByCode(int code) {
-        for (SortTypeEnum sortTypeEnum : SortTypeEnum.values()) {
-            if (sortTypeEnum.getType() == code) {
-                return sortTypeEnum;
+    public static SortTypeEnum from(String value) {
+        for (SortTypeEnum e : SortTypeEnum.values()) {
+            if (e.value.equals(value)) {
+                return e;
             }
         }
-        return null;
-    }
-
-    // 根据 description 获取对应的枚举实例
-    public static SortTypeEnum getByDescription(String description) {
-        for (SortTypeEnum sortTypeEnum : SortTypeEnum.values()) {
-            if (sortTypeEnum.getDescription().equals(description)) {
-                return sortTypeEnum;
-            }
-        }
-        return null;
+        throw new IllegalArgumentException("Invalid value: " + value);
     }
 }

@@ -23,17 +23,17 @@ public enum ParkingTypeEnum {
      */
     ELEVATED(2, "elevated"),
     ;
-    private final int type;
+    private final int code;
     private final String description;
 
-    ParkingTypeEnum(int type, String description) {
-        this.type = type;
+    ParkingTypeEnum(int code, String description) {
+        this.code = code;
         this.description = description;
     }
 
     public static ParkingTypeEnum getByCode(int code) {
         for (ParkingTypeEnum type : values()) {
-            if (type.type == code) {
+            if (type.code == code) {
                 return type;
             }
         }
@@ -44,6 +44,19 @@ public enum ParkingTypeEnum {
         for (ParkingTypeEnum type : values()) {
             if (type.description.equals(description)) {
                 return type;
+            }
+        }
+        throw new IllegalArgumentException("No matching ParkingType enum found for description: " + description);
+    }
+
+    public static Integer getCodeByDescription(String description) {
+        if (description == null) {
+            return null;
+        }
+
+        for (ParkingTypeEnum type : values()) {
+            if (type.description.equals(description)) {
+                return type.code;
             }
         }
         throw new IllegalArgumentException("No matching ParkingType enum found for description: " + description);

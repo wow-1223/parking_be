@@ -61,7 +61,7 @@ public class NearbyParkingSpotRequest {
     private String sortType;
 
     /**
-     * 排序方式
+     * 排序方式 true 升序 false 降序
      */
-    private String sortOrder;
+    private Boolean sortOrder;
 }

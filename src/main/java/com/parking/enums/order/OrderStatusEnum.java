@@ -14,8 +14,9 @@ public enum OrderStatusEnum {
     CANCELED(6, "canceled"),
     REFUNDING(7, "refunding"),
     REFUNDED(8, "refunded"),
-    OVERDUE(9, "timeout"),
-    OVERDUE_PENDING_PAYMENT(10, "timeout pending payment"),
+    TIMEOUT(9, "timeout"),
+    TIMEOUT_PENDING_PAYMENT(10, "timeout pending payment"),
+//    TIMEOUT_PAID(11, "timeout paid"),
     LEAVE_TEMPORARILY(11, "leave temporarily"),
     USER_OCCUPIED(12, "user occupied"),
     UNKNOWN_OCCUPIED(13, "unknown occupied")

@@ -1,4 +1,4 @@
-package com.parking.job.confirm;
+package com.parking.job.remind;
 
 import com.parking.model.entity.mybatis.OccupiedSpot;
 import com.parking.model.entity.mybatis.Order;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class ConfirmHandler {
+public class RemindHandler {
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -90,7 +90,7 @@ public class ConfirmHandler {
         String startTime = occupiedSpot.getStartTime().format(TIME_FORMATTER);
         String endTime = occupiedSpot.getEndTime().format(TIME_FORMATTER);
         return String.format(
-                "您预订的%s(%s-%s)停车位因未知原因车位被未知用户占用，可能无法使用。请前往小程序选择取消、继续等待或与租户沟通",
+                "您预订的%s(%s-%s)停车位被未知用户占用，可能无法使用。请前往小程序选择取消、继续等待或与租户沟通",
                 parkingSpot.getLocation(),
                 startTime,
                 endTime
@@ -110,7 +110,7 @@ public class ConfirmHandler {
 
     public String buildOwnerCheckMessage(ParkingSpot parkingSpot) {
         return String.format(
-                "您出租的的停车位[%s]因未知原因被占用，现已被自动冻结，请尽快确认车位情况并至小程序提交审核，避免影响用户使用",
+                "您出租的的停车位[%s]因未知原因被占用，请尽快确认车位情况并至小程序提交审核，避免影响用户使用",
                 parkingSpot.getLocation()
         );
     }

@@ -125,6 +125,19 @@ public class OrderRepository {
         return orderMapper.selectPage(new Page<>(page, size), query);
     }
 
+    /**
+     * 根据车位ID查询订单
+     */
+    public List<Order> findByParkingSpotId(List<Long> parkingSpotIds, List<Integer> status) {
+        QueryWrapper<Order> query = new QueryWrapper<>();
+        query.in("parking_spot_id", parkingSpotIds);
+        if (status != null) {
+            query.eq("status", status);
+        }
+        query.eq("deleted_at", 0L);
+        return orderMapper.selectList(query);
+    }
+
 
     // 统计相关
 

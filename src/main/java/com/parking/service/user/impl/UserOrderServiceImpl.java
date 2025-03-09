@@ -7,7 +7,6 @@ import com.parking.enums.order.OrderStatusEnum;
 import com.parking.enums.parking.SpotStatusEnum;
 import com.parking.exception.BusinessException;
 import com.parking.exception.ResourceNotFoundException;
-import com.parking.mapper.mybatis.OccupiedSpotMapper;
 import com.parking.model.dto.order.OrderDTO;
 import com.parking.model.dto.order.OrderDetailDTO;
 import com.parking.model.entity.mybatis.OccupiedSpot;
@@ -24,7 +23,7 @@ import com.parking.handler.encrypt.AesUtil;
 import com.parking.util.DateUtil;
 import com.parking.handler.jwt.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,21 +31,29 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
+
+import static com.parking.enums.order.OrderStatusEnum.*;
 
 @Slf4j
 @Service
 public class UserOrderServiceImpl extends BaseOrderService implements UserOrderService {
 
-    private final AesUtil aesUtil;
-    private final OccupiedSpotMapper occupiedSpotMapper;
+    private static final Set<Integer> ALLOW_CANCEL_STATUS = Sets.newHashSet(
+            PENDING_PAYMENT.getStatus(),
+            RESERVED.getStatus(),
+            USER_OCCUPIED.getStatus(),
+            UNKNOWN_OCCUPIED.getStatus()
+    );
 
-    public UserOrderServiceImpl(AesUtil aesUtil, OccupiedSpotMapper occupiedSpotMapper) {
-        super();
-        this.aesUtil = aesUtil;
-        this.occupiedSpotMapper = occupiedSpotMapper;
-    }
+    private static final Set<Integer> ALLOW_COMPLETE_STATUS = Sets.newHashSet(
+            PROCESSING.getStatus(),
+            LEAVE_TEMPORARILY.getStatus()
+//            TIMEOUT_PENDING_PAYMENT.getStatus()
+    );
+
+    @Autowired
+    private AesUtil aesUtil;
 
     @Override
     public PageResponse<OrderDTO> getOrders(Long userId, Integer status, Integer page, Integer size) {
@@ -83,11 +90,6 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
         if (exist) {
             throw new BusinessException("ParkingSpot has been occupied");
         }
-//        List<OccupiedSpot> occupiedSpots = occupiedSpotRepository.findByTime(request.getParkingSpotId(),
-//                DateUtil.parseDate(request.getStartTime()), DateUtil.parseDate(request.getEndTime()));
-//        if (CollectionUtils.isNotEmpty(occupiedSpots)) {
-//            throw new BusinessException("ParkingSpot has been occupied");
-//        }
 
         LocalDateTime st = DateUtil.parseDate(request.getStartTime());
         LocalDateTime ed = DateUtil.parseDate(request.getEndTime());
@@ -127,8 +129,7 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
             throw new ResourceNotFoundException("Order not found");
         }
 
-        if (OrderStatusEnum.PENDING_PAYMENT.getStatus() != order.getStatus()
-                && OrderStatusEnum.CONFIRMED.getStatus() != order.getStatus()) {
+        if (!ALLOW_CANCEL_STATUS.contains(order.getStatus())) {
             throw new BusinessException("Current order status is not allowed to cancel");
         }
 
@@ -145,8 +146,13 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
 
         try {
             // 释放停车位
-            BigDecimal refundAmount = calculateRefundAmount(order, occupiedSpot.getStartTime());
             order.setStatus(OrderStatusEnum.CANCELED.getStatus());
+            BigDecimal refundAmount = order.getAmount();
+            if (OrderStatusEnum.USER_OCCUPIED.getStatus() != order.getStatus() &&
+                    OrderStatusEnum.UNKNOWN_OCCUPIED.getStatus() != order.getStatus()) {
+                // 非系统原因造成取消，计算退款金额
+                refundAmount = calculateRefundAmount(order, occupiedSpot.getStartTime());
+            }
             order.setRefundAmount(refundAmount);
             occupiedSpot.setDeletedAt(DateUtil.getCurrentTimestamp());
 
@@ -175,11 +181,7 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
         }
 
         // 3. 验证订单状态
-        Set<Integer> availableStatus = Sets.newHashSet(
-                OrderStatusEnum.PROCESSING.getStatus(),
-                OrderStatusEnum.LEAVE_TEMPORARILY.getStatus(),
-                OrderStatusEnum.OVERDUE.getStatus());
-        if (!availableStatus.contains(order.getStatus())) {
+        if (!ALLOW_COMPLETE_STATUS.contains(order.getStatus())) {
             throw new BusinessException("Current order status is not allowed to cancel");
         }
 
@@ -224,25 +226,25 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
         }
 
         // 2. 如果距离开始时间不足2小时，不予退款
-        if (Duration.between(now, startTime).toHours() < 2) {
-            return BigDecimal.ZERO;
-        }
+//        if (Duration.between(now, startTime).toHours() < 2) {
+//            return BigDecimal.ZERO;
+//        }
 
         // 3. 根据距离开始时间计算退款比例
         BigDecimal refundRate;
-        long hoursBeforeStart = Duration.between(now, startTime).toHours();
+        long minutesBeforeStart = Duration.between(now, startTime).toMinutes();
 
-        if (hoursBeforeStart >= 24) {
-            // 提前24小时以上取消，全额退款
+        if (minutesBeforeStart >= 15) {
+            // 提前15min以上取消，全额退款
             refundRate = BigDecimal.ONE;
-        } else if (hoursBeforeStart >= 12) {
-            // 提前12-24小时取消，退款90%
-            refundRate = new BigDecimal("0.90");
-        } else if (hoursBeforeStart >= 6) {
-            // 提前6-12小时取消，退款70%
-            refundRate = new BigDecimal("0.70");
+//        } else if (minutesBeforeStart >= 10) {
+//            // 提前10min以上取消，退款90%
+//            refundRate = new BigDecimal("0.90");
+//        } else if (minutesBeforeStart >= 6) {
+//            // 提前6-12小时取消，退款70%
+//            refundRate = new BigDecimal("0.70");
         } else {
-            // 提前2-6小时取消，退款50%
+            // 提前15以内取消，退款50%
             refundRate = new BigDecimal("0.50");
         }
 

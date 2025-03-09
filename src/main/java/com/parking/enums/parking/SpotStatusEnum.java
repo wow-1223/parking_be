@@ -9,7 +9,9 @@ public enum SpotStatusEnum {
     APPROVING(1, "approving"),
     AVAILABLE(2, "available"),
     REJECTED(3, "rejected"),
-    BREAKDOWN(4, "breakdown");
+//    BREAKDOWN(4, "breakdown"),
+    FORBIDDEN(5, "forbidden"),
+    ;
 
     private final int status;
     private final String description;

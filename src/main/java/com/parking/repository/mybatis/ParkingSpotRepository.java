@@ -35,6 +35,10 @@ public class ParkingSpotRepository {
         parkingSpotMapper.updateById(parkingSpot);
     }
 
+    public void batchUpdate(List<ParkingSpot> parkingSpots) {
+        parkingSpotMapper.updateById(parkingSpots);
+    }
+
     /**
      * 删除车位
      */

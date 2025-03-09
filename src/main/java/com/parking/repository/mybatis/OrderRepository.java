@@ -89,6 +89,13 @@ public class OrderRepository {
         return orderMapper.selectList(new QueryWrapper<Order>().eq("status", status).eq("deleted_at", 0L));
     }
 
+    /**
+     * 根据订单状态查找
+     */
+    public List<Order> findByStatus(List<Integer> status) {
+        return orderMapper.selectList(new QueryWrapper<Order>().in("status", status).eq("deleted_at", 0L));
+    }
+
 
     /**
      * 根据用户ID分页查找订单
@@ -145,8 +152,9 @@ public class OrderRepository {
     // end 统计相关
 
     // 联表查询
-    public List<OrderUserDTO> findOrderWithUserByOccupied(List<Long> occupiedIds, Integer status) {
-        return orderMapper.selectOrderWithUserByOccupied(StringUtils.join(occupiedIds), status);
+    public List<OrderUserDTO> findOrderWithUserByOccupied(List<Long> occupiedIds, List<Integer> status) {
+        return orderMapper.selectOrderWithUserByOccupied(
+                StringUtils.join(occupiedIds, ","), StringUtils.join(status, ","));
     }
 
 }

@@ -7,7 +7,7 @@ import com.google.common.collect.Lists;
 import com.parking.mapper.mybatis.ParkingSpotMapper;
 import com.parking.model.entity.mybatis.ParkingSpot;
 import com.parking.util.DateUtil;
-import org.apache.ibatis.annotations.Param;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -102,8 +102,14 @@ public class ParkingSpotRepository {
 
     public List<ParkingSpot> findAvailableParkingSpotIdList(
             Double longitude, Double latitude, Integer radius, BigDecimal price) {
-        return parkingSpotMapper.getAvailableParkingSpotIdList(
+        return parkingSpotMapper.getAvailableParkingSpots(
                 longitude, latitude, radius, price);
+    }
+
+    public List<ParkingSpot> findOtherAvailableParkingSpotIdList(List<Long> spotIds, Double longitude, Double latitude,
+                                                                 Integer radius, BigDecimal price) {
+        return parkingSpotMapper.getOtherAvailableParkingSpots(
+                StringUtils.join(spotIds, ","), longitude, latitude, radius, price);
     }
 
     /**
@@ -125,5 +131,10 @@ public class ParkingSpotRepository {
         query.eq("deleted_at", 0L);
         query.orderByDesc("update_time");
         return parkingSpotMapper.selectPage(new Page<>(page, size), query);
+    }
+
+    public List<ParkingSpot> findByDeviceIds(List<String> deviceIds) {
+        return parkingSpotMapper.selectList(new QueryWrapper<ParkingSpot>()
+                .in("device_id", deviceIds).eq("deleted_at", 0L));
     }
 }

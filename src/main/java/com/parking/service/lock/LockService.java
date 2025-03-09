@@ -18,7 +18,6 @@ public interface LockService {
     DetailResponse<LockVO> getLockInfo(String deviceId, String token);
 
     String getLockStatus(String deviceId);
-
     Map<String, String> getLockStatus(List<String> deviceIds);
 
 }

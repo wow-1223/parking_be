@@ -73,4 +73,14 @@ public class UserRepository {
     public List<User> findByIds(List<Long> ids) {
         return userMapper.selectBatchIds(ids);
     }
+
+    /**
+     * 根据ID列表查找用户
+     */
+    public List<User> findByIds(List<Long> ids, List<String> fields) {
+        QueryWrapper<User> query = new QueryWrapper<>();
+        query.select(fields).in("id", ids);
+        query.eq("deleted_at", 0);
+        return userMapper.selectList(query);
+    }
 }

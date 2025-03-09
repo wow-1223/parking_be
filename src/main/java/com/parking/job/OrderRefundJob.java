@@ -41,7 +41,7 @@ public class OrderRefundJob {
         log.info("Start scanning refund orders");
         try {
             // 1. 查询待退款订单
-            List<Order> refundOrders = orderRepository.findByStatus(OrderStatusEnum.CANCELING.getStatus());
+            List<Order> refundOrders = orderRepository.findByStatus(OrderStatusEnum.CANCELED.getStatus());
             if (CollectionUtils.isEmpty(refundOrders)) {
                 return;
             }

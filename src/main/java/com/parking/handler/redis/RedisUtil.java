@@ -2,19 +2,25 @@ package com.parking.handler.redis;
 
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Component
 public class RedisUtil {
     
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    @Qualifier("objectRedisTemplate")
+    private RedisTemplate<String, Object> objectRedisTemplate;
+
+
 
 
 
@@ -132,6 +138,10 @@ public class RedisUtil {
      */
     public Set<String> sMembers(String key) {
         return redisTemplate.opsForSet().members(key);
+    }
+
+    public void sDel(String key, String value) {
+        redisTemplate.opsForSet().remove(key, value);
     }
 
     // ====== 通用操作 ======

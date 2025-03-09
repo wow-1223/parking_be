@@ -65,7 +65,7 @@ public interface OrderMapper extends BaseMapper<Order> {
             FROM orders o
             LEFT JOIN users u ON o.user_id = u.id
             WHERE o.parking_occupied_id IN (${occupiedIds})
-            AND o.status = #{status}
+            AND o.status IN (${status})
             AND o.deleted_at = 0
             AND u.deleted_at = 0
         """;
@@ -88,5 +88,5 @@ public interface OrderMapper extends BaseMapper<Order> {
 
     @Select(SELECT_ORDER_WITH_USER_BY_OCCUPIED)
     List<OrderUserDTO> selectOrderWithUserByOccupied(@Param("occupiedIds") String occupiedIds,
-                                                     @Param("status") Integer status);
+                                                     @Param("status") String status);
 }

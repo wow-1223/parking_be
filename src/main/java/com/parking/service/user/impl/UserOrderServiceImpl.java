@@ -146,7 +146,7 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
         try {
             // 释放停车位
             BigDecimal refundAmount = calculateRefundAmount(order, occupiedSpot.getStartTime());
-            order.setStatus(OrderStatusEnum.CANCELING.getStatus());
+            order.setStatus(OrderStatusEnum.CANCELED.getStatus());
             order.setRefundAmount(refundAmount);
             occupiedSpot.setDeletedAt(DateUtil.getCurrentTimestamp());
 

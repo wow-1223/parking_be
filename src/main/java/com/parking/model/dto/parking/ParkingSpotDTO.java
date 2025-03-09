@@ -15,4 +15,5 @@ public class ParkingSpotDTO {
     private Double longitude;
     private String location;
     private BigDecimal price;
+    private String deviceId;
 }

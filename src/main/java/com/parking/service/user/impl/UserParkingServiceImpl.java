@@ -123,7 +123,7 @@ public class UserParkingServiceImpl implements UserParkingService {
 
         spotIds.removeAll(occupiedSpotIds);
 
-        List<String> selectFields = Lists.newArrayList("id", "location", "longitude", "latitude", "price");
+        List<String> selectFields = Lists.newArrayList("id", "location", "longitude", "latitude", "price", "device_id");
         return parkingSpotRepository.findByPage(spotIds, selectFields, request.getPage(), request.getSize());
     }
 

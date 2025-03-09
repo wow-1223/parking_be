@@ -19,6 +19,15 @@ public interface ParkingSpotMapper extends BaseMapper<ParkingSpot> {
             "WHERE ST_Distance_Sphere(POINT(longitude, latitude), POINT(#{longitude}, #{latitude})) <= #{radius} " +
             "AND (#{price} IS NULL OR price <= #{price}) " +
             "AND status = 2 " +
+            "AND deleted_at = 0 " +
+            "ORDER BY ST_Distance_Sphere(POINT(longitude, latitude), POINT(#{longitude}, #{latitude})) DESC";
+
+    String GET_OTHER_AVAILABLE_SPOTS_SQL = "SELECT id, rules " +
+            "FROM parking_spots " +
+            "WHERE ST_Distance_Sphere(POINT(longitude, latitude), POINT(#{longitude}, #{latitude})) <= #{radius} " +
+            "AND (#{price} IS NULL OR price <= #{price}) " +
+            "AND status = 2 " +
+            "AND id not in (#{spotIds}) " +
             "AND deleted_at = 0 ";
 
     String GET_FAVORITE_SPOTS_SQL = "SELECT ps.id, ps.owner_id, ps.location, ps.location, ps.longitude, ps.latitude, ps.price " +
@@ -36,7 +45,22 @@ public interface ParkingSpotMapper extends BaseMapper<ParkingSpot> {
      * @return 附近可用的停车位列表
      */
     @Select(GET_AVAILABLE_SPOTS_SQL)
-    List<ParkingSpot> getAvailableParkingSpotIdList(@Param("longitude") Double longitude,
+    List<ParkingSpot> getAvailableParkingSpots(@Param("longitude") Double longitude,
+                                               @Param("latitude") Double latitude,
+                                               @Param("radius") Integer radius,
+                                               @Param("price") BigDecimal price);
+
+    /**
+     * 查找附近可用的停车位
+     * @param longitude  纬度
+     * @param latitude  经度
+     * @param radius    半径（单位：千米）
+     * @param price     价格
+     * @return 附近可用的停车位列表
+     */
+    @Select(GET_OTHER_AVAILABLE_SPOTS_SQL)
+    List<ParkingSpot> getOtherAvailableParkingSpots(@Param("spotIds") String spotIds,
+                                                    @Param("longitude") Double longitude,
                                                     @Param("latitude") Double latitude,
                                                     @Param("radius") Integer radius,
                                                     @Param("price") BigDecimal price);

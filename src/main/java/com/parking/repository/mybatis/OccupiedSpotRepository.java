@@ -76,17 +76,34 @@ public class OccupiedSpotRepository {
     }
 
     /**
-     * 查询指定时间正在占用的记录
+     * 查询指定时间结束的占用记录
      */
-    public List<OccupiedSpot> findCurrentOccupiedSpots(List<Long> spotIds, LocalDateTime time) {
+    public List<OccupiedSpot> findByEndTime(LocalDateTime endTime) {
         return occupiedSpotMapper.selectList(
                 new QueryWrapper<OccupiedSpot>()
                         .eq("deleted_at", 0)
-                        .in("parking_spot_id", spotIds)
-                        .lt("start_time", time)
-                        .gt("end_time", time)
+                        // 查找开始时间等于指定时间的记录
+                        .apply("DATE_FORMAT(end_time,'%Y-%m-%d %H:%i') = DATE_FORMAT({0},'%Y-%m-%d %H:%i')", endTime)
         );
     }
+
+    public List<OccupiedSpot> findByParkingSpot(List<Long> spotIds) {
+        return occupiedSpotMapper.selectList(new QueryWrapper<OccupiedSpot>()
+                .in("parking_spot_id", spotIds).eq("deleted_at", 0L));
+    }
+
+//    /**
+//     * 查询指定时间正在占用的记录
+//     */
+//    public List<OccupiedSpot> findCurrentOccupiedSpots(List<Long> spotIds, LocalDateTime time) {
+//        return occupiedSpotMapper.selectList(
+//                new QueryWrapper<OccupiedSpot>()
+//                        .eq("deleted_at", 0)
+//                        .in("parking_spot_id", spotIds)
+//                        .lt("start_time", time)
+//                        .gt("end_time", time)
+//        );
+//    }
 
     /**
      * 查询指定日期的全部预定记录
@@ -128,17 +145,17 @@ public class OccupiedSpotRepository {
         return occupiedSpots.stream().map(OccupiedSpot::getId).collect(Collectors.toList());
     }
 
-    public List<OccupiedSpot> findOccupiedSpotsByTimeInterval(List<Long> spotIds,
-                                                              LocalDateTime startTime,
-                                                              LocalDateTime endTime) {
-        return findOccupiedSpotsByTimeInterval(Lists.newArrayList(SELECT_ALL), spotIds, startTime, endTime);
-    }
+//    public List<OccupiedSpot> findOccupiedSpotsByTimeInterval(List<Long> spotIds,
+//                                                              LocalDateTime startTime,
+//                                                              LocalDateTime endTime) {
+//        return findOccupiedSpotsByTimeInterval(Lists.newArrayList(SELECT_ALL), spotIds, startTime, endTime);
+//    }
 
     private List<OccupiedSpot> findOccupiedSpotsByTimeInterval(List<String> fields,
                                                               List<Long> spotIds,
                                                               LocalDateTime startTime,
                                                               LocalDateTime endTime) {
-        return occupiedSpotMapper.getOccupiedSpotsByTimeInterval(StringUtils.join(fields),
+        return occupiedSpotMapper.getOccupiedSpotsByTimeInterval(StringUtils.join(fields, ","),
                 StringUtils.join(spotIds, ","), startTime.toLocalDate(), startTime, endTime);
     }
 

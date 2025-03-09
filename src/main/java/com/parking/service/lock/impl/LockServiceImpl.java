@@ -1,5 +1,6 @@
 package com.parking.service.lock.impl;
 
+import com.parking.enums.lock.LockStatusEnum;
 import com.parking.exception.ResourceNotFoundException;
 import com.parking.handler.redis.RedisUtil;
 import com.parking.model.entity.mybatis.ParkingSpot;
@@ -24,7 +25,7 @@ public class LockServiceImpl implements LockService {
 
     private static final String LOCK_SHARD_KEY = "lock.shard";
     private static final String LOCK_KEY = "lock:";
-    private static final String SPOT_ID_LOCK_STATUS = "%s:%s";
+    private static final String BREAKDOWN_LOCKs = "breakdown:locks";
 
     @Autowired
     private RedisUtil redisUtil;
@@ -48,9 +49,12 @@ public class LockServiceImpl implements LockService {
 
     @Override
     public OperationResponse updateStatus(OperateLockRequest request, String token) {
-        String lockStatus = (String) redisUtil.hGet(LOCK_SHARD_KEY, getLockKey(request.getDeviceId()));
+        String lockStatus = redisUtil.hGet(LOCK_SHARD_KEY, getLockKey(request.getDeviceId()));
         if (lockStatus == null || !Objects.equals(request.getStatus(), lockStatus)) {
             redisUtil.hSet(LOCK_SHARD_KEY, getLockKey(request.getDeviceId()), lockStatus);
+        }
+        if (LockStatusEnum.UNKNOWN.getStatus().equals(lockStatus)) {
+            redisUtil.sAdd(BREAKDOWN_LOCKs, request.getDeviceId());
         }
         return OperationResponse.operationSuccess(0L, "");
     }

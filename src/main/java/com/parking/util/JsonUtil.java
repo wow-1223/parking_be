@@ -44,6 +44,11 @@ public class JsonUtil {
         return gson.fromJson(json, type);
     }
 
+    public static <T> T fromJson(String json, Type type, T template) {
+        Gson gson = new Gson();
+        return gson.fromJson(json, type);
+    }
+
     public static <K, V> Map<K, V> fromMapJson(String json, Class<K> k, Class<V> v) {
         Type type = new TypeToken<Map<K, V>>(){}.getType();
         Gson gson = new Gson();

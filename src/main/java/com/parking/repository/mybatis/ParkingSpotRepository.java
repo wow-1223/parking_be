@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
+import com.parking.enums.parking.SpotStatusEnum;
 import com.parking.mapper.mybatis.ParkingSpotMapper;
 import com.parking.model.entity.mybatis.ParkingSpot;
 import com.parking.util.DateUtil;
@@ -67,20 +68,20 @@ public class ParkingSpotRepository {
     public ParkingSpot findById(Long id, List<String> fields) {
         return parkingSpotMapper.selectOne(
                 new QueryWrapper<ParkingSpot>()
-                       .eq("id", id)
-                       .eq("deleted_at", 0L)
-                       .select(fields));
+                        .eq("id", id)
+                        .eq("deleted_at", 0L)
+                        .select(fields));
     }
 
     /**
      * 根据ID列表查找车位指定信息
      */
-    public IPage<ParkingSpot> findByPage(List<Long> ids, List<String> selectFields, Integer page, Integer size, String sortType, Boolean asc)  {
+    public IPage<ParkingSpot> findByPage(List<Long> ids, List<String> selectFields, Integer page, Integer size, String sortType, Boolean asc) {
         return parkingSpotMapper.selectPage(new Page<>(page, size),
                 new QueryWrapper<ParkingSpot>()
                         .in("id", ids)
                         .eq("deleted_at", 0L)
-                        .orderBy(true,  asc, sortType)
+                        .orderBy(true, asc, sortType)
                         .select(selectFields));
     }
 
@@ -107,12 +108,22 @@ public class ParkingSpotRepository {
                 longitude, latitude, radius, maxPrice, minPrice, parkingType);
     }
 
+
+    public List<ParkingSpot> findParkingSpotList(
+            Long ownerId, String location,
+            BigDecimal maxPrice, BigDecimal minPrice, Integer parkingType,
+            Integer status, Long deleteAt,  Integer page, Integer size) {
+        return parkingSpotMapper.getParkingSpotList(new Page<>(page, size),
+                ownerId, location, maxPrice, minPrice, parkingType, status, deleteAt);
+    }
+
     /**
      * 根据owner与status查找车位
+     *
      * @param ownerId ownerId
-     * @param status status
-     * @param page page
-     * @param size size
+     * @param status  status
+     * @param page    page
+     * @param size    size
      * @return List<ParkingSpot>
      */
     public IPage<ParkingSpot> findByOwnerAndStatus(Long ownerId, Integer status, Integer page, Integer size) {

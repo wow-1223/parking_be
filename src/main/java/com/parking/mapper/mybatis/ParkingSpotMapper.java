@@ -15,9 +15,9 @@ import java.util.List;
 public interface ParkingSpotMapper extends BaseMapper<ParkingSpot> {
 
     String GET_AVAILABLE_SPOTS_SQL = """
-            SELECT 
-                id, 
-                rules, 
+            SELECT
+                id,
+                rules,
                 price,
                 parking_type,
                 ST_Distance_Sphere(POINT(longitude, latitude), POINT(#{longitude}, #{latitude})) as distance
@@ -29,6 +29,19 @@ public interface ParkingSpotMapper extends BaseMapper<ParkingSpot> {
                 AND status = 2
                 AND deleted_at = 0
             """;
+
+    String GET_SPOTS_SQL = """
+            SELECT *
+            FROM parking_spots
+            WHERE (#{maxPrice} IS NULL OR price <= #{maxPrice})
+                AND (#{minPrice} IS NULL OR price >= #{minPrice})
+                AND (#{parkingType} IS NULL OR parking_type = #{parkingType})
+                AND #{deletedAt} IS NULL OR deleted_at = #{deletedAt}
+                AND #{status} IS NULL OR status = #{status}
+                AND #{ownerId} IS NULL OR owner_id = #{ownerId}
+                AND (#{location} IS NULL OR location LIKE CONCAT('%', #{location}, '%'))
+            """;
+
 
     String GET_FAVORITE_SPOTS_SQL = """
             SELECT 
@@ -63,6 +76,17 @@ public interface ParkingSpotMapper extends BaseMapper<ParkingSpot> {
                                                     @Param("maxPrice") BigDecimal maxPrice,
                                                     @Param("minPrice") BigDecimal minPrice,
                                                     @Param("parkingType") Integer parkingType);
+
+
+    @Select(GET_SPOTS_SQL)
+    List<ParkingSpot> getParkingSpotList(Page<ParkingSpot> page,
+                                         @Param("ownerId") Long ownerId,
+                                         @Param("location") String location,
+                                         @Param("maxPrice") BigDecimal maxPrice,
+                                         @Param("minPrice") BigDecimal minPrice,
+                                         @Param("parkingType") Integer parkingType,
+                                         @Param("status") Integer status,
+                                         @Param("deletedAt") Long deletedAt);
 
     /**
      * 获取用户收藏的停车位列表

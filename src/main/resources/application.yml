@@ -11,7 +11,7 @@ spring:
     password: NewL1fe1223..
   data:
     redis:
-      host: dbconn.sealosgzg.site
+      host: imlgw.top
       port: 32652
       database: 0
       username: default

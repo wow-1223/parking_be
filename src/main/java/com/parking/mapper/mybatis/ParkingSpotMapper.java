@@ -31,7 +31,14 @@ public interface ParkingSpotMapper extends BaseMapper<ParkingSpot> {
             """;
 
     String GET_SPOTS_SQL = """
-            SELECT *
+            SELECT 
+                id,
+                owner_id,
+                price,
+                location,
+                location,
+                longitude,
+                parking_type
             FROM parking_spots
             WHERE (#{maxPrice} IS NULL OR price <= #{maxPrice})
                 AND (#{minPrice} IS NULL OR price >= #{minPrice})
@@ -79,14 +86,13 @@ public interface ParkingSpotMapper extends BaseMapper<ParkingSpot> {
 
 
     @Select(GET_SPOTS_SQL)
-    List<ParkingSpot> getParkingSpotList(Page<ParkingSpot> page,
+    IPage<ParkingSpot> getParkingSpotList(Page<ParkingSpot> page,
                                          @Param("ownerId") Long ownerId,
                                          @Param("location") String location,
                                          @Param("maxPrice") BigDecimal maxPrice,
                                          @Param("minPrice") BigDecimal minPrice,
                                          @Param("parkingType") Integer parkingType,
-                                         @Param("status") Integer status,
-                                         @Param("deletedAt") Long deletedAt);
+                                         @Param("status") Integer status);
 
     /**
      * 获取用户收藏的停车位列表

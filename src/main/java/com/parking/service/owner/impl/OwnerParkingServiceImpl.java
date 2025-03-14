@@ -120,10 +120,7 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
         if (request.getFacilities() != null) {
             spot.setFacilities(JsonUtil.toJson(request.getFacilities()));
         }
-        if (request.getStatus() != null) {
-            spot.setStatus(request.getStatus());
-        }
-        
+
         parkingSpotRepository.update(spot);
         
         return OperationResponse.operationSuccess(spot.getId(), "update success");

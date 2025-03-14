@@ -88,7 +88,7 @@ public class UserParkingServiceImpl implements UserParkingService {
                 spot.getId(), DateUtil.convertToLocalDate(request.getStartTime()));
 
         DetailResponse<ParkingSpotDetailDTO> detail = convertToDetailResponse(false,
-                owner, spot, occupiedSpots, request.getStartTime(), request.getStartTime());
+                owner, spot, occupiedSpots, request.getStartTime(), request.getEndTime());
         // todo: hide user-info for anonymous users
         if (detail != null && detail.getData() != null && detail.getData().getOwner()!= null) {
             // todo for test

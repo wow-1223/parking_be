@@ -109,12 +109,12 @@ public class ParkingSpotRepository {
     }
 
 
-    public List<ParkingSpot> findParkingSpotList(
+    public IPage<ParkingSpot> findParkingSpotList(
             Long ownerId, String location,
             BigDecimal maxPrice, BigDecimal minPrice, Integer parkingType,
-            Integer status, Long deleteAt,  Integer page, Integer size) {
+            Integer status, Integer page, Integer size) {
         return parkingSpotMapper.getParkingSpotList(new Page<>(page, size),
-                ownerId, location, maxPrice, minPrice, parkingType, status, deleteAt);
+                ownerId, location, maxPrice, minPrice, parkingType, status);
     }
 
     /**

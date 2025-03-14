@@ -3,6 +3,7 @@ package com.parking.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.google.common.collect.Lists;
 import com.google.gson.reflect.TypeToken;
+import com.parking.handler.encrypt.AesUtil;
 import com.parking.util.business.ParkingIntervalChecker;
 import com.parking.model.dto.parking.ParkingSpotDTO;
 import com.parking.model.dto.parking.ParkingSpotDetailDTO;
@@ -16,6 +17,7 @@ import com.parking.model.vo.parking.ParkingSpotRuleStrVO;
 import com.parking.model.vo.parking.ParkingSpotRuleVO;
 import com.parking.util.DateUtil;
 import com.parking.util.JsonUtil;
+import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.lang.reflect.Type;

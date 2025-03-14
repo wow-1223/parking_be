@@ -1,16 +1,15 @@
 package com.parking.model.param.admin.request;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 
+@Data
 public class AdminParkingRequest {
     /**
      * 所有者用户id
      */
     private Long ownerId;
-    /**
-     * owner phone
-     */
-    private String ownerPhone;
     /**
      * 地址
      */
@@ -23,6 +22,11 @@ public class AdminParkingRequest {
      * 最低价格
      */
     private BigDecimal minPrice;
+
+    /**
+     * 停车场状态
+     */
+    private Integer status;
     /**
      * 停车场类型
      */

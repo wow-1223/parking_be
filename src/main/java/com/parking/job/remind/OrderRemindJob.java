@@ -67,7 +67,7 @@ public class OrderRemindJob {
     private UserOrderService userOrderService;
 
     @Autowired
-    private RemindHandler remindHandler;
+    private OrderRemindHandler orderRemindHandler;
 
     @Autowired
     private AesUtil aesUtil;
@@ -110,12 +110,12 @@ public class OrderRemindJob {
             // 4. 发送即将开始的提示消息
             if (CollectionUtils.isNotEmpty(willStarts)) {
                 threadPoolUtil.executeAsync(new SendRemindMessageForWillStartOrdersTask(wsSupport, weSupport,
-                        remindHandler, aesUtil, userRepository, lockService, userParkingService, userOrderService));
+                        orderRemindHandler, aesUtil, userRepository, lockService, userParkingService, userOrderService));
             }
 
             // 4. 发送即将到期的提示消息
             if (CollectionUtils.isNotEmpty(willEnds)) {
-                threadPoolUtil.executeAsync(new SendRemindMessageForWillEndOrdersTask(weSupport, remindHandler, aesUtil));
+                threadPoolUtil.executeAsync(new SendRemindMessageForWillEndOrdersTask(weSupport, orderRemindHandler, aesUtil));
             }
 
         } catch (Exception e) {

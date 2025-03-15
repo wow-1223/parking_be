@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.parking.constant.LockConstant.*;
+import static com.parking.enums.lock.LockStatusEnum.RAISED;
 
 @Service
 public class LockServiceImpl implements LockService {
@@ -47,19 +48,18 @@ public class LockServiceImpl implements LockService {
 
     @Override
     public OperationResponse updateStatus(OperateLockRequest request, String token) {
-        String lockStatus = redisUtil.hGet(LOCK_SHARD_KEY, getLockKey(request.getDeviceId()));
+        String lockStatus = redisUtil.hGet(LOCK_STATUS, getLockKey(request.getDeviceId()));
         if (lockStatus == null || !Objects.equals(request.getStatus(), lockStatus)) {
-            redisUtil.hSet(LOCK_SHARD_KEY, getLockKey(request.getDeviceId()), lockStatus);
+            redisUtil.hSet(LOCK_STATUS, getLockKey(request.getDeviceId()), request.getStatus());
         }
-        if (LockStatusEnum.UNKNOWN.getStatus().equals(lockStatus)) {
-            redisUtil.sAdd(BREAKDOWN_LOCKS, request.getDeviceId());
+        if (Boolean.TRUE.equals(request.getChanged())) {
+            redisUtil.sAdd(LOCK_ACTION, request.getDeviceId());
         }
         return OperationResponse.operationSuccess(0L, "");
     }
 
     @Override
     public OperationResponse controlLock(ControlLockRequest request, String token) {
-
         return null;
     }
 
@@ -78,12 +78,12 @@ public class LockServiceImpl implements LockService {
 
     @Override
     public String getLockStatus(String deviceId) {
-        return redisUtil.hGet(LOCK_KEY, getLockKey(deviceId));
+        return redisUtil.hGet(LOCK_STATUS, getLockKey(deviceId));
     }
 
     @Override
     public Map<String, String> getLockStatus(List<String> deviceIds) {
-        return redisUtil.hMultiGet(LOCK_KEY, deviceIds);
+        return redisUtil.hMultiGet(LOCK_STATUS, deviceIds);
     }
 
     private String getLockKey(String deviceId) {

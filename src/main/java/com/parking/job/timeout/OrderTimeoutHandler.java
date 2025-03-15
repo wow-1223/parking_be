@@ -1,9 +1,7 @@
 package com.parking.job.timeout;
 
-import com.parking.enums.order.OrderStatusEnum;
 import com.parking.model.entity.mybatis.OccupiedSpot;
 import com.parking.model.entity.mybatis.Order;
-import com.parking.model.entity.mybatis.ParkingSpot;
 import com.parking.model.entity.mybatis.User;
 import com.parking.repository.mybatis.OrderRepository;
 import com.parking.repository.mybatis.UserRepository;
@@ -16,11 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class TimeoutHandler {
+public class OrderTimeoutHandler {
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 

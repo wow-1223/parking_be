@@ -13,7 +13,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class LockHandler {
+public class LockCheckHandler {
 
     @Autowired
     private SmsService smsService;

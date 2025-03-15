@@ -7,6 +7,7 @@ public class OperateLockRequest {
 
     private String deviceId;
     private String status;
+    private Boolean changed;
     private String timestamp;
 
 }

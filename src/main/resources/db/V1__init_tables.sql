@@ -50,7 +50,12 @@ CREATE TABLE parking_occupied (
     create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
     update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
     deleted_at BIGINT default 0 not null COMMENT 'deleted at',
-    INDEX idx_parking_spot_id (parking_spot_id)
+    INDEX idx_parking_spot_id (parking_spot_id),
+    INDEX idx_parking_day (parking_day),
+    INDEX idx_start_time (start_time),
+    INDEX idx_end_time (end_time),
+    INDEX idx_actual_start_time (actual_start_time),
+    INDEX idx_actual_end_time (actual_end_time)
 --     SPATIAL INDEX idx_parking_point (parking_interval)
 --     FOREIGN KEY (owner_id) REFERENCES users(id)
 ) COMMENT 'parking occupied table';
@@ -87,6 +92,7 @@ CREATE TABLE parking_spot_revenue (
     owner_id BIGINT NOT NULL COMMENT 'owner id',
     parking_day DATE NOT NULL COMMENT 'day',
     revenue DECIMAL(10,2) NOT NULL DEFAULT 0 COMMENT 'revenue',
+    platform_revenue DECIMAL(10,2) NOT NULL DEFAULT 0 COMMENT 'platform revenue',
     create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
     update_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
     deleted_at BIGINT default 0 not null COMMENT 'deleted at',

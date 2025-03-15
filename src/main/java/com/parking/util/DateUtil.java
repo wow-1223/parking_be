@@ -148,4 +148,22 @@ public class DateUtil {
         // 返回下一个整点或 30 分钟的 Date 对象
         return parseDate(calendar.getTime().toString());
     }
+
+    /**
+     * 获取昨天日期
+     */
+    public static LocalDate getYesterday() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -1);
+        return calendar.getTime().toInstant().atZone(calendar.getTimeZone().toZoneId()).toLocalDate();
+    }
+
+    /**
+     * 获取昨天日期
+     */
+    public static String getYesterdayStr() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -1);
+        return calendar.getTime().toString();
+    }
 }

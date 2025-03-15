@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import com.parking.mapper.mybatis.OrderMapper;
+import com.parking.model.dto.join.OccupiedOrderDTO;
 import com.parking.model.dto.join.OrderUserDTO;
 import com.parking.model.entity.mybatis.Order;
 import com.parking.model.param.owner.response.StatisticsResponse;
@@ -15,6 +16,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -59,11 +61,13 @@ public class OrderRepository {
      * 根据订单ID查找订单
      */
     public Order findById(Long id) {
-        return orderMapper.selectOne(new QueryWrapper<Order>(){}.eq("id", id).eq("deleted_at", 0L));
+        return orderMapper.selectOne(new QueryWrapper<Order>(){}
+                .eq("id", id).eq("deleted_at", 0L));
     }
 
     public Boolean exist(Long id) {
-        return orderMapper.selectCount(new QueryWrapper<Order>().eq("id", id).eq("deleted_at", 0L)) > 0;
+        return orderMapper.selectCount(new QueryWrapper<Order>()
+                .eq("id", id).eq("deleted_at", 0L)) > 0;
     }
 
     /**
@@ -86,14 +90,16 @@ public class OrderRepository {
      * 根据订单状态查找
      */
     public List<Order> findByStatus(Integer status) {
-        return orderMapper.selectList(new QueryWrapper<Order>().eq("status", status).eq("deleted_at", 0L));
+        return orderMapper.selectList(new QueryWrapper<Order>()
+                .eq("status", status).eq("deleted_at", 0L));
     }
 
     /**
      * 根据订单状态查找
      */
     public List<Order> findByStatus(List<Integer> status) {
-        return orderMapper.selectList(new QueryWrapper<Order>().in("status", status).eq("deleted_at", 0L));
+        return orderMapper.selectList(new QueryWrapper<Order>()
+                .in("status", status).eq("deleted_at", 0L));
     }
 
 
@@ -138,6 +144,13 @@ public class OrderRepository {
         return orderMapper.selectList(query);
     }
 
+    public List<Order> findOrdersByDay(LocalDate day, List<Integer> status) {
+        QueryWrapper<Order> query = new QueryWrapper<>();
+        query.eq("status", StringUtils.join(status, ","));
+        query.apply("DATE_FORMAT(end_time,'%Y-%m-%d') = DATE_FORMAT({0},'%Y-%m-%d')", day);
+        query.eq("deleted_at", 0L);
+        return orderMapper.selectList(query);
+    }
 
     // 统计相关
 

@@ -1,6 +1,7 @@
 package com.parking.mapper.mybatis;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.parking.model.dto.join.OccupiedOrderDTO;
 import com.parking.model.dto.join.OrderUserDTO;
 import com.parking.model.entity.mybatis.Order;
 import com.parking.model.param.owner.response.StatisticsResponse;
@@ -70,6 +71,16 @@ public interface OrderMapper extends BaseMapper<Order> {
             AND u.deleted_at = 0
         """;
 
+    String SELECT_OCCUPIED_ORDERS_BY_PARKING_DAY = """
+            SELECT *
+            FROM parking_occupied po
+            LEFT JOIN orders o ON po.id = o.parking_occupied_id
+            WHERE po.parking_day = #{parkingDay}
+            AND o.status IN (${status})
+            AND po.deleted_at = 0
+            AND o.deleted_at = 0
+        """;
+
     @Select(SELECT_EARNING_SQL)
     List<StatisticsResponse> selectEarningsStatistics(@Param("ownerId") Long ownerId,
                                             @Param("startDate") LocalDateTime startDate,
@@ -89,4 +100,12 @@ public interface OrderMapper extends BaseMapper<Order> {
     @Select(SELECT_ORDER_WITH_USER_BY_OCCUPIED)
     List<OrderUserDTO> selectOrderWithUserByOccupied(@Param("occupiedIds") String occupiedIds,
                                                      @Param("status") String status);
+
+    /**
+     * 连表查询
+     *  根据occupiedSpot.parkingDay 与 order.status查询
+     */
+    @Select(SELECT_OCCUPIED_ORDERS_BY_PARKING_DAY)
+    List<OccupiedOrderDTO> selectOccupiedOrders(@Param("parkingDay") String parkingDay,
+                                                @Param("status") String status);
 }

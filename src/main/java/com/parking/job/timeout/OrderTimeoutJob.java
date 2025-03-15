@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.parking.enums.order.OrderStatusEnum.PROCESSING;
+import static com.parking.enums.order.OrderStatusEnum.LEAVE_TEMPORARILY;
+
 @Slf4j
 @Component
 public class OrderTimeoutJob {
@@ -32,24 +35,27 @@ public class OrderTimeoutJob {
     private UserRepository userRepository;
 
     @Autowired
-    private TimeoutHandler timeoutHandler;
+    private OrderTimeoutHandler orderTimeoutHandler;
 
     @Autowired
     private AesUtil aesUtil;
 
     /**
-     * 每5分钟执行一次，检查超时订单
+     * 每小时的1min、31min执行
+     * 扫描订单，检查是否有超时订单
+     * 1. 联表查询结束时间小于当前时间的进行中的订单和占用信息
+     * 2. 批量查询用户信息
+     * 3. 准备批量处理的数据
+     * 4. 批量处理超时订单
      */
-    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "0 1,31 * * * ?")
     public void checkTimeoutOrders() {
         log.info("Start checking timeout orders");
         try {
-            // 1. 联表查询即将超时的订单和占用信息
+            // 1. 联表查询结束时间小于当前时间的进行中与临时离开的订单和占用信息
             LocalDateTime checkTime = LocalDateTime.now();
             List<OccupiedOrderDTO> timeoutList = occupiedSpotRepository.findTimeoutSpotsWithOrders(
-                    checkTime,
-                    OrderStatusEnum.PROCESSING.getStatus()
-            );
+                    checkTime, Lists.newArrayList(PROCESSING.getStatus(), LEAVE_TEMPORARILY.getStatus()));
 
             if (CollectionUtils.isEmpty(timeoutList)) {
                 return;
@@ -79,14 +85,14 @@ public class OrderTimeoutJob {
                 if (user != null) {
                     user.setStatus(UserStatusEnum.VIOLATED.getStatus());
                     String phone = aesUtil.decrypt(user.getPhone());
-                    String message = timeoutHandler.buildTimeoutMessage(occupiedSpot);
+                    String message = orderTimeoutHandler.buildTimeoutMessage(occupiedSpot);
                     ownerMessages.add(new String[]{phone, message});
                 }
                 orders.add(order);
             }
 
             // 4. 批量处理超时订单
-            timeoutHandler.batchProcessTimeoutOrders(orders, users, ownerMessages);
+            orderTimeoutHandler.batchProcessTimeoutOrders(orders, users, ownerMessages);
         } catch (Exception e) {
             log.error("Check timeout orders failed", e);
         }

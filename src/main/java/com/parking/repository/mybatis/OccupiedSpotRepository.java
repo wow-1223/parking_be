@@ -130,9 +130,9 @@ public class OccupiedSpotRepository {
     }
 
     /**
-     * 查询超时的占用记录
+     * 查询超时的订单
      */
-    public List<OccupiedOrderDTO> findTimeoutSpotsWithOrders(LocalDateTime checkTime, Integer orderStatus) {
-        return occupiedSpotMapper.findTimeoutSpotsWithOrders(checkTime, orderStatus);
+    public List<OccupiedOrderDTO> findTimeoutSpotsWithOrders(LocalDateTime checkTime, List<Integer> orderStatus) {
+        return occupiedSpotMapper.findTimeoutSpotsWithOrders(checkTime, StringUtils.join(orderStatus, ","));
     }
 }

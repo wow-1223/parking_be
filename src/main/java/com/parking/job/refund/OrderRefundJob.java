@@ -28,7 +28,7 @@ public class OrderRefundJob {
     public void scanRefundOrders() {
         log.info("Start scanning refund orders");
         try {
-            // 1. 查询待退款订单
+            // 1. 查询待退款(取消中)订单
             List<Order> refundOrders = orderRepository.findByStatus(OrderStatusEnum.CANCELING.getStatus());
             if (CollectionUtils.isEmpty(refundOrders)) {
                 return;
@@ -39,7 +39,6 @@ public class OrderRefundJob {
             // 2. 处理每个待退款订单
             for (Order order : refundOrders) {
                 try {
-                    order.setStatus(OrderStatusEnum.REFUNDING.getStatus());
                     orderRefundHandler.handleRefund(order);
                 } catch (Exception e) {
                     log.error("Failed to handle refund for order: {}", order.getId(), e);

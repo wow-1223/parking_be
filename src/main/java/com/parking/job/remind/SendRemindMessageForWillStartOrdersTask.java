@@ -34,7 +34,7 @@ public class SendRemindMessageForWillStartOrdersTask implements Runnable {
 
     private OrderRemindJob.RemindOrderSupport support;
     private OrderRemindJob.RemindOrderSupport weSupport;
-    private RemindHandler remindHandler;
+    private OrderRemindHandler orderRemindHandler;
     private AesUtil aesUtil;
     private UserRepository userRepository;
     private LockService lockService;
@@ -80,13 +80,13 @@ public class SendRemindMessageForWillStartOrdersTask implements Runnable {
 
             OccupiedSpot occupiedSpot = support.getOccupiedMap().get(order.getOccupiedSpotId());
             ParkingSpot spot = support.getParkingMap().get(order.getParkingSpotId());
-            String msg = remindHandler.buildConfirmMessage(occupiedSpot, spot);
+            String msg = orderRemindHandler.buildConfirmMessage(occupiedSpot, spot);
 
             User user = support.getUserMap().get(order.getUserId());
             String phone = aesUtil.decrypt(user.getPhone());
             confirmMessages.add(new String[]{msg, phone});
         }
-        remindHandler.batchRemindOrders(orders, confirmMessages);
+        orderRemindHandler.batchRemindOrders(orders, confirmMessages);
     }
 
     private void processUserOccupied(List<Order> orders) {
@@ -101,7 +101,7 @@ public class SendRemindMessageForWillStartOrdersTask implements Runnable {
             ParkingSpotDTO availableSpot = findNearbyAvailableParkingSpot(spot, occupiedSpot);
 
             if (availableSpot == null) {
-                String msg = remindHandler.buildUserOccupiedWithoutOtherAvailableSpotMessage(occupiedSpot, spot);
+                String msg = orderRemindHandler.buildUserOccupiedWithoutOtherAvailableSpotMessage(occupiedSpot, spot);
                 confirmMessages.add(new String[]{msg, phone});
             } else {
                 CreateOrderRequest req = new CreateOrderRequest();
@@ -110,11 +110,11 @@ public class SendRemindMessageForWillStartOrdersTask implements Runnable {
                 req.setEndTime(DateUtil.formatTime(occupiedSpot.getEndTime()));
                 req.setCarNumber(order.getCarNumber());
                 userOrderService.createOrder(req);
-                String msg = remindHandler.buildUserOccupiedWithOtherAvailableSpotMessage(occupiedSpot, spot);
+                String msg = orderRemindHandler.buildUserOccupiedWithOtherAvailableSpotMessage(occupiedSpot, spot);
                 confirmMessages.add(new String[]{msg, phone});
             }
         }
-        remindHandler.batchRemindOrders(orders, confirmMessages);
+        orderRemindHandler.batchRemindOrders(orders, confirmMessages);
     }
 
     private void processUnknownOccupied(List<Order> orders) {
@@ -129,7 +129,7 @@ public class SendRemindMessageForWillStartOrdersTask implements Runnable {
             ParkingSpotDTO availableSpot = findNearbyAvailableParkingSpot(spot, occupiedSpot);
 
             if (availableSpot == null) {
-                String msg = remindHandler.buildUnknownOccupiedWithoutOtherAvailableSpotsMessage(occupiedSpot, spot);
+                String msg = orderRemindHandler.buildUnknownOccupiedWithoutOtherAvailableSpotsMessage(occupiedSpot, spot);
                 confirmMessages.add(new String[]{msg, phone});
             } else {
                 CreateOrderRequest req = new CreateOrderRequest();
@@ -138,15 +138,15 @@ public class SendRemindMessageForWillStartOrdersTask implements Runnable {
                 req.setStartTime(DateUtil.formatTime(occupiedSpot.getStartTime()));
                 req.setEndTime(DateUtil.formatTime(occupiedSpot.getEndTime()));
                 userOrderService.createOrder(req);
-                String msg = remindHandler.buildUnknownOccupiedWithOtherAvailableSpotsMessage(occupiedSpot, spot);
+                String msg = orderRemindHandler.buildUnknownOccupiedWithOtherAvailableSpotsMessage(occupiedSpot, spot);
                 confirmMessages.add(new String[]{msg, phone});
             }
 
             User owner = userRepository.findById(order.getOwnerId(), Lists.newArrayList("id", "phone"));
-            String msg = remindHandler.buildOwnerCheckMessage(spot);
+            String msg = orderRemindHandler.buildOwnerCheckMessage(spot);
             confirmMessages.add(new String[]{msg, aesUtil.decrypt(owner.getPhone())});
         }
-        remindHandler.batchRemindOrders(orders, confirmMessages);
+        orderRemindHandler.batchRemindOrders(orders, confirmMessages);
     }
 
     private ParkingSpotDTO findNearbyAvailableParkingSpot(ParkingSpot spot, OccupiedSpot occupiedSpot) {

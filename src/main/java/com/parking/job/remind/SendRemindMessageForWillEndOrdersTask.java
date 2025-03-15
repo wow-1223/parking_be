@@ -17,7 +17,7 @@ import java.util.List;
 public class SendRemindMessageForWillEndOrdersTask implements Runnable {
 
     private OrderRemindJob.RemindOrderSupport support;
-    private RemindHandler remindHandler;
+    private OrderRemindHandler orderRemindHandler;
     private AesUtil aesUtil;
 
     @Override
@@ -29,7 +29,7 @@ public class SendRemindMessageForWillEndOrdersTask implements Runnable {
         for (Order order : support.getOrderMap().values()) {
             OccupiedSpot occupiedSpot = support.getOccupiedMap().get(order.getOccupiedSpotId());
             ParkingSpot spot = support.getParkingMap().get(order.getParkingSpotId());
-            String msg = remindHandler.buildWillEndOrderRemindMessage(occupiedSpot, spot);
+            String msg = orderRemindHandler.buildWillEndOrderRemindMessage(occupiedSpot, spot);
 
             User user = support.getUserMap().get(order.getUserId());
             String phone = aesUtil.decrypt(user.getPhone());
@@ -37,6 +37,6 @@ public class SendRemindMessageForWillEndOrdersTask implements Runnable {
             remindMessages.add(new String[]{msg, phone});
         }
 
-        remindHandler.batchRemindOrders(null, remindMessages);
+        orderRemindHandler.batchRemindOrders(null, remindMessages);
     }
 }

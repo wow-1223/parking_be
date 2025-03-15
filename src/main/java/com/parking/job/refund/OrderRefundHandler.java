@@ -41,6 +41,7 @@ public class OrderRefundHandler {
         log.info("Start processing refund for order: {}", order.getId());
 
         try {
+            order.setStatus(OrderStatusEnum.REFUNDING.getStatus());
             orderRepository.update(order);
             log.info("Successfully refunded order: {}", order.getId());
 

@@ -16,7 +16,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class RemindHandler {
+public class OrderRemindHandler {
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 

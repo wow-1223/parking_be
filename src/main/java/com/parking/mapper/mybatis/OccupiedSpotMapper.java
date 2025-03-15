@@ -28,7 +28,7 @@ public interface OccupiedSpotMapper extends BaseMapper<OccupiedSpot> {
                 FROM parking_occupied po
                 INNER JOIN orders o ON o.parking_occupied_id = po.id
                 WHERE po.end_time <= #{checkTime}
-                AND o.status = #{orderStatus}
+                AND o.status in (${orderStatus})
                 AND po.deleted_at = 0
                 AND o.deleted_at = 0
             """;
@@ -49,5 +49,5 @@ public interface OccupiedSpotMapper extends BaseMapper<OccupiedSpot> {
     @Select(FIND_TIMEOUT_SPOTS_WITH_ORDERS)
     List<OccupiedOrderDTO> findTimeoutSpotsWithOrders(
             @Param("checkTime") LocalDateTime checkTime,
-            @Param("orderStatus") Integer orderStatus);
+            @Param("orderStatus") String orderStatus);
 }

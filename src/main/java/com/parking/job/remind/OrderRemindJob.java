@@ -88,7 +88,7 @@ public class OrderRemindJob {
      *          -> 附近没有其他可用车位：提示预约用户[车位被未知用户占用，可能无法使用。附近没有其他可用车位，请选择是否取消或与租户沟通]
      *          -> 提示车位租户[车位被未知用户占用，请尽快确认车位情况，避免影响用户使用]
      *  - 15min后结束的预定
-     *      -> 预订车位即将到期，请在xx时间前离开或继续延长使用时间，超时将面临高额罚款
+     *      -> 提示当前用户[预订车位即将到期，请在xx时间前离开或继续延长使用时间，超时将面临高额罚款]
      */
     @Scheduled(cron = "0 20,50 * * * ?")
     public void remindOrder() {
@@ -107,14 +107,19 @@ public class OrderRemindJob {
             RemindOrderSupport weSupport = generateRemindOrderSupport(
                     willEnds, Lists.newArrayList(PROCESSING.getStatus(), LEAVE_TEMPORARILY.getStatus()));
 
-            threadPoolUtil.executeAsync(new SendRemindMessageForWillStartOrdersTask(wsSupport, weSupport,
-                    remindHandler, aesUtil, userRepository, lockService, userParkingService, userOrderService));
+            // 4. 发送即将开始的提示消息
+            if (CollectionUtils.isNotEmpty(willStarts)) {
+                threadPoolUtil.executeAsync(new SendRemindMessageForWillStartOrdersTask(wsSupport, weSupport,
+                        remindHandler, aesUtil, userRepository, lockService, userParkingService, userOrderService));
+            }
 
             // 4. 发送即将到期的提示消息
-            threadPoolUtil.executeAsync(new SendRemindMessageForWillEndOrdersTask(weSupport, remindHandler, aesUtil));
+            if (CollectionUtils.isNotEmpty(willEnds)) {
+                threadPoolUtil.executeAsync(new SendRemindMessageForWillEndOrdersTask(weSupport, remindHandler, aesUtil));
+            }
 
         } catch (Exception e) {
-            log.error("Auto confirm orders failed", e);
+            log.error("Remind order failed", e);
         }
     }
 

@@ -1,8 +1,9 @@
 package com.parking.service.payment.notify;
 
+import com.google.common.collect.Lists;
 import com.parking.constant.PayConstant;
 import com.parking.enums.PayTypeEnum;
-import com.parking.enums.order.OrderStatusEnum;
+import com.parking.exception.BusinessException;
 import com.parking.exception.PaymentException;
 import com.parking.factory.PayServiceFactory;
 import com.parking.handler.redis.RedisLockUtil;
@@ -12,6 +13,7 @@ import com.parking.model.entity.mybatis.PayNotifyLog;
 import com.parking.model.vo.pay.PayNotifyVO;
 import com.parking.repository.mybatis.OrderRepository;
 import com.parking.repository.mybatis.PayNotifyLogRepository;
+import com.parking.service.user.UserOrderService;
 import com.parking.util.DateUtil;
 import com.parking.util.JsonUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,6 +49,9 @@ public class PayNotifyService {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private UserOrderService userOrderService;
 
     public void verifyNotifySign(PayTypeEnum payType, Map<String, String> params) {
         PayService payService = payServiceFactory.getPayService(payType);
@@ -181,24 +186,21 @@ public class PayNotifyService {
      */
     private void handleOrder(PayNotifyVO notify) {
         long orderId = Long.parseLong(notify.getOrderId());
-        Boolean exist = orderRepository.exist(orderId);
-        if (!exist) {
-            log.warn("order {} not exist", orderId);
+        Order order = orderRepository.findById(orderId, Lists.newArrayList("id", "status"));
+        if (order == null) {
+            log.error("order {} not exist", orderId);
+            throw new BusinessException("order not found");
         }
-        Order order = new Order();
-        order.setId(Long.parseLong(notify.getOrderId()));
-        order.setTransactionId(notify.getTradeNo());
         switch (notify.getStatus()) {
             case PayConstant.PayStatus.SUCCESS:
-                order.setStatus(OrderStatusEnum.RESERVED.getStatus());
-                orderRepository.update(order);
+                userOrderService.handlePaySuccess(order, notify);
                 break;
             case PayConstant.PayStatus.REFUNDED:
-                order.setStatus(OrderStatusEnum.REFUNDED.getStatus());
-                orderRepository.update(order);
+                userOrderService.handlePayRefunded(order, notify);
                 break;
             default:
-                log.warn("notify status {} not support", notify.getStatus());
+                log.error("notify status {} not support", notify.getStatus());
+                throw new BusinessException("notify status not support");
         }
     }
 

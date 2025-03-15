@@ -14,21 +14,6 @@ import java.util.List;
 @Mapper
 public interface OccupiedSpotMapper extends BaseMapper<OccupiedSpot> {
 
-//    String GET_OCCUPIED_SPOT_ID_LIST =
-//            "SELECT id, parking_spot_id " +
-//            "FROM parking_occupied " +
-//            "WHERE parking_spot_id in (${spotIds}) " +
-//            "AND parking_day = #{parkingDay} " +
-//            "AND ((start_time >= #{startTime} AND start_time <= #{endTime}) OR (end_time >= #{startTime} AND end_time <= #{endTime})) " +
-//            "AND deleted_at = 0 ";
-
-//    String GET_OCCUPIED_SPOTS =
-//            "SELECT id, parking_spot_id, parking_day, start_time, end_time " +
-//            "FROM parking_occupied " +
-//            "WHERE parking_spot_id = #{spotId} " +
-//            "AND ((start_time >= #{startTime} AND start_time <= #{endTime}) OR (end_time >= #{startTime} AND end_time <= #{endTime})) " +
-//            "AND deleted_at = 0 ";
-
     String GET_OCCUPIED_SPOTS_BY_TIME_INTERVAL = """
                 SELECT #{fields}
                 FROM parking_occupied
@@ -39,27 +24,17 @@ public interface OccupiedSpotMapper extends BaseMapper<OccupiedSpot> {
             """;
 
     String FIND_TIMEOUT_SPOTS_WITH_ORDERS = """
-                SELECT #{fields}
+                SELECT * 
                 FROM parking_occupied po
                 INNER JOIN orders o ON o.parking_occupied_id = po.id
                 WHERE po.end_time <= #{checkTime}
-                AND po.end_time >= DATE_SUB(#{checkTime}, INTERVAL #{timeout} MINUTE)
                 AND o.status = #{orderStatus}
                 AND po.deleted_at = 0
                 AND o.deleted_at = 0
             """;
 
-//    /**
-//     * 根据停车位ID与时间区间查找车位ID
-//     */
-//    @Select(GET_OCCUPIED_SPOT_ID_LIST)
-//    List<OccupiedSpot> getParkingSpotIdsByTimeInterval(@Param("spotIds") String spotIds,
-//                                                      @Param("parkingDay") LocalDate parkingDay,
-//                                                      @Param("startTime") LocalDateTime startTime,
-//                                                      @Param("endTime") LocalDateTime endTime);
-
     /**
-     * 根据停车位ID与时间区间查找预订记录
+     * 根据停车位ID与时间区间查找占用信息
      */
     @Select(GET_OCCUPIED_SPOTS_BY_TIME_INTERVAL)
     List<OccupiedSpot> getOccupiedSpotsByTimeInterval(@Param("fields") String fields,
@@ -68,20 +43,11 @@ public interface OccupiedSpotMapper extends BaseMapper<OccupiedSpot> {
                                                       @Param("startTime") LocalDateTime startTime,
                                                       @Param("endTime") LocalDateTime endTime);
 
-//    /**
-//     * 根据停车位ID与时间区间查找车位占用记录
-//     */
-//    @Select(GET_OCCUPIED_SPOTS)
-//    List<OccupiedSpot> getOccupiedSpotsByTimeInterval(@Param("spotId") Long spotId,
-//                                                      @Param("startTime") LocalDateTime startTime,
-//                                                      @Param("endTime") LocalDateTime endTime);
-
     /**
      * 联表查询即将超时的订单和占用信息
      */
     @Select(FIND_TIMEOUT_SPOTS_WITH_ORDERS)
     List<OccupiedOrderDTO> findTimeoutSpotsWithOrders(
             @Param("checkTime") LocalDateTime checkTime,
-            @Param("timeout") Integer timeout,
             @Param("orderStatus") Integer orderStatus);
 }

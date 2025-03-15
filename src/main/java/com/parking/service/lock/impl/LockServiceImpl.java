@@ -20,12 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.parking.constant.LockConstant.*;
+
 @Service
 public class LockServiceImpl implements LockService {
-
-    private static final String LOCK_SHARD_KEY = "lock.shard";
-    private static final String LOCK_KEY = "lock:";
-    private static final String BREAKDOWN_LOCKs = "breakdown:locks";
 
     @Autowired
     private RedisUtil redisUtil;
@@ -54,7 +52,7 @@ public class LockServiceImpl implements LockService {
             redisUtil.hSet(LOCK_SHARD_KEY, getLockKey(request.getDeviceId()), lockStatus);
         }
         if (LockStatusEnum.UNKNOWN.getStatus().equals(lockStatus)) {
-            redisUtil.sAdd(BREAKDOWN_LOCKs, request.getDeviceId());
+            redisUtil.sAdd(BREAKDOWN_LOCKS, request.getDeviceId());
         }
         return OperationResponse.operationSuccess(0L, "");
     }

@@ -21,9 +21,11 @@ public class Order {
     private Long occupiedSpotId;
     private BigDecimal amount;
     private BigDecimal refundAmount;
+    private BigDecimal timeoutAmount;
     private String payType;
     private String carNumber;
     private String transactionId;
+    private String timeTransactionId;
     private Integer status;
     private Timestamp createTime;
     private Timestamp updateTime;

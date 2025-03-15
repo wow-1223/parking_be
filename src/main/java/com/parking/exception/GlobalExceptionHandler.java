@@ -33,14 +33,18 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBusinessException(BusinessException e) {
         log.error("Business error", e);
-        return new ErrorResponse(402, e.getMessage());
+        if (e.getCode() == null) {
+            return new ErrorResponse(402, e.getMessage());
+        } else {
+            return new ErrorResponse(e.getCode(), e.getMessage());
+        }
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleException(Exception e) {
         log.error("Internal server error", e);
-        return new ErrorResponse(500, "服务器内部错误");
+        return new ErrorResponse(500, "Internal server error");
     }
 
     @ExceptionHandler(PaymentException.class)

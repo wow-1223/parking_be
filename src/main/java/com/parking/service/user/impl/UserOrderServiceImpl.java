@@ -3,8 +3,10 @@ package com.parking.service.user.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.parking.enums.lock.LockStatusEnum;
 import com.parking.enums.order.OrderStatusEnum;
 import com.parking.enums.parking.SpotStatusEnum;
+import com.parking.enums.user.UserRoleEnum;
 import com.parking.exception.BusinessException;
 import com.parking.exception.ResourceNotFoundException;
 import com.parking.model.dto.order.OrderDTO;
@@ -12,12 +14,15 @@ import com.parking.model.dto.order.OrderDetailDTO;
 import com.parking.model.entity.mybatis.OccupiedSpot;
 import com.parking.model.entity.mybatis.Order;
 import com.parking.model.entity.mybatis.ParkingSpot;
+import com.parking.model.entity.mybatis.User;
 import com.parking.model.param.common.DetailResponse;
 import com.parking.model.param.common.OperationResponse;
 import com.parking.model.param.common.PageResponse;
 import com.parking.model.param.user.request.OperateOrderRequest;
 import com.parking.model.param.user.request.CreateOrderRequest;
+import com.parking.model.vo.pay.PayNotifyVO;
 import com.parking.service.BaseOrderService;
+import com.parking.service.lock.LockService;
 import com.parking.service.user.UserOrderService;
 import com.parking.handler.encrypt.AesUtil;
 import com.parking.util.DateUtil;
@@ -31,8 +36,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
+import static com.parking.constant.LockConstant.LockError.LOCK_STATUS_ERROR_CODE;
 import static com.parking.enums.order.OrderStatusEnum.*;
 
 @Slf4j
@@ -48,12 +56,14 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
 
     private static final Set<Integer> ALLOW_COMPLETE_STATUS = Sets.newHashSet(
             PROCESSING.getStatus(),
-            LEAVE_TEMPORARILY.getStatus()
-//            TIMEOUT_PENDING_PAYMENT.getStatus()
+            LEAVE_TEMPORARILY.getStatus(),
+            TIMEOUT.getStatus()
     );
 
     @Autowired
     private AesUtil aesUtil;
+    @Autowired
+    private LockService lockService;
 
     @Override
     public PageResponse<OrderDTO> getOrders(Long userId, Integer status, Integer page, Integer size) {
@@ -146,7 +156,7 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
 
         try {
             // 释放停车位
-            order.setStatus(OrderStatusEnum.CANCELED.getStatus());
+            order.setStatus(CANCELING.getStatus());
             BigDecimal refundAmount = order.getAmount();
             if (OrderStatusEnum.USER_OCCUPIED.getStatus() != order.getStatus() &&
                     OrderStatusEnum.UNKNOWN_OCCUPIED.getStatus() != order.getStatus()) {
@@ -176,7 +186,8 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
         }
 
         // 2. 验证用户权限
-        if (!order.getUserId().equals(TokenUtil.getUserId())) {
+        User user = userRepository.findById(order.getUserId(), Lists.newArrayList("id", "role"));
+        if (!user.getId().equals(TokenUtil.getUserId()) && UserRoleEnum.ADMIN.getRole() != user.getRole()) {
             throw new BusinessException("You are not allowed to complete this order");
         }
 
@@ -191,12 +202,29 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
             throw new BusinessException("OccupiedSpot not found");
         }
 
+        // 5. 验证车位锁状态
+        ParkingSpot spot = parkingSpotRepository.findById(order.getParkingSpotId(), Lists.newArrayList("id", "device_id"));
+        if (spot == null) {
+            throw new BusinessException("ParkingSpot not found");
+        }
+        String lockStatus = lockService.getLockStatus(spot.getDeviceId());
+        if (!Objects.equals(LockStatusEnum.LOWERED.getStatus(), lockStatus)) {
+            throw new BusinessException(LOCK_STATUS_ERROR_CODE, "Lock status is not allowed to cancel");
+        }
+
         try {
             // 5. 更新订单状态
-            order.setStatus(OrderStatusEnum.COMPLETED.getStatus());
-            orderRepository.update(order);
+            if (TIMEOUT.getStatus() == order.getStatus()) {
+                // 超时订单，计算超时待支付金额
+                order.setStatus(TIMEOUT_PENDING_PAYMENT.getStatus());
+                order.setTimeoutAmount(calculateTimeoutAmount(order, DateUtil.getCurrentDateTime()));
+            } else {
+                order.setStatus(OrderStatusEnum.COMPLETED.getStatus());
+                orderRepository.update(order);
+            }
 
             // 6. 删除占用记录（软删除）
+            occupiedSpot.setActualEndTime(DateUtil.getCurrentDateTime());
             occupiedSpot.setDeletedAt(System.currentTimeMillis());
             occupiedSpotRepository.update(occupiedSpot);
 
@@ -210,6 +238,31 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
             log.error("Complete order failed, order id: {}", order.getId(), e);
             throw new BusinessException("Complete order failed, order id: " + order.getId());
         }
+    }
+
+    @Override
+    public void handlePaySuccess(Order order, PayNotifyVO notify) {
+        if (OrderStatusEnum.PENDING_PAYMENT.getStatus() == order.getStatus()) {
+            order.setStatus(RESERVED.getStatus());
+        } else if (TIMEOUT_PENDING_PAYMENT.getStatus() == order.getStatus()) {
+            order.setStatus(COMPLETED.getStatus());
+        } else {
+            log.error("Current order {} status is invalid for pay success", order.getId());
+            throw new BusinessException("Current order status is invalid for pay success");
+        }
+        order.setTransactionId(notify.getTradeNo());
+        orderRepository.update(order);
+    }
+
+    @Override
+    public void handlePayRefunded(Order order, PayNotifyVO notify) {
+        if (REFUNDING.getStatus() != order.getStatus()) {
+            log.error("Current order {} status is invalid for pay refund", order.getId());
+            throw new BusinessException("Current order status is invalid for pay refund");
+        }
+        order.setStatus(CANCELED.getStatus());
+        order.setTransactionId(notify.getTradeNo());
+        orderRepository.update(order);
     }
 
     /**
@@ -252,5 +305,11 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
         return order.getAmount()
                 .multiply(refundRate)
                 .setScale(2, RoundingMode.HALF_UP);
+    }
+
+    private BigDecimal calculateTimeoutAmount(Order order, LocalDateTime endTime) {
+        LocalDateTime now = LocalDateTime.now();
+        long minutesAfterEnd = Duration.between(endTime, now).toMinutes();
+        return order.getAmount().multiply(new BigDecimal(3 * minutesAfterEnd / 60.0));
     }
 }

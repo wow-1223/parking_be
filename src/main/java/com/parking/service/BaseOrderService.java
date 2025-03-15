@@ -19,6 +19,7 @@ import com.parking.repository.mybatis.OrderRepository;
 import com.parking.repository.mybatis.ParkingSpotRepository;
 import com.parking.repository.mybatis.UserRepository;
 import com.parking.handler.encrypt.AesUtil;
+import com.parking.service.lock.LockService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -47,6 +48,9 @@ public abstract class BaseOrderService implements OrderService {
 
     @Autowired
     private AesUtil aesUtil;
+
+    @Autowired
+    private LockService lockService;
 
     public PageResponse<OrderDTO> convertOrderPage(IPage<Order> page) {
         if (CollectionUtils.isEmpty(page.getRecords())) {

@@ -6,7 +6,9 @@ import lombok.Getter;
 public enum UserStatusEnum {
 
     ACTIVE(1, "active"),
-    DISABLED(2, "disabled");
+    DISABLED(2, "disabled"),
+    VIOLATED(3, "violated"),
+    ;
 
     private final int status;
     private final String description;
@@ -14,14 +16,6 @@ public enum UserStatusEnum {
     UserStatusEnum(int status, String description) {
         this.status = status;
         this.description = description;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     // 根据 code 获取对应的枚举实例

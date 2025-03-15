@@ -18,8 +18,6 @@ import java.util.stream.Collectors;
 @Repository
 public class OccupiedSpotRepository {
 
-    private static final String SELECT_ALL = "*";
-
     @Autowired
     private OccupiedSpotMapper occupiedSpotMapper;
 
@@ -92,19 +90,6 @@ public class OccupiedSpotRepository {
                 .in("parking_spot_id", spotIds).eq("deleted_at", 0L));
     }
 
-//    /**
-//     * 查询指定时间正在占用的记录
-//     */
-//    public List<OccupiedSpot> findCurrentOccupiedSpots(List<Long> spotIds, LocalDateTime time) {
-//        return occupiedSpotMapper.selectList(
-//                new QueryWrapper<OccupiedSpot>()
-//                        .eq("deleted_at", 0)
-//                        .in("parking_spot_id", spotIds)
-//                        .lt("start_time", time)
-//                        .gt("end_time", time)
-//        );
-//    }
-
     /**
      * 查询指定日期的全部预定记录
      */
@@ -115,15 +100,6 @@ public class OccupiedSpotRepository {
                         .eq("parking_day", parkingDay)
                         .eq("deleted_at", 0));
     }
-
-
-//    /**
-//     * 查询指定时间范围内的占用记录
-//     */
-//    public List<OccupiedSpot> findByTime(Long spotId, LocalDateTime startTime, LocalDateTime endTime) {
-//        return occupiedSpotMapper.getOccupiedSpotsByTimeInterval(
-//                SELECT_ALL, spotId.toString(), startTime.toLocalDate(), startTime, endTime);
-//    }
 
     /**
      * 校验指定车位、指定时间范围内是否存在占用记录
@@ -145,12 +121,6 @@ public class OccupiedSpotRepository {
         return occupiedSpots.stream().map(OccupiedSpot::getId).collect(Collectors.toList());
     }
 
-//    public List<OccupiedSpot> findOccupiedSpotsByTimeInterval(List<Long> spotIds,
-//                                                              LocalDateTime startTime,
-//                                                              LocalDateTime endTime) {
-//        return findOccupiedSpotsByTimeInterval(Lists.newArrayList(SELECT_ALL), spotIds, startTime, endTime);
-//    }
-
     private List<OccupiedSpot> findOccupiedSpotsByTimeInterval(List<String> fields,
                                                               List<Long> spotIds,
                                                               LocalDateTime startTime,
@@ -162,7 +132,7 @@ public class OccupiedSpotRepository {
     /**
      * 查询超时的占用记录
      */
-    public List<OccupiedOrderDTO> findTimeoutSpotsWithOrders(LocalDateTime checkTime, Integer timeout, Integer orderStatus) {
-        return occupiedSpotMapper.findTimeoutSpotsWithOrders(checkTime, timeout, orderStatus);
+    public List<OccupiedOrderDTO> findTimeoutSpotsWithOrders(LocalDateTime checkTime, Integer orderStatus) {
+        return occupiedSpotMapper.findTimeoutSpotsWithOrders(checkTime, orderStatus);
     }
 }

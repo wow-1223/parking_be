@@ -60,7 +60,7 @@ public class SendRemindMessageForWillStartOrdersTask implements Runnable {
 
         for (Map.Entry<Long, Order> entry : support.getOrderMap().entrySet()) {
             Order order = entry.getValue();
-            if (weSupport.getOccupiedMap().containsKey(order.getOccupiedSpotId())) {
+            if (weSupport.getParkingMap().containsKey(order.getParkingSpotId())) {
                 userOccupied.add(order);
             } else {
                 unknownOccupied.add(order);

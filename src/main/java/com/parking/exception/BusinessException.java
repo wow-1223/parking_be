@@ -1,8 +1,11 @@
 package com.parking.exception;
 
+import lombok.Getter;
+
 /**
  * 业务异常
  */
+@Getter
 public class BusinessException extends RuntimeException {
 
     private Integer code;
@@ -20,7 +23,4 @@ public class BusinessException extends RuntimeException {
         super(message, cause);
     }
 
-    public Integer getCode() {
-        return code;
-    }
 }

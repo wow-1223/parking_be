@@ -20,7 +20,7 @@ public interface ParkingSpotMapper extends BaseMapper<ParkingSpot> {
             "AND (#{price} IS NULL OR price <= #{price}) " +
             "AND status = 2 " +
             "AND deleted_at = 0 " +
-            "ORDER BY ST_Distance_Sphere(POINT(longitude, latitude), POINT(#{longitude}, #{latitude})) DESC";
+            "ORDER BY ST_Distance_Sphere(POINT(longitude, latitude), POINT(#{longitude}, #{latitude})) ASC";
 
     String GET_OTHER_AVAILABLE_SPOTS_SQL = "SELECT id, rules " +
             "FROM parking_spots " +

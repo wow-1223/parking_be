@@ -7,7 +7,6 @@ import com.parking.model.entity.mybatis.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Repository
@@ -28,6 +27,10 @@ public class UserRepository {
      */
     public void update(User user) {
         userMapper.updateById(user);
+    }
+
+    public void batchUpdate(List<User> users) {
+        userMapper.updateById(users);
     }
 
     /**

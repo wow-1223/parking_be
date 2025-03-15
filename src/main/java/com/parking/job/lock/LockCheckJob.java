@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.parking.constant.LockConstant.BREAKDOWN_LOCKS;
+
 @Slf4j
 @Component
 public class LockCheckJob {
-
-    private static final String BREAKDOWN_LOCKS = "breakdown:locks";
 
     @Autowired
     private LockHandler lockHandler;

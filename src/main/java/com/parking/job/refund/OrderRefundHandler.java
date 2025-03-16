@@ -67,8 +67,8 @@ public class OrderRefundHandler {
     public void recover(Exception e, Order order) {
         log.error("Handle refund retry failed after 3 attempts, order: {}", JsonUtil.toJson(order), e);
         // 重置订单状态为取消中
-        order.setStatus(OrderStatusEnum.CANCELING.getStatus());
-        orderRepository.update(order);
+//        order.setStatus(OrderStatusEnum.CANCELING.getStatus());
+//        orderRepository.update(order);
 //        saveNotify(notify, e.getMessage(), PayConstant.PayStatus.FAILED);
     }
 }

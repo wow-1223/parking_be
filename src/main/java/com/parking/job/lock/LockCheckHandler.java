@@ -1,7 +1,8 @@
 package com.parking.job.lock;
 
 import com.parking.model.entity.mybatis.ParkingSpot;
-import com.parking.repository.mybatis.ParkingSpotRepository;
+import com.parking.model.param.owner.request.UpdateParkingRequest;
+import com.parking.service.owner.OwnerParkingService;
 import com.parking.service.sms.SmsService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -19,30 +20,45 @@ public class LockCheckHandler {
     private SmsService smsService;
 
     @Autowired
-    private ParkingSpotRepository parkingSpotRepository;
+    private OwnerParkingService ownerParkingService;
 
     @Transactional(rollbackFor = Exception.class)
     public void batchForbiddenSpots(List<ParkingSpot> spots, List<String[]> messages) {
-        try {
-            if (CollectionUtils.isNotEmpty(spots)) {
-                // 批量更新车位状态
-                parkingSpotRepository.batchUpdate(spots);
-            }
-
-            // 批量发送确认消息
-            for (String[] phoneAndMessage : messages) {
-                try {
-                    log.info("Send remind message to owner: {}, message: {}",
-                            phoneAndMessage[0], phoneAndMessage[1]);
-                    smsService.sendMessage(phoneAndMessage[0], phoneAndMessage[1]);
-                } catch (Exception e) {
-                    log.error("Send remind message failed, phone: {}",  phoneAndMessage[0], e);
-                }
-            }
-        } catch (Exception e) {
-            log.error("Batch remind orders failed", e);
-            throw e; // 触发事务回滚
+        if (CollectionUtils.isEmpty(spots)) {
+            return;
         }
+        for (int i = 0; i < spots.size(); i++) {
+            ParkingSpot spot = spots.get(i);
+            String[] phoneAndMessage = messages.get(i);
+            UpdateParkingRequest request = new UpdateParkingRequest();
+            request.setId(spot.getId());
+            request.setStatus(spot.getStatus());
+            try {
+                log.info("Update parking spot status: {}", spot.getId());
+                ownerParkingService.updateParking(request);
+                log.info("Send remind message to owner: {}, message: {}", phoneAndMessage[0], phoneAndMessage[1]);
+                smsService.sendMessage(phoneAndMessage[0], phoneAndMessage[1]);
+            } catch (Exception e) {
+                log.error("Update parking spot status failed, spotId: {}", spot.getId(), e);
+                throw e; // 触发事务回滚
+            }
+        }
+//            if (CollectionUtils.isNotEmpty(spots)) {
+//                // 批量更新车位状态
+//                parkingSpotRepository.batchUpdate(spots);
+//            }
+//
+//            // 批量发送确认消息
+//            for (String[] phoneAndMessage : messages) {
+//                try {
+//                    log.info("Send remind message to owner: {}, message: {}",
+//                            phoneAndMessage[0], phoneAndMessage[1]);
+//                    smsService.sendMessage(phoneAndMessage[0], phoneAndMessage[1]);
+//                } catch (Exception e) {
+//                    log.error("Send remind message failed, phone: {}",  phoneAndMessage[0], e);
+//                }
+//            }
+
     }
 
     public String buildOwnerCheckMessage(ParkingSpot parkingSpot) {

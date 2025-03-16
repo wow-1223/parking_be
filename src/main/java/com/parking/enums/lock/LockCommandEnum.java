@@ -5,9 +5,10 @@ import lombok.Getter;
 @Getter
 public enum LockCommandEnum {
 
-    LOWER("lower"),
+    FALL("fall"),
     RISE("rise"),
-    STOP("stop");
+    STOP("stop"),
+    ;
 
     private final String command;
 

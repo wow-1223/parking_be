@@ -18,7 +18,7 @@ import com.parking.model.entity.mybatis.User;
 import com.parking.model.param.common.DetailResponse;
 import com.parking.model.param.common.OperationResponse;
 import com.parking.model.param.common.PageResponse;
-import com.parking.model.param.user.request.OperateOrderRequest;
+import com.parking.model.param.user.request.CancelOrderRequest;
 import com.parking.model.param.user.request.CreateOrderRequest;
 import com.parking.model.vo.pay.PayNotifyVO;
 import com.parking.service.BaseOrderService;
@@ -36,7 +36,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -133,7 +132,7 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
 
     @Override
     @Transactional
-    public OperationResponse cancelOrder(OperateOrderRequest request) {
+    public OperationResponse cancelOrder(CancelOrderRequest request) {
         Order order = orderRepository.findByIdAndUserId(request.getOrderId(), TokenUtil.getUserId());
         if (order == null) {
             throw new ResourceNotFoundException("Order not found");
@@ -178,7 +177,7 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public OperationResponse completeOrder(OperateOrderRequest request) {
+    public OperationResponse completeOrder(CancelOrderRequest request) {
         // 1. 查询订单
         Order order = orderRepository.findById(request.getOrderId());
         if (order == null) {
@@ -208,7 +207,7 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
             throw new BusinessException("ParkingSpot not found");
         }
         String lockStatus = lockService.getLockStatus(spot.getDeviceId());
-        if (!Objects.equals(LockStatusEnum.LOWERED.getStatus(), lockStatus)) {
+        if (!Objects.equals(LockStatusEnum.FALLEN.getStatus(), lockStatus)) {
             throw new BusinessException(LOCK_STATUS_ERROR_CODE, "Lock status is not allowed to cancel");
         }
 

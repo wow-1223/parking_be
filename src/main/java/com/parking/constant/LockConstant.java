@@ -2,9 +2,8 @@ package com.parking.constant;
 
 public class LockConstant {
 
-    public static final String LOCK_ACTION = "lock.action";
-    public static final String LOCK_STATUS = "lock.status";
-    public static final String LOCK_KEY = "lock:";
+    public static final String LOCK_STATUS_KEY = "lock:status:";
+    public static final String BROKEN_LOCKS = "broken:locks";
 
     public static final String RAISED_LOCKS = "raised:locks";
     public static final String LOWERED_LOCKS = "lowered:locks";

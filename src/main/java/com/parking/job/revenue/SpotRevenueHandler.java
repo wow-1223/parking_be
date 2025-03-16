@@ -1,4 +1,4 @@
-package com.parking.job.venue;
+package com.parking.job.revenue;
 
 import com.parking.model.entity.mybatis.SpotRevenue;
 import com.parking.repository.mybatis.SpotRevenueRepository;

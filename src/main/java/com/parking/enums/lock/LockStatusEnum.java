@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public enum LockStatusEnum {
 
-    LOWERED("lowered"),
+    FALLEN("fallen"),
     RAISED("raised"),
-    UNKNOWN("unknown"),
+    BROKEN("broken"),
     ;
 
     private final String status;
@@ -22,6 +22,6 @@ public enum LockStatusEnum {
                 return lockStatusEnum;
             }
         }
-        return UNKNOWN;
+        return BROKEN;
     }
 }

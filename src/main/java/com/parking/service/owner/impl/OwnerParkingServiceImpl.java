@@ -2,6 +2,7 @@ package com.parking.service.owner.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.google.common.collect.Lists;
+import com.parking.enums.order.OrderStatusEnum;
 import com.parking.enums.parking.SpotStatusEnum;
 import com.parking.enums.user.UserRoleEnum;
 import com.parking.exception.BusinessException;
@@ -9,6 +10,7 @@ import com.parking.exception.ResourceNotFoundException;
 import com.parking.handler.jwt.TokenUtil;
 import com.parking.model.dto.parking.ParkingSpotDTO;
 import com.parking.model.dto.parking.ParkingSpotDetailDTO;
+import com.parking.model.entity.mybatis.Order;
 import com.parking.model.entity.mybatis.ParkingSpot;
 import com.parking.model.entity.mybatis.User;
 import com.parking.model.param.common.DetailResponse;
@@ -19,6 +21,7 @@ import com.parking.model.param.owner.request.OwnerParkingRequest;
 import com.parking.model.param.owner.request.UpdateParkingRequest;
 import com.parking.model.vo.parking.ParkingSpotRuleStrVO;
 import com.parking.model.vo.parking.ParkingSpotRuleVO;
+import com.parking.repository.mybatis.OrderRepository;
 import com.parking.repository.mybatis.ParkingSpotRepository;
 import com.parking.repository.mybatis.UserRepository;
 import com.parking.service.owner.OwnerParkingService;
@@ -28,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -38,6 +42,8 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private OrderRepository orderRepository;
 
     @Override
     public PageResponse<ParkingSpotDTO> getParkingList(Long userId, Integer status, Integer page, Integer size) {
@@ -121,7 +127,9 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
         if (request.getStatus() != null) {
             spot.setStatus(request.getStatus());
         }
-        
+
+        // todo 更新车位信息前，需要校验是否存在订单：继续执行当前订单，取消后续预约单
+        processSpotOrders(spot);
         parkingSpotRepository.update(spot);
         
         return OperationResponse.operationSuccess(spot.getId(), "update success");
@@ -175,11 +183,11 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
         return spot;
     }
 
-    public void checkDuplicateForCreate(OwnerParkingRequest request) {
+    private void checkDuplicateForCreate(OwnerParkingRequest request) {
         // 检查是否有重复的车位
     }
 
-    public void checkParkingSpot(OwnerParkingRequest request) {
+    private void checkParkingSpot(OwnerParkingRequest request) {
 
         // user can publish parking spot, after approved and installed floor lock, make role be owner
 //        checkOwner(request);
@@ -215,7 +223,7 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
         checkRules(request);
     }
 
-    public User checkOwner(OwnerParkingRequest request) {
+    private User checkOwner(OwnerParkingRequest request) {
         Long userId = TokenUtil.getUserId();
 //        if (userId == null) {
 //            throw new ResourceNotFoundException("Owner is required");
@@ -231,7 +239,7 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
         return user;
     }
 
-    public void checkRules(OwnerParkingRequest request) {
+    private void checkRules(OwnerParkingRequest request) {
         int mode = -1;
         for (ParkingSpotRuleStrVO ruleStr : request.getRules()) {
             if (ruleStr == null) {
@@ -246,6 +254,15 @@ public class OwnerParkingServiceImpl implements OwnerParkingService {
             if (mode != rule.getMode().getMode()) {
                 throw new BusinessException("One parking spot can't have the different mode");
             }
+        }
+    }
+
+    private void processSpotOrders(ParkingSpot spot) {
+        List<Order> orders = orderRepository.findByParkingSpotId(
+                Lists.newArrayList(spot.getId()), Lists.newArrayList(OrderStatusEnum.RESERVED.getStatus()));
+        for (Order order : orders) {
+            // 取消订单并通知用户
+
         }
     }
 

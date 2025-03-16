@@ -1,6 +1,7 @@
 package com.parking.handler.redis;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -45,6 +46,13 @@ public class RedisUtil {
      */
     public String get(String key) {
         return redisTemplate.opsForValue().get(key);
+    }
+
+    /**
+     * 批量获取字符串类型的值并返回map结构
+     */
+    public List<String> mGet(List<String> keys) {
+        return redisTemplate.opsForValue().multiGet(keys);
     }
 
     // ====== Hash类型操作 ======
@@ -140,8 +148,18 @@ public class RedisUtil {
         return redisTemplate.opsForSet().members(key);
     }
 
+    /**
+     * 删除Set中的元素
+     */
     public void sDel(String key, String value) {
         redisTemplate.opsForSet().remove(key, value);
+    }
+
+    /**
+     * 批量删除Set中的元素
+     */
+    public void sDel(String key, List<String> values) {
+        redisTemplate.opsForSet().remove(key, values);
     }
 
     // ====== 通用操作 ======

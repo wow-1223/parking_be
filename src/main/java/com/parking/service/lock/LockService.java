@@ -20,4 +20,11 @@ public interface LockService {
     String getLockStatus(String deviceId);
     Map<String, String> getLockStatus(List<String> deviceIds);
 
+    /**
+     * 获取变更了状态的地锁
+     */
+    List<String> getBrokenLocks();
+
+    void deleteBrokenLocks(List<String> deviceIds);
+
 }

@@ -3,7 +3,7 @@ package com.parking.controller.user;
 import com.parking.handler.jwt.TokenUtil;
 import com.parking.model.dto.order.OrderDTO;
 import com.parking.model.param.common.OperationResponse;
-import com.parking.model.param.user.request.OperateOrderRequest;
+import com.parking.model.param.user.request.CancelOrderRequest;
 import com.parking.model.param.user.request.CreateOrderRequest;
 import com.parking.model.param.common.PageResponse;
 import com.parking.service.user.UserOrderService;
@@ -36,7 +36,7 @@ public class UserOrderController {
     }
 
     @PostMapping("/cancelOrder")
-    public OperationResponse cancelOrder(@RequestBody OperateOrderRequest request) {
+    public OperationResponse cancelOrder(@RequestBody CancelOrderRequest request) {
         log.info("Cancel order request: {}", request);
         return userOrderService.cancelOrder(request);
     }
@@ -45,7 +45,7 @@ public class UserOrderController {
      * 确认订单完成
      */
     @PostMapping("/complete")
-    public OperationResponse completeOrder(@RequestBody OperateOrderRequest request) {
+    public OperationResponse completeOrder(@RequestBody CancelOrderRequest request) {
         log.info("Complete order request: {}", request);
         return userOrderService.completeOrder(request);
     }

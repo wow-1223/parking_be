@@ -37,18 +37,6 @@ public class LockCheckJob {
     @Autowired
     private LockService lockService;
 
-
-//    /**
-//     *
-//     *  故障：通知租户
-//     * 每30秒执行一次
-//     */
-//    @Scheduled(cron = "0/30 * * * * ?")
-//    public void lockCheck() {
-//        log.info("Start lock check");
-//        forbiddenBrokenLock();
-//    }
-
     /**
      * 禁用故障地锁
      *  1. 识别故障地锁

@@ -69,7 +69,7 @@ CREATE TABLE orders (
     owner_id BIGINT NOT NULL COMMENT 'owner id',
     parking_occupied_id BIGINT NOT NULL COMMENT 'parking occupied id',
     car_number VARCHAR(30) NOT NULL COMMENT 'car number',
-    amount DECIMAL(10,2) NOT NULL COMMENT 'order amount',
+    amount DECIMAL(10,2) NOT NULL DEFAULT 0 COMMENT 'order amount',
     refund_amount DECIMAL(10,2) NOT NULL DEFAULT 0 COMMENT 'refund amount',
     timeout_amount DECIMAL(10,2) NOT NULL DEFAULT 0 COMMENT 'timeout amount',
     pay_type VARCHAR(20) NOT NULL DEFAULT '' COMMENT 'pay type: WECHAT_PAY | ALIPAY',

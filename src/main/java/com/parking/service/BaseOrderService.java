@@ -2,7 +2,6 @@ package com.parking.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.google.common.collect.Lists;
-import com.parking.enums.order.OrderStatusEnum;
 import com.parking.exception.BusinessException;
 import com.parking.exception.ResourceNotFoundException;
 import com.parking.model.dto.order.OrderDTO;
@@ -19,7 +18,6 @@ import com.parking.repository.mybatis.OrderRepository;
 import com.parking.repository.mybatis.ParkingSpotRepository;
 import com.parking.repository.mybatis.UserRepository;
 import com.parking.handler.encrypt.AesUtil;
-import com.parking.service.lock.LockService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -47,10 +45,7 @@ public abstract class BaseOrderService implements OrderService {
     protected OccupiedSpotRepository occupiedSpotRepository;
 
     @Autowired
-    private AesUtil aesUtil;
-
-    @Autowired
-    private LockService lockService;
+    protected AesUtil aesUtil;
 
     public PageResponse<OrderDTO> convertOrderPage(IPage<Order> page) {
         if (CollectionUtils.isEmpty(page.getRecords())) {
@@ -112,7 +107,7 @@ public abstract class BaseOrderService implements OrderService {
         UserDTO owner = new UserDTO();
         owner.setId(owr.getId());
         owner.setName(owr.getNickName());
-        owner.setPhone(owr.getPhone());
+        owner.setPhone(aesUtil.decrypt(owr.getPhone()));
         dto.setOwner(owner);
 
 

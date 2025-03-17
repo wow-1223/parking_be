@@ -4,7 +4,7 @@ import com.parking.handler.jwt.TokenUtil;
 import com.parking.model.dto.order.OrderDTO;
 import com.parking.model.param.common.OperationResponse;
 import com.parking.model.param.user.request.CancelOrderRequest;
-import com.parking.model.param.user.request.CreateOrderRequest;
+import com.parking.model.param.user.request.OperateOrderRequest;
 import com.parking.model.param.common.PageResponse;
 import com.parking.service.user.UserOrderService;
 
@@ -30,7 +30,7 @@ public class UserOrderController {
     }
 
     @PostMapping("/createOrder")
-    public OperationResponse createOrder(@RequestBody CreateOrderRequest request) {
+    public OperationResponse createOrder(@RequestBody OperateOrderRequest request) {
         log.info("Create order request: {}", request);
         return userOrderService.createOrder(request);
     }

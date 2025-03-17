@@ -10,7 +10,7 @@ import com.parking.model.entity.mybatis.ParkingSpot;
 import com.parking.model.entity.mybatis.User;
 import com.parking.model.param.common.PageResponse;
 import com.parking.model.param.parking.request.NearbyParkingSpotRequest;
-import com.parking.model.param.user.request.CreateOrderRequest;
+import com.parking.model.param.user.request.OperateOrderRequest;
 import com.parking.repository.mybatis.UserRepository;
 import com.parking.service.lock.LockService;
 import com.parking.service.user.UserOrderService;
@@ -104,7 +104,7 @@ public class SendRemindMessageForWillStartOrdersTask implements Runnable {
                 String msg = orderRemindHandler.buildUserOccupiedWithoutOtherAvailableSpotMessage(occupiedSpot, spot);
                 confirmMessages.add(new String[]{msg, phone});
             } else {
-                CreateOrderRequest req = new CreateOrderRequest();
+                OperateOrderRequest req = new OperateOrderRequest();
                 req.setParkingSpotId(availableSpot.getId());
                 req.setStartTime(DateUtil.formatTime(occupiedSpot.getStartTime()));
                 req.setEndTime(DateUtil.formatTime(occupiedSpot.getEndTime()));
@@ -132,7 +132,7 @@ public class SendRemindMessageForWillStartOrdersTask implements Runnable {
                 String msg = orderRemindHandler.buildUnknownOccupiedWithoutOtherAvailableSpotsMessage(occupiedSpot, spot);
                 confirmMessages.add(new String[]{msg, phone});
             } else {
-                CreateOrderRequest req = new CreateOrderRequest();
+                OperateOrderRequest req = new OperateOrderRequest();
                 req.setCarNumber(order.getCarNumber());
                 req.setParkingSpotId(availableSpot.getId());
                 req.setStartTime(DateUtil.formatTime(occupiedSpot.getStartTime()));

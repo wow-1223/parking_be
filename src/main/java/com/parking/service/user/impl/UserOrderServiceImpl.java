@@ -19,7 +19,7 @@ import com.parking.model.param.common.DetailResponse;
 import com.parking.model.param.common.OperationResponse;
 import com.parking.model.param.common.PageResponse;
 import com.parking.model.param.user.request.CancelOrderRequest;
-import com.parking.model.param.user.request.CreateOrderRequest;
+import com.parking.model.param.user.request.OperateOrderRequest;
 import com.parking.model.vo.pay.PayNotifyVO;
 import com.parking.service.BaseOrderService;
 import com.parking.service.lock.LockService;
@@ -60,8 +60,6 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
     );
 
     @Autowired
-    private AesUtil aesUtil;
-    @Autowired
     private LockService lockService;
 
     @Override
@@ -82,7 +80,7 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
 
     @Override
     @Transactional
-    public OperationResponse createOrder(CreateOrderRequest request) {
+    public OperationResponse createOrder(OperateOrderRequest request) {
         Long userId = TokenUtil.getUserId();
 
         // 1. 验证停车位是否可用
@@ -119,7 +117,7 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
             order.setOccupiedSpotId(occupiedSpot.getId());
             order.setCarNumber(aesUtil.encrypt(request.getCarNumber()));
             order.setStatus(OrderStatusEnum.PENDING_PAYMENT.getStatus());
-            order.setAmount(calculateAmount(spot.getPrice(), st, ed));
+//            order.setAmount(calculateAmount(spot.getPrice(), st, ed));
             orderRepository.insert(order);
 
         } catch (Exception e) {
@@ -128,6 +126,11 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
         }
 
         return OperationResponse.operationSuccess(order.getId(), "create success");
+    }
+
+    @Override
+    public OperationResponse updateOrder(OperateOrderRequest request) {
+        return null;
     }
 
     @Override
@@ -306,6 +309,9 @@ public class UserOrderServiceImpl extends BaseOrderService implements UserOrderS
                 .setScale(2, RoundingMode.HALF_UP);
     }
 
+    /**
+     * 计算超时待支付金额：3倍租金
+     */
     private BigDecimal calculateTimeoutAmount(Order order, LocalDateTime endTime) {
         LocalDateTime now = LocalDateTime.now();
         long minutesAfterEnd = Duration.between(endTime, now).toMinutes();
